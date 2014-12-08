@@ -1,6 +1,6 @@
 pokerplanning
 =============
-[![Build Status](https://drone.io/github.com/Pacane/pokerplanning/status.png)](https://drone.io/github.com/Pacane/pokerplanning/latest)
+[![Build Status](https://drone.io/github.com/ArcBees/poker-planning/status.png)](https://drone.io/github.com/ArcBees/poker-planning/latest)
 
 To launch the project you first have to create a file named `config.yaml` to setup the hostname and a port to listen to.
 
