@@ -1,7 +1,8 @@
-pokerplanning
+PokerPlanning
 =============
 [![Build Status](https://drone.io/github.com/ArcBees/poker-planning/status.png)](https://drone.io/github.com/ArcBees/poker-planning/latest)
 
+##Getting Started
 To launch the project you first have to create a file named `config.yaml` to setup the hostname and a port to listen to.
 
 On linux systems do:
@@ -24,4 +25,6 @@ The client must be launched with another port number (e.g.: not 4040)
 In another terminal you can launch the client with the following command : `pub serve --port=<another port>`
 
 ###Notes
-Don't forget to `pub get` in each project (client, server) to fetch the necessary packages  
+Don't forget to `pub upgrade` in each project (client, server) to fetch the necessary packages
+
+## Want to see a [live demo](http://pokerplanning.stacktrace.ca)?

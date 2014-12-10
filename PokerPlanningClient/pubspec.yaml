@@ -1,5 +1,5 @@
-name: PokerPlanning
-description: Poker planning application
+name: poker_planning_client
+description: PokerPlanning app frontend
 dependencies:
   browser: any
   dart_config: any
