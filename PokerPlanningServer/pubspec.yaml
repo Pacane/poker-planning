@@ -1,7 +1,5 @@
-name: PokerPlanningServer
+name: poker_planning_server
 version: 0.0.1
-description: A sample command-line application
+description: PokerPlanning app backend
 dependencies:
   dart_config: any
-dev_dependencies:
-#  unittest: any
