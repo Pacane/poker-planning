@@ -3,7 +3,7 @@ library poker_planning;
 import 'dart:html';
 import 'dart:convert';
 import 'card.dart';
-import 'components/card_component.dart';
+import 'components/table_card.dart';
 
 import 'package:dart_config/default_browser.dart';
 import 'package:polymer/polymer.dart';
@@ -188,8 +188,8 @@ void displayCards(Map game, bool revealed) {
     ..innerHtml = "";
 
   game.forEach((player, card) {
-    CardComponent cardComponent = new CardComponent.revealCard(player, card, revealed, kickPlayer);
-    othersCardDiv.append(cardComponent);
+    TableCard tableCard = new TableCard.create(player, card, revealed, kickPlayer);
+    othersCardDiv.append(tableCard);
   });
 }
 
