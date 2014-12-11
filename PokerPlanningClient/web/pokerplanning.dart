@@ -2,7 +2,7 @@ library poker_planning;
 
 import 'dart:html';
 import 'dart:convert';
-import 'card.dart';
+import 'components/my_card.dart';
 import 'components/table_card.dart';
 
 import 'package:dart_config/default_browser.dart';
@@ -53,19 +53,19 @@ void showGame() {
   querySelector("#game").classes.toggle("hidden", false);
   querySelector("#myCards")
     ..innerHtml = "<div class=\"cardContainer\"><div class=\"card cardSpacer\"></div></div>"
-    ..append(new Card.selectCard("0", selectCard).root)
-    ..append(new Card.selectCard("½", selectCard).root)
-    ..append(new Card.selectCard("1", selectCard).root)
-    ..append(new Card.selectCard("2", selectCard).root)
-    ..append(new Card.selectCard("3", selectCard).root)
-    ..append(new Card.selectCard("5", selectCard).root)
-    ..append(new Card.selectCard("8", selectCard).root)
-    ..append(new Card.selectCard("13", selectCard).root)
-    ..append(new Card.selectCard("20", selectCard).root)
-    ..append(new Card.selectCard("40", selectCard).root)
-    ..append(new Card.selectCard("∞", selectCard).root)
-    ..append(new Card.selectCard("?", selectCard).root)
-    ..append(new Card.selectCard("Pause", selectCard).root)
+    ..append(new MyCard.create("0", selectCard))
+    ..append(new MyCard.create("½", selectCard))
+    ..append(new MyCard.create("1", selectCard))
+    ..append(new MyCard.create("2", selectCard))
+    ..append(new MyCard.create("3", selectCard))
+    ..append(new MyCard.create("5", selectCard))
+    ..append(new MyCard.create("8", selectCard))
+    ..append(new MyCard.create("13", selectCard))
+    ..append(new MyCard.create("20", selectCard))
+    ..append(new MyCard.create("40", selectCard))
+    ..append(new MyCard.create("∞", selectCard))
+    ..append(new MyCard.create("?", selectCard))
+    ..append(new MyCard.create("Pause", selectCard))
   ;
 
   querySelector("#revealOthersCards").onClick.listen(revealOthersCards);
@@ -76,8 +76,6 @@ void revealOthersCards(_) => sendSocketMsg({
     "revealAll": ""
 });
 
-void clearSelectedCard() => querySelectorAll(".card").forEach((Element c) => c.classes.toggle("selected", false));
-
 void initReset(_) {
   sendSocketMsg({
       "resetRequest": ""
@@ -85,15 +83,12 @@ void initReset(_) {
 }
 
 void gameHasReset() {
-  clearSelectedCard();
+  MyCard.clearSelectedCards();
 }
 
-void selectCard(Event e) {
-  Element card = e.target;
-  clearSelectedCard();
-  card.classes.toggle("selected");
+void selectCard(String value) {
   sendSocketMsg({
-      "cardSelection": [myName, card.id]
+      "cardSelection": [myName, value]
   });
 }
 
