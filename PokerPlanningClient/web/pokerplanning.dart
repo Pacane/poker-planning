@@ -3,7 +3,7 @@ library poker_planning;
 import 'dart:html';
 import 'dart:convert';
 import 'card.dart';
-import 'card_component.dart';
+import 'components/card_component.dart';
 
 import 'package:dart_config/default_browser.dart';
 import 'package:polymer/polymer.dart';
