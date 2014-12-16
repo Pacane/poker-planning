@@ -4,8 +4,8 @@ import 'package:polymer/polymer.dart';
 import 'dart:html' show Event, Node, CustomEvent;
 import 'dart:html';
 
-@CustomTag('card-component')
-class CardComponent extends PolymerElement {
+@CustomTag('table-card')
+class TableCard extends PolymerElement {
   @published
   String playerName;
   @published
@@ -25,11 +25,11 @@ class CardComponent extends PolymerElement {
 
   String get value => _value;
 
-  CardComponent.created() : super.created() {
+  TableCard.created() : super.created() {
   }
 
-  factory CardComponent.revealCard(String playerName, String value, bool revealed, kickHandler) {
-    CardComponent component = (new Element.tag("card-component") as CardComponent)
+  factory TableCard.create(String playerName, String value, bool revealed, kickHandler) {
+    TableCard component = (new Element.tag("table-card") as TableCard)
       ..playerName = playerName
       ..revealed = revealed
       ..value = value
