@@ -1,0 +1,14 @@
+<link rel="import" href="packages/polymer/polymer.html">
+<polymer-element name="my-card">
+    <template>
+        <style>
+            @import "../pokerplanning.css";
+        </style>
+        <template bind>
+            <div class="cardContainer">
+                <div id="valueContainer" class="card" on-click="{{onValueClicked}}">{{value}}</div>
+            </div>
+        </template>
+    </template>
+    <script type="application/dart" src="my_card.dart"></script>
+</polymer-element>
