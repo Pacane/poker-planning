@@ -12,7 +12,7 @@ class MyCard extends PolymerElement {
   MyCard.created() : super.created() {
   }
 
-  factory MyCard.create(String value, clickHandler) {
+  factory MyCard(String value, clickHandler) {
     MyCard component = (new Element.tag("my-card") as MyCard)
       ..value = value
       ..clickHandler = clickHandler;

@@ -53,19 +53,19 @@ void showGame() {
   querySelector("#game").classes.toggle("hidden", false);
   querySelector("#myCards")
     ..innerHtml = "<div class=\"cardContainer\"><div class=\"card cardSpacer\"></div></div>"
-    ..append(new MyCard.create("0", selectCard))
-    ..append(new MyCard.create("½", selectCard))
-    ..append(new MyCard.create("1", selectCard))
-    ..append(new MyCard.create("2", selectCard))
-    ..append(new MyCard.create("3", selectCard))
-    ..append(new MyCard.create("5", selectCard))
-    ..append(new MyCard.create("8", selectCard))
-    ..append(new MyCard.create("13", selectCard))
-    ..append(new MyCard.create("20", selectCard))
-    ..append(new MyCard.create("40", selectCard))
-    ..append(new MyCard.create("∞", selectCard))
-    ..append(new MyCard.create("?", selectCard))
-    ..append(new MyCard.create("Pause", selectCard))
+    ..append(new MyCard("0", selectCard))
+    ..append(new MyCard("½", selectCard))
+    ..append(new MyCard("1", selectCard))
+    ..append(new MyCard("2", selectCard))
+    ..append(new MyCard("3", selectCard))
+    ..append(new MyCard("5", selectCard))
+    ..append(new MyCard("8", selectCard))
+    ..append(new MyCard("13", selectCard))
+    ..append(new MyCard("20", selectCard))
+    ..append(new MyCard("40", selectCard))
+    ..append(new MyCard("∞", selectCard))
+    ..append(new MyCard("?", selectCard))
+    ..append(new MyCard("Pause", selectCard))
   ;
 
   querySelector("#revealOthersCards").onClick.listen(revealOthersCards);
