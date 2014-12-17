@@ -64,3 +64,17 @@ header {
 #actions {
     text-align: center;
 }
+
+.cardSpacer {
+    height: 76px;
+    width: 0;
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+.cardContainer {
+    vertical-align: bottom;
+    display: inline-block;
+}
