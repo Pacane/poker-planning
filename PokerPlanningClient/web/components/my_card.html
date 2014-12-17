@@ -2,7 +2,60 @@
 <polymer-element name="my-card">
     <template>
         <style>
-            @import "../pokerplanning.css";
+            @import "../core.css";
+
+            .cardContainer {
+                vertical-align: bottom;
+
+                display: inline-block;
+            }
+
+            .card {
+                font-size: 2em;
+                line-height: 65px;
+                text-align: center;
+
+                min-width: 50px;
+                height: 65px;
+                margin: 0 5px;
+                padding-left: 3px;
+                padding-right: 3px;
+                border: solid black 1px;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+                -webkit-box-sizing: content-box;
+                -moz-box-sizing: content-box;
+                box-sizing: content-box;
+
+                border-bottom: 0;
+                border-radius: 5px 5px 0 0;
+
+                -webkit-transition: all .1s;
+                transition: all .1s;
+            }
+
+            .card:hover {
+                padding-bottom: 10px;
+                background-color: #3f3f3f;
+                color: #fff;
+
+                cursor: pointer;
+            }
+
+            .selected {
+                background-color: #3f3f3f;
+                color: #fff;
+            }
+
+            .cardSpacer {
+                height: 76px;
+                width: 0;
+                min-width: 0;
+                padding: 0;
+                margin: 0;
+                border: 0;
+            }
         </style>
         <template bind>
             <div class="cardContainer">
