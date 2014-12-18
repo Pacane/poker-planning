@@ -52,7 +52,7 @@ void showLoginSuccessful() {
 void showGame() {
   querySelector("#game").classes.toggle("hidden", false);
   querySelector("#myCards")
-    ..innerHtml = "<div class=\"cardContainer\"><div class=\"card cardSpacer\"></div></div>"
+    ..innerHtml = "<div class=\"cardsContainer\"><div class=\"card cardSpacer\"></div></div>"
     ..append(new MyCard("0", selectCard))
     ..append(new MyCard("½", selectCard))
     ..append(new MyCard("1", selectCard))

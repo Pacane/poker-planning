@@ -2,7 +2,7 @@
 <polymer-element name="table-card">
     <template>
         <style>
-            @import "../pokerplanning.css";
+            @import "../core.css";
 
             h3 {
                 background-color: #3f3f3f;
@@ -13,7 +13,7 @@
                 margin-top: 0;
             }
 
-            .cardContainer {
+            .cardsContainer {
                 vertical-align: bottom;
 
                 display: inline-block;
@@ -55,7 +55,7 @@
             }
         </style>
         <template bind>
-            <div class="cardContainer">
+            <div class="cardsContainer">
                 <div id="card">
                     {{valueToDisplay}}
                 </div>
