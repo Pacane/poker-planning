@@ -3,9 +3,16 @@ description: PokerPlanning app frontend
 dependencies:
   browser: any
   dart_config: any
-  polymer: ">=0.15.1 <0.16.0"
+  polymer: 0.15.3
+  angular: '>=1.0.0 <2.0.0'
+dependency_overrides:
+  args: '0.12.2'
+  code_transformers: '0.2.3'
+  html5lib: '0.12.0'
+  observe: '0.12.2'
 dev_dependencies:
   unittest: any
 transformers:
+- angular
 - polymer:
     entry_points: web/index.html

@@ -8,6 +8,9 @@ import 'components/table_card.dart';
 import 'package:dart_config/default_browser.dart';
 import 'package:polymer/polymer.dart';
 
+import 'package:angular/application_factory.dart';
+import 'package:di/annotations.dart';
+
 Map<String, String> players = {
 };
 Storage localStorage = window.localStorage;
@@ -23,6 +26,9 @@ void set myName(String newName) {
 
 void main() {
   initPolymer();
+
+  applicationFactory()
+  .run();
 
   loadConfig()
   .then((Map config) {
