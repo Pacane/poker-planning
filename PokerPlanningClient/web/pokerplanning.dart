@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'components/my_card.dart';
 import 'components/table_card.dart';
 
-import 'package:dart_config/default_browser.dart';
+import 'package:dart_config/default_browser.dart' as Config;
 import 'package:polymer/polymer.dart';
 
 import 'package:angular/application_factory.dart';
@@ -24,24 +24,24 @@ void set myName(String newName) {
   localStorage['username'] = newName;
 }
 
+void loadConfig() {
+  try {
+    Config.loadConfig().then((Map config) {
+      hostname = config["hostname"];
+      port = config["port"];
+      if (hostname == null) throw("hostname wasn't set in config.yaml");
+      if (port == null) throw("port wasn't set in config.yaml");
+      initWebSocket();
+    });
+  } catch (e) {
+    showError(e);
+  }
+}
+
 void main() {
+  loadConfig();
   initPolymer();
-
-  applicationFactory()
-  .run();
-
-  loadConfig()
-  .then((Map config) {
-    hostname = config["hostname"];
-    port = config["port"];
-  }).catchError((error) => print(error))
-  .then((_) {
-    if (hostname == null) throw("hostname wasn't set in config.yaml");
-  }).catchError(showError)
-  .then((_) {
-    if (port == null) throw("port wasn't set in config.yaml");
-  }).catchError(showError)
-  .then((_) => initWebSocket()).catchError(showError);
+  applicationFactory().run();
 }
 
 void showError(error) => querySelector("#error").appendHtml("$error.toString() <br>");
