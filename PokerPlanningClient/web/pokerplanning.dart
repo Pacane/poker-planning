@@ -2,57 +2,57 @@ library poker_planning;
 
 import 'dart:html';
 import 'dart:convert';
+import 'dart:async';
+
 import 'components/my_card.dart';
 import 'components/table_card.dart';
+import 'components/login_component.dart';
+import 'lib/socket_communication.dart';
+import 'lib/current_user.dart';
 
 import 'package:dart_config/default_browser.dart' as Config;
 import 'package:polymer/polymer.dart';
 
+import 'package:angular/angular.dart';
 import 'package:angular/application_factory.dart';
-import 'package:di/annotations.dart';
 
-Map<String, String> players = {
-};
-Storage localStorage = window.localStorage;
-WebSocket ws;
-var hostname;
-var port;
-
-String get myName => localStorage['username'];
-
-void set myName(String newName) {
-  localStorage['username'] = newName;
-}
-
-void loadConfig() {
-  try {
-    Config.loadConfig().then((Map config) {
-      hostname = config["hostname"];
-      port = config["port"];
-      if (hostname == null) throw("hostname wasn't set in config.yaml");
-      if (port == null) throw("port wasn't set in config.yaml");
-      initWebSocket();
-    });
-  } catch (e) {
-    showError(e);
+class MyAppModule extends Module {
+  MyAppModule() {
+    bind(SocketCommunication, toValue: new SocketCommunication(hostname, port));
+    print("Socket bound with: $hostname $port");
+    bind(LoginComponent);
+    bind(CurrentUser);
   }
 }
 
+Map<String, String> players = {
+};
+
+WebSocket ws;
+var hostname;
+var port;
+SocketCommunication socketCommunication;
+
+
 void main() {
-  loadConfig();
-  initPolymer();
-  applicationFactory().run();
+  Config.loadConfig().then((Map config) {
+    hostname = config["hostname"];
+    port = config["port"];
+    if (hostname == null) throw("hostname wasn't set in config.yaml");
+    if (port == null) throw("port wasn't set in config.yaml");
+  }).then((_) {
+    initPolymer();
+
+    applicationFactory()
+    .addModule(new MyAppModule())
+    .run();
+  });
 }
 
 void showError(error) => querySelector("#error").appendHtml("$error.toString() <br>");
 
 void hideLoginForm() {
   querySelector("#login").remove();
-}
-
-void showLoginSuccessful() {
-  querySelector("#nameSpan").text = myName;
-  querySelector("#loggedIn").classes.toggle("hidden", false);
 }
 
 void showGame() {
@@ -98,29 +98,6 @@ void selectCard(String value) {
   });
 }
 
-void handleLoginClick(MouseEvent e) {
-  InputElement nameInput = querySelector("#nameInput");
-  String newName = nameInput.value;
-
-  if (newName.isEmpty) return;
-
-  myName = newName;
-
-  onUserExists();
-}
-
-onUserExists() {
-  var loginInfo = {
-      'login' : myName
-  };
-
-  sendSocketMsg(loginInfo);
-
-  hideLoginForm();
-  showLoginSuccessful();
-  showGame();
-}
-
 outputMsg(String msg) {
   print(msg);
 }
@@ -128,37 +105,11 @@ outputMsg(String msg) {
 onSocketOpen(event) {
   outputMsg('Connected');
 
-  if (myName == null) {
-    querySelector("#loginButton").onClick.listen(handleLoginClick);
-  } else {
-    onUserExists();
-  }
-}
-
-void initWebSocket([int retrySeconds = 2]) {
-  var reconnectScheduled = false;
-
-  outputMsg("Connecting to websocket");
-  ws = new WebSocket('ws://$hostname:$port/ws');
-
-  ws.onOpen.listen(onSocketOpen);
-
-  ws.onClose.listen((e) {
-    outputMsg('Websocket closed, retrying in $retrySeconds seconds');
-  });
-
-  ws.onError.listen((e) {
-    outputMsg("Error connecting to ws");
-  });
-
-  ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
-}
-
-void logout(String msg) {
-  ws.close();
-  window.alert(msg);
-  localStorage.remove("username");
-  window.location.reload();
+//  if (myName == null) {
+//    querySelector("#loginButton").onClick.listen(handleLoginClick);
+//  } else {
+//    onUserExists();
+//  }
 }
 
 void handleMessage(data) {
@@ -205,13 +156,13 @@ void kickPlayer(String player) {
 }
 
 void handleKick(Map kick) {
-  String kicked = kick["kicked"];
-  String kickedBy = kick["kickedBy"];
-
-  if (kicked == myName) {
-    var msg = "you have been kicked by: $kickedBy";
-    logout(msg);
-  } else {
-    print("$kicked has been kicked by $kickedBy");
-  }
+//  String kicked = kick["kicked"];
+//  String kickedBy = kick["kickedBy"];
+//
+//  if (kicked == myName) {
+//    var msg = "you have been kicked by: $kickedBy";
+//    logout(msg);
+//  } else {
+//    print("$kicked has been kicked by $kickedBy");
+//  }
 }

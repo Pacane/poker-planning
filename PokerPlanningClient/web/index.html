@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,6 +9,7 @@
     <link rel="import" href="packages/polymer/polymer.html">
     <link rel="import" href="components/table_card.html">
     <link rel="import" href="components/my_card.html">
+    <link rel="import" href="components/login_component.html">
 
     <script async type="application/dart" src="pokerplanning.dart"></script>
     <script async src="packages/browser/dart.js"></script>
@@ -35,12 +36,7 @@
 
     <div id="error"></div>
 
-    <div id="login">
-        <p>Please sign in</p>
-
-        <label for="nameInput">Name:<input id="nameInput"></label>
-        <button id="loginButton">Sign in</button>
-    </div>
+    <login-component></login-component>
 
     <div class="hidden" id="game">
 
