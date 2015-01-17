@@ -10,6 +10,8 @@ import 'components/login_component.dart';
 import 'lib/socket_communication.dart';
 import 'lib/current_user.dart';
 
+import 'lib/app_router.dart';
+
 import 'package:dart_config/default_browser.dart' as Config;
 import 'package:polymer/polymer.dart';
 
@@ -19,34 +21,32 @@ import 'package:angular/application_factory.dart';
 class MyAppModule extends Module {
   MyAppModule() {
     bind(SocketCommunication, toValue: new SocketCommunication(hostname, port));
-    print("Socket bound with: $hostname $port");
     bind(LoginComponent);
     bind(CurrentUser);
+    bind(RouteInitializerFn, toValue: routeInitializer);
+    bind(NgRoutingUsePushState, toValue: new NgRoutingUsePushState.value(false));
   }
 }
-
-Map<String, String> players = {
-};
 
 WebSocket ws;
 var hostname;
 var port;
 SocketCommunication socketCommunication;
+Map<String, String> players = {
+};
 
+main() async {
+  Map config = await Config.loadConfig();
+  hostname = config["hostname"];
+  port = config["port"];
+  if (hostname == null) throw("hostname wasn't set in config.yaml");
+  if (port == null) throw("port wasn't set in config.yaml");
 
-void main() {
-  Config.loadConfig().then((Map config) {
-    hostname = config["hostname"];
-    port = config["port"];
-    if (hostname == null) throw("hostname wasn't set in config.yaml");
-    if (port == null) throw("port wasn't set in config.yaml");
-  }).then((_) {
-    initPolymer();
+  applicationFactory()
+  .addModule(new MyAppModule())
+  .run();
 
-    applicationFactory()
-    .addModule(new MyAppModule())
-    .run();
-  });
+  initPolymer();
 }
 
 void showError(error) => querySelector("#error").appendHtml("$error.toString() <br>");
@@ -165,4 +165,8 @@ void handleKick(Map kick) {
 //  } else {
 //    print("$kicked has been kicked by $kickedBy");
 //  }
+}
+
+void handleLoginClick() {
+  print("fu");
 }

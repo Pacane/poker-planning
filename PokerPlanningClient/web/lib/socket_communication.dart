@@ -6,8 +6,8 @@ import 'package:angular/angular.dart';
 
 @Injectable()
 class SocketCommunication {
-  var hostname;
-  var port;
+  String hostname;
+  int port;
   WebSocket ws;
 
   SocketCommunication(this.hostname, this.port) {
