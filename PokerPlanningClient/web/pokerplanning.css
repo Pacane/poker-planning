@@ -1,5 +1,5 @@
 /* -> PokerPlanning Layout ---- */
-@import "core.css";
+@import "packages/poker_planning_client/components/core.css";
 
 html {
     font-size: 62.5%;

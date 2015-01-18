@@ -1,4 +1,4 @@
-@import "reset.min.css";
+@import url("reset.min.css");
 
 * {
     -webkit-box-sizing: border-box;

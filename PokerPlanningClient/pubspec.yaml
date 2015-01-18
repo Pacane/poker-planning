@@ -3,19 +3,12 @@ description: PokerPlanning app frontend
 dependencies:
   browser: any
   dart_config: any
-  polymer: 0.15.3
   angular: '>=1.0.0 <2.0.0'
+  angular_node_bind: any
   async_await:
     git: git@github.com:dart-lang/async_await.git
-dependency_overrides:
-  args: '0.12.2'
-  code_transformers: '0.2.3'
-  html5lib: '0.12.0'
-  observe: '0.12.2'
 dev_dependencies:
   unittest: any
 transformers:
 - async_await
 - angular
-- polymer:
-    entry_points: web/index.html

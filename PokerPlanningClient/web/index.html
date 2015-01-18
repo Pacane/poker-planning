@@ -6,10 +6,6 @@
 
     <title>Poker Planning</title>
 
-    <link rel="import" href="packages/polymer/polymer.html">
-    <link rel="import" href="components/table_card.html">
-    <link rel="import" href="components/my_card.html">
-
     <script async type="application/dart" src="pokerplanning.dart"></script>
     <script async src="packages/browser/dart.js"></script>
 
@@ -36,6 +32,7 @@
     <div id="error"></div>
 
     <login-component></login-component>
+    <ng-view></ng-view>
 
     <div class="hidden" id="game">
 

@@ -4,16 +4,16 @@ import 'dart:html';
 import 'dart:convert';
 import 'dart:async';
 
-import 'components/my_card.dart';
-import 'components/table_card.dart';
-import 'components/login_component.dart';
-import 'lib/socket_communication.dart';
-import 'lib/current_user.dart';
-
-import 'lib/app_router.dart';
+import 'package:poker_planning_client/components/my_card.dart';
+import 'package:poker_planning_client/components/table_card.dart';
+import 'package:poker_planning_client/components/login_component.dart';
+import 'package:poker_planning_client/socket_communication.dart';
+import 'package:poker_planning_client/current_user.dart';
+import 'package:poker_planning_client/app_router.dart';
 
 import 'package:dart_config/default_browser.dart' as Config;
-import 'package:polymer/polymer.dart';
+
+import 'package:angular_node_bind/angular_node_bind.dart';
 
 import 'package:angular/angular.dart';
 import 'package:angular/application_factory.dart';
@@ -22,6 +22,8 @@ class MyAppModule extends Module {
   MyAppModule() {
     bind(SocketCommunication, toValue: new SocketCommunication(hostname, port));
     bind(LoginComponent);
+    bind(MyCard);
+    bind(TableCard);
     bind(CurrentUser);
     bind(RouteInitializerFn, toValue: routeInitializer);
     bind(NgRoutingUsePushState, toValue: new NgRoutingUsePushState.value(false));
@@ -44,9 +46,8 @@ main() async {
 
   applicationFactory()
   .addModule(new MyAppModule())
+  .addModule(new NodeBindModule())
   .run();
-
-  initPolymer();
 }
 
 void showError(error) => querySelector("#error").appendHtml("$error.toString() <br>");
@@ -57,22 +58,22 @@ void hideLoginForm() {
 
 void showGame() {
   querySelector("#game").classes.toggle("hidden", false);
-  querySelector("#myCards")
-    ..innerHtml = "<div class=\"cardsContainer\"><div class=\"card cardSpacer\"></div></div>"
-    ..append(new MyCard("0", selectCard))
-    ..append(new MyCard("½", selectCard))
-    ..append(new MyCard("1", selectCard))
-    ..append(new MyCard("2", selectCard))
-    ..append(new MyCard("3", selectCard))
-    ..append(new MyCard("5", selectCard))
-    ..append(new MyCard("8", selectCard))
-    ..append(new MyCard("13", selectCard))
-    ..append(new MyCard("20", selectCard))
-    ..append(new MyCard("40", selectCard))
-    ..append(new MyCard("∞", selectCard))
-    ..append(new MyCard("?", selectCard))
-    ..append(new MyCard("Pause", selectCard))
-  ;
+//  querySelector("#myCards")
+//    ..innerHtml = "<div class=\"cardsContainer\"><div class=\"card cardSpacer\"></div></div>"
+//    ..append(new MyCard("0", selectCard))
+//    ..append(new MyCard("½", selectCard))
+//    ..append(new MyCard("1", selectCard))
+//    ..append(new MyCard("2", selectCard))
+//    ..append(new MyCard("3", selectCard))
+//    ..append(new MyCard("5", selectCard))
+//    ..append(new MyCard("8", selectCard))
+//    ..append(new MyCard("13", selectCard))
+//    ..append(new MyCard("20", selectCard))
+//    ..append(new MyCard("40", selectCard))
+//    ..append(new MyCard("∞", selectCard))
+//    ..append(new MyCard("?", selectCard))
+//    ..append(new MyCard("Pause", selectCard))
+//  ;
 
   querySelector("#revealOthersCards").onClick.listen(revealOthersCards);
   querySelector("#reset").onClick.listen(initReset);
@@ -90,12 +91,6 @@ void initReset(_) {
 
 void gameHasReset() {
   MyCard.clearSelectedCards();
-}
-
-void selectCard(String value) {
-  sendSocketMsg({
-      "cardSelection": [myName, value]
-  });
 }
 
 outputMsg(String msg) {
@@ -165,8 +160,4 @@ void handleKick(Map kick) {
 //  } else {
 //    print("$kicked has been kicked by $kickedBy");
 //  }
-}
-
-void handleLoginClick() {
-  print("fu");
 }
