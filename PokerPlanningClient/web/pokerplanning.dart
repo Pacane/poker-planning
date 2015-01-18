@@ -7,6 +7,8 @@ import 'dart:async';
 import 'package:poker_planning_client/components/my_card.dart';
 import 'package:poker_planning_client/components/table_card.dart';
 import 'package:poker_planning_client/components/login_component.dart';
+import 'package:poker_planning_client/components/game_component.dart';
+
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/app_router.dart';
@@ -24,6 +26,7 @@ class MyAppModule extends Module {
     bind(LoginComponent);
     bind(MyCard);
     bind(TableCard);
+    bind(GameComponent);
     bind(CurrentUser);
     bind(RouteInitializerFn, toValue: routeInitializer);
     bind(NgRoutingUsePushState, toValue: new NgRoutingUsePushState.value(false));
@@ -57,24 +60,7 @@ void hideLoginForm() {
 }
 
 void showGame() {
-  querySelector("#game").classes.toggle("hidden", false);
-//  querySelector("#myCards")
-//    ..innerHtml = "<div class=\"cardsContainer\"><div class=\"card cardSpacer\"></div></div>"
-//    ..append(new MyCard("0", selectCard))
-//    ..append(new MyCard("½", selectCard))
-//    ..append(new MyCard("1", selectCard))
-//    ..append(new MyCard("2", selectCard))
-//    ..append(new MyCard("3", selectCard))
-//    ..append(new MyCard("5", selectCard))
-//    ..append(new MyCard("8", selectCard))
-//    ..append(new MyCard("13", selectCard))
-//    ..append(new MyCard("20", selectCard))
-//    ..append(new MyCard("40", selectCard))
-//    ..append(new MyCard("∞", selectCard))
-//    ..append(new MyCard("?", selectCard))
-//    ..append(new MyCard("Pause", selectCard))
-//  ;
-
+// TODO
   querySelector("#revealOthersCards").onClick.listen(revealOthersCards);
   querySelector("#reset").onClick.listen(initReset);
 }
@@ -95,16 +81,6 @@ void gameHasReset() {
 
 outputMsg(String msg) {
   print(msg);
-}
-
-onSocketOpen(event) {
-  outputMsg('Connected');
-
-//  if (myName == null) {
-//    querySelector("#loginButton").onClick.listen(handleLoginClick);
-//  } else {
-//    onUserExists();
-//  }
 }
 
 void handleMessage(data) {

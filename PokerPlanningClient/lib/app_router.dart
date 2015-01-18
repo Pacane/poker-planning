@@ -7,7 +7,12 @@ void routeInitializer(Router router, RouteViewFactory views) {
       'game': ngRoute(
           path: '/game',
           view: 'view/game.html'),
+      'login': ngRoute(
+          path: '/login',
+          view: 'view/login.html'),
       'root': ngRoute(
-          path: '/'),
+          path: '/',
+          view: 'view/login.html',
+          defaultRoute: true),
   });
 }

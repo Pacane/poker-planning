@@ -36,10 +36,8 @@ class MyCard implements ShadowRootAware, ScopeAware {
     });
     setSelected(true);
 
-    _scope.parentScope.broadcast("cardSelected", [value]);
+    _scope.parentScope.broadcast("cardSelected", value);
   }
-
-  static void clearSelectedCards() => querySelectorAll("my-card").forEach((MyCard c) => c.setSelected(false));
 
   void set scope(Scope scope) {
     _scope = scope;

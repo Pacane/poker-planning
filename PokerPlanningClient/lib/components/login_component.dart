@@ -11,21 +11,18 @@ import 'package:poker_planning_client/socket_communication.dart';
     selector: 'login-component',
     cssUrl: 'packages/poker_planning_client/components/core.css',
     templateUrl: 'packages/poker_planning_client/components/login_component.html')
-class LoginComponent implements ScopeAware, ShadowRootAware {
+class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
   ShadowRoot shadowRoot;
   CurrentUser _session;
   SocketCommunication _socketCommunication;
   Scope _scope;
   Router _router;
 
-  LoginComponent(this._session, this._socketCommunication, this._router) {
-    print(_router);
-  }
+  LoginComponent(this._session, this._socketCommunication, this._router);
 
   void showLoginSuccessful() {
-    // TODO: Raise event and handle it in another component
     querySelector("#nameSpan").text = _session.userName;
-    querySelector("#loggedIn").classes.toggle("hidden", false);
+    querySelector("#loggedIn").classes.remove("hidden");
   }
 
   void handleLoginClick() {
@@ -46,7 +43,6 @@ class LoginComponent implements ScopeAware, ShadowRootAware {
 
     _socketCommunication.sendSocketMsg(loginInfo);
 
-    hideLoginForm();
     showLoginSuccessful();
 
     _router.go("game", {});
@@ -59,15 +55,17 @@ class LoginComponent implements ScopeAware, ShadowRootAware {
     window.location.reload();
   }
 
-  void hideLoginForm() {
-    shadowRoot.querySelector("#login").remove();
-  }
-
   void set scope(Scope scope) {
    _scope = scope;
   }
 
   void onShadowRoot(ShadowRoot shadowRoot) {
     this.shadowRoot = shadowRoot;
+  }
+
+  void attach() {
+    if (_session.userName != null) {
+      onUserExists();
+    }
   }
 }
