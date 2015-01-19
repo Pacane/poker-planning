@@ -1,7 +1,6 @@
 library poker_planning;
 
 import 'dart:html';
-import 'dart:convert';
 import 'dart:async';
 
 import 'package:poker_planning_client/components/my_card.dart';
@@ -20,8 +19,8 @@ import 'package:angular_node_bind/angular_node_bind.dart';
 import 'package:angular/angular.dart';
 import 'package:angular/application_factory.dart';
 
-class MyAppModule extends Module {
-  MyAppModule() {
+class PokerPlanningModule extends Module {
+  PokerPlanningModule() {
     SocketCommunication socket = new SocketCommunication(hostname, port);
     socket.initWebSocket();
 
@@ -51,7 +50,7 @@ main() async {
   if (port == null) throw("port wasn't set in config.yaml");
 
   applicationFactory()
-  .addModule(new MyAppModule())
+  .addModule(new PokerPlanningModule())
   .addModule(new NodeBindModule())
   .run();
 }
