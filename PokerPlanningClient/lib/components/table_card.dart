@@ -8,54 +8,34 @@ import 'package:angular/angular.dart';
     selector: 'table-card',
     cssUrl: 'packages/poker_planning_client/components/table_card.css',
     templateUrl: 'packages/poker_planning_client/components/table_card.html')
-class TableCard implements AttachAware, ShadowRootAware {
+class TableCard implements ShadowRootAware {
   @NgTwoWay("playerName")
   String playerName;
   @NgTwoWay("valueToDisplay")
   String valueToDisplay;
-
+  @NgTwoWay("revealed")
   bool revealed;
-  ShadowRoot shadowRoot;
+  ShadowRoot _shadowRoot;
 
   String _value;
   var _kickHandler;
   ButtonElement _kickButton;
   DivElement _cardDiv;
 
-  void set value(String newValue) {
-    _value = newValue;
-    valueToDisplay = revealed ? _value : "...";
-  }
-
-  String get value => _value;
-
-//  factory TableCard.create(String playerName, String value, bool revealed, kickHandler) {
-//    TableCard component = (new Element.tag("table-card") as TableCard)
-//      ..playerName = playerName
-//      ..revealed = revealed
-//      ..value = value
-//      .._kickHandler = kickHandler;
-//
-//    return component;
-//  }
-
   void onShadowRoot(ShadowRoot shadowRoot) {
-    this.shadowRoot = shadowRoot;
+    _shadowRoot = shadowRoot;
+    _cardDiv = _shadowRoot.querySelector("#card");
+
+    print("vtd: $valueToDisplay revealed:$revealed");
+
+    if (valueToDisplay == 'Y' && !revealed) {
+      valueToDisplay = "...";
+      setSelected(true);
+    } else if (valueToDisplay == "" && !revealed) {
+      valueToDisplay = "...";
+      setSelected(false);
+    }
   }
 
-  void attach() {
-    _cardDiv = shadowRoot.querySelector("#card");
-    setSelected();
-
-    _kickButton = shadowRoot.querySelector("#kickPlayer")
-      ..onClick.listen((e) => _kickHandler(playerName));
-  }
-
-  void setSelected() {
-    _cardDiv.classes.toggle("selected", revealed ? false : value != "");
-  }
-
-  void selectCard(Event e) {
-    _cardDiv.classes.toggle("selected");
-  }
+  bool setSelected(bool selected) =>  _cardDiv.classes.toggle("selected", selected);
 }

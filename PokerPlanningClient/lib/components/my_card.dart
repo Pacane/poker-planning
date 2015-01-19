@@ -42,6 +42,7 @@ class MyCard implements ShadowRootAware, ScopeAware {
   void set scope(Scope scope) {
     _scope = scope;
     _scope.on("cardSelected").listen(cardSelected);
+    _scope.on("game-has-reset").listen(deselectCard);
   }
 
   void cardSelected(ScopeEvent e) {
@@ -50,4 +51,7 @@ class MyCard implements ShadowRootAware, ScopeAware {
     }
   }
 
+  void deselectCard(_) {
+   setSelected(false);
+  }
 }

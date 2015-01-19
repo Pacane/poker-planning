@@ -6,7 +6,8 @@ import 'package:dart_config/default_server.dart';
 Map<String, String> game = {
 };
 var allConnections = [];
-Map<WebSocket, String> loggedInUsers = {};
+Map<WebSocket, String> loggedInUsers = {
+};
 var hostname;
 var port;
 
@@ -18,16 +19,19 @@ void printGame() {
 void resetGame() {
   game.forEach((player, _) => game[player] = "");
   print("sending reset signal");
-  broadcastData(JSON.encode({"gameHasReset": ""}));
+  broadcastData(JSON.encode({
+      "gameHasReset": ""
+  }));
 }
 
 void kick(String kicked, String kickedBy) {
   broadcastData(JSON.encode(
-      {"kick" :
-        {
-            "kicked" : kicked,
-            "kickedBy" : kickedBy
-        }
+      {
+          "kick" :
+          {
+              "kicked" : kicked,
+              "kickedBy" : kickedBy
+          }
       }));
 }
 
@@ -66,21 +70,22 @@ void handleMessage(socket, message) {
 }
 
 void broadcastGame(bool reveal) {
-  var encodedGame = {};
+  var encodedGame = {
+  };
   if (reveal) {
     encodedGame = {
-      "revealedGame" : game
+        "revealedGame" : game
     };
   } else {
     var newGame = new Map.from(game);
     newGame.forEach((player, card) {
       if (card != "") {
-         newGame[player] = "Y";
+        newGame[player] = "Y";
       }
     });
 
     encodedGame = {
-      "game" : newGame
+        "game" : newGame
     };
   }
 
@@ -119,8 +124,12 @@ void main() {
     hostname = config["hostname"];
     port = config["port"];
   }).catchError((error) => print(error))
-  .then((_) {if (hostname == null) throw("hostname wasn't set in config.yaml");}).catchError(showError)
-  .then((_) {if (port == null) throw("port wasn't set in config.yaml");}).catchError(showError)
+  .then((_) {
+    if (hostname == null) throw("hostname wasn't set in config.yaml");
+  }).catchError(showError)
+  .then((_) {
+    if (port == null) throw("port wasn't set in config.yaml");
+  }).catchError(showError)
   .then((_) => startSocket());
 }
 
