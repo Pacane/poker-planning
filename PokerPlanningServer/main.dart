@@ -45,6 +45,7 @@ void handleMessage(socket, message) {
   var reveal = json["revealAll"];
   var reset = json["resetRequest"];
   var kicked = json["kicked"];
+  var disconnect = json["disconnect"];
 
   if (login != null) {
     print("Adding $login to the logged in users");
@@ -64,6 +65,8 @@ void handleMessage(socket, message) {
     broadcastGame(false);
   } else if (kicked != null) {
     kick(kicked, loggedInUsers[socket]);
+  } else if (disconnect != null) {
+    handleClose(socket);
   }
 
   printGame();

@@ -15,6 +15,8 @@ class TableCard implements ShadowRootAware, ScopeAware {
   String valueToDisplay;
   @NgTwoWay("revealed")
   bool revealed;
+  @NgOneWay("value")
+  String value;
   ShadowRoot _shadowRoot;
   Scope _scope;
 
@@ -23,20 +25,28 @@ class TableCard implements ShadowRootAware, ScopeAware {
   ButtonElement _kickButton;
   DivElement _cardDiv;
 
+  void applyStyles() {
+    if (value == "Y") {
+      setSelected(true);
+      valueToDisplay = "...";
+    } else if (revealed) {
+      valueToDisplay = value;
+      setSelected(false);
+    } else if (value == "") {
+      valueToDisplay = "...";
+    }
+  }
+
   void onShadowRoot(ShadowRoot shadowRoot) {
     _shadowRoot = shadowRoot;
     _cardDiv = _shadowRoot.querySelector("#card");
 
-    if (valueToDisplay == 'Y' && !revealed) {
-      valueToDisplay = "...";
-      setSelected(true);
-    } else if (valueToDisplay == "" && !revealed) {
-      valueToDisplay = "...";
-      setSelected(false);
-    }
+    applyStyles();
   }
 
-  bool setSelected(bool selected) =>  _cardDiv.classes.toggle("selected", selected);
+  void setSelected(bool selected) {
+    _cardDiv.classes.toggle("selected", selected);
+  }
 
   void kickPlayer() {
     _scope.emit("kick-player", playerName);
@@ -44,6 +54,20 @@ class TableCard implements ShadowRootAware, ScopeAware {
 
   void set scope(Scope scope) {
     this._scope = scope;
+    scope.on("card-update").listen(updateCard);
+    scope.on("game-has-reset").listen(resetCard);
   }
 
+  void resetCard(_) {
+    setSelected(false);
+    value = "";
+    valueToDisplay = "...";
+  }
+
+  void updateCard(ScopeEvent event) {
+    Map game = event.data[0];
+    value = game[playerName];
+    revealed = event.data[1];
+    applyStyles();
+  }
 }

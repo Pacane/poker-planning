@@ -1,3 +1,5 @@
+@import url('packages/poker_planning_client/components/core.css');
+
 .cardSpacer {
     height: 76px;
     width: 0;

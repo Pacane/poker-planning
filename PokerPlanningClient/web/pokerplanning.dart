@@ -22,7 +22,10 @@ import 'package:angular/application_factory.dart';
 
 class MyAppModule extends Module {
   MyAppModule() {
-    bind(SocketCommunication, toValue: new SocketCommunication(hostname, port));
+    SocketCommunication socket = new SocketCommunication(hostname, port);
+    socket.initWebSocket();
+
+    bind(SocketCommunication, toValue: socket);
     bind(LoginComponent);
     bind(MyCard);
     bind(TableCard);

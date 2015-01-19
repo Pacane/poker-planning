@@ -1,10 +1,15 @@
 <div id="game">
     <h2>Others cards</h2>
+
     <div id="othersCards">
-        <table-card ng-repeat="player in players | arrayify" playerName="player.key" valueToDisplay="player.value" revealed="gameRevealed">
+        <table-card ng-repeat="tuple in players"
+                    playerName="tuple.first"
+                    value="tuple.second"
+                    revealed="gameRevealed">
         </table-card>
     </div>
     <h2>My cards</h2>
+
     <div id="myCards">
         <div class="cardsContainer">
             <div class="card cardSpacer"></div>
@@ -25,8 +30,8 @@
     </div>
 
     <div id="actions">
-        <button id="revealOthersCards">Reveal others' cards</button>
-        <button id="reset">Reset</button>
+        <button id="revealOthersCards" ng-click="revealOthersCards()">Reveal others' cards</button>
+        <button id="reset" ng-click="initReset()">Reset</button>
     </div>
 </div>
 

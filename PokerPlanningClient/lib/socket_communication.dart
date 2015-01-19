@@ -10,9 +10,7 @@ class SocketCommunication {
   int port;
   WebSocket ws;
 
-  SocketCommunication(this.hostname, this.port) {
-    initWebSocket();
-  }
+  SocketCommunication(this.hostname, this.port);
 
   void initWebSocket([retrySeconds = 2]) {
     print("Connecting to websocket");

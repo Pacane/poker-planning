@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:angular/angular.dart';
 
+import 'package:poker_planning_client/tuple.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 
@@ -12,41 +13,35 @@ import 'package:poker_planning_client/socket_communication.dart';
     selector: 'game-component',
     cssUrl: 'packages/poker_planning_client/components/game_component.css',
     templateUrl: 'packages/poker_planning_client/components/game_component.html')
-class GameComponent implements ScopeAware {
+class GameComponent implements ScopeAware, DetachAware {
   CurrentUser currentUser;
   Router router;
   SocketCommunication socketCommunication;
   Scope _scope;
 
-  @NgTwoWay("players")
-  Map<String, String> players = {
-  };
+  @NgOneWay("players")
+  List<Tuple<String, String>> players = [];
 
-  @NgTwoWay("gameRevealed")
+  @NgOneWay("gameRevealed")
   bool gameRevealed;
 
   GameComponent(this.currentUser, this.router, this.socketCommunication) {
     socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
   }
 
-  void revealOthersCards(_) => socketCommunication.sendSocketMsg({
+  void revealOthersCards() => socketCommunication.sendSocketMsg({
       "revealAll": ""
   });
 
-  void initReset(_) {
+  void initReset() {
     socketCommunication.sendSocketMsg({
         "resetRequest": ""
     });
   }
 
   void gameHasReset() {
-    _scope.broadcast("game-has-reset", {
-    });
-  }
-
-  void showGame() {
-    querySelector("#revealOthersCards").onClick.listen(revealOthersCards);
-    querySelector("#reset").onClick.listen(initReset);
+    players.forEach((t) => t.second = "");
+    _scope.broadcast("game-has-reset", {});
   }
 
   void handleMessage(data) {
@@ -69,16 +64,34 @@ class GameComponent implements ScopeAware {
     }
   }
 
+  void updateCard(String player, String card) {
+    if (!players.any((x) => x.first == player)) {
+      players.add(new Tuple(player, card));
+    } else {
+      players.forEach((t) {
+        if (t.first == player) {
+          t.second = card;
+          return;
+        }
+      });
+    }
+  }
+
   void displayCards(Map game, bool revealed) {
     print("display cards with revealed : $revealed");
-    var othersCardDiv = querySelector("#othersCards")
-      ..innerHtml = "";
-
-    players.clear();
     gameRevealed = revealed;
+
+    removePlayersWhoLeft(game);
+
     game.forEach((String player, String card) {
-      players[player] = card;
+      updateCard(player, card);
     });
+
+    _scope.broadcast("card-update", [game, revealed]);
+  }
+
+  void removePlayersWhoLeft(Map game) {
+    players.removeWhere((t) => !game.containsKey(t.first));
   }
 
   void kickPlayer(String player) {
@@ -108,5 +121,9 @@ class GameComponent implements ScopeAware {
   void checkLogin() {
     print("check login");
     _scope.rootScope.broadcast("check-login", []);
+  }
+
+  void detach() {
+    socketCommunication.sendSocketMsg({"disconnect":currentUser.userName});
   }
 }
