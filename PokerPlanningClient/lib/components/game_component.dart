@@ -88,19 +88,20 @@ class GameComponent implements ScopeAware {
   }
 
   void handleKick(Map kick) {
-//  String kicked = kick["kicked"];
-//  String kickedBy = kick["kickedBy"];
-//
-//  if (kicked == myName) {
-//    var msg = "you have been kicked by: $kickedBy";
-//    logout(msg);
-//  } else {
-//    print("$kicked has been kicked by $kickedBy");
-//  }
+    String kicked = kick["kicked"];
+    String kickedBy = kick["kickedBy"];
+
+    if (kicked == currentUser.userName) {
+      var msg = "you have been kicked by: $kickedBy";
+      _scope.rootScope.broadcast("kicked", msg);
+    } else {
+      print("$kicked has been kicked by $kickedBy");
+    }
   }
 
   void set scope(Scope scope) {
     this._scope = scope;
+    scope.on("kick-player").listen((event) => kickPlayer(event.data));
     checkLogin();
   }
 

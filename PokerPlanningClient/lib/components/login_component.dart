@@ -29,13 +29,6 @@ class LoginComponent implements ScopeAware, ShadowRootAware {
     _session.onUserExists();
   }
 
-  void logout(String msg) {
-    _socketCommunication.close();
-    window.alert(msg);
-    _session.logOffCurrentUser();
-    window.location.reload();
-  }
-
   void set scope(Scope scope) {
     _scope = scope;
     _scope.rootScope.broadcast("check-login", []);

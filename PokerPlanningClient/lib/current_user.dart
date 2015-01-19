@@ -12,15 +12,14 @@ class CurrentUser {
   Scope scope;
 
   CurrentUser(this.router, this.socketCommunication, this.scope) {
-    print("set scope");
     scope.on("check-login").listen((_) {
-      print("checking login");
       if(userName == null) {
         router.go("login", {});
       } else {
         onUserExists();
       }
     });
+    scope.on("kicked").listen((event) => logout(event.data));
   }
 
   String get userName => localStorage['username'];
@@ -47,5 +46,11 @@ class CurrentUser {
     showLoginSuccessful();
 
     router.go("game", {});
+  }
+
+  void logout(String msg) {
+    window.alert(msg);
+    logOffCurrentUser();
+    router.go("root", {});
   }
 }

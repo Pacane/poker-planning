@@ -8,7 +8,7 @@ import 'package:angular/angular.dart';
     selector: 'table-card',
     cssUrl: 'packages/poker_planning_client/components/table_card.css',
     templateUrl: 'packages/poker_planning_client/components/table_card.html')
-class TableCard implements ShadowRootAware {
+class TableCard implements ShadowRootAware, ScopeAware {
   @NgTwoWay("playerName")
   String playerName;
   @NgTwoWay("valueToDisplay")
@@ -16,6 +16,7 @@ class TableCard implements ShadowRootAware {
   @NgTwoWay("revealed")
   bool revealed;
   ShadowRoot _shadowRoot;
+  Scope _scope;
 
   String _value;
   var _kickHandler;
@@ -25,8 +26,6 @@ class TableCard implements ShadowRootAware {
   void onShadowRoot(ShadowRoot shadowRoot) {
     _shadowRoot = shadowRoot;
     _cardDiv = _shadowRoot.querySelector("#card");
-
-    print("vtd: $valueToDisplay revealed:$revealed");
 
     if (valueToDisplay == 'Y' && !revealed) {
       valueToDisplay = "...";
@@ -38,4 +37,13 @@ class TableCard implements ShadowRootAware {
   }
 
   bool setSelected(bool selected) =>  _cardDiv.classes.toggle("selected", selected);
+
+  void kickPlayer() {
+    _scope.emit("kick-player", playerName);
+  }
+
+  void set scope(Scope scope) {
+    this._scope = scope;
+  }
+
 }
