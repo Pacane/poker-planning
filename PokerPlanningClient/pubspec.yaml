@@ -6,7 +6,7 @@ dependencies:
   angular: '>=1.0.0 <2.0.0'
   angular_node_bind: any
   async_await:
-    git: git@github.com:dart-lang/async_await.git
+    git: https://github.com/dart-lang/async_await.git
 dev_dependencies:
   unittest: any
 transformers:
