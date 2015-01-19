@@ -29,6 +29,8 @@ class CurrentUser {
 
   void logOffCurrentUser() {
     localStorage.remove('username');
+    querySelector("#nameSpan").text = userName;
+    querySelector("#loggedIn").classes.add("hidden");
   }
 
   void showLoginSuccessful() {
@@ -51,6 +53,7 @@ class CurrentUser {
   void logout(String msg) {
     window.alert(msg);
     logOffCurrentUser();
+    socketCommunication.close();
     router.go("root", {});
   }
 }

@@ -17,7 +17,9 @@ class LoginComponent implements ScopeAware, ShadowRootAware {
   SocketCommunication _socketCommunication;
   Scope _scope;
 
-  LoginComponent(this._session, this._socketCommunication);
+  LoginComponent(this._session, this._socketCommunication) {
+    _socketCommunication.initWebSocket();
+  }
 
   void handleLoginClick() {
     InputElement nameInput = shadowRoot.querySelector("#nameInput");
