@@ -20,7 +20,7 @@ import 'package:angular/angular.dart';
 import 'package:angular/application_factory.dart';
 
 class PokerPlanningModule extends Module {
-  PokerPlanningModule() {
+  PokerPlanningModule(String hostname, int port) {
     SocketCommunication socket = new SocketCommunication(hostname, port);
     socket.initWebSocket();
 
@@ -35,22 +35,15 @@ class PokerPlanningModule extends Module {
   }
 }
 
-WebSocket ws;
-var hostname;
-var port;
-SocketCommunication socketCommunication;
-Map<String, String> players = {
-};
-
 main() async {
   Map config = await Config.loadConfig();
-  hostname = config["hostname"];
-  port = config["port"];
+  var hostname = config["hostname"];
+  var port = config["port"];
   if (hostname == null) throw("hostname wasn't set in config.yaml");
   if (port == null) throw("port wasn't set in config.yaml");
 
   applicationFactory()
-  .addModule(new PokerPlanningModule())
+  .addModule(new PokerPlanningModule(hostname, port))
   .addModule(new NodeBindModule())
   .run();
 }
