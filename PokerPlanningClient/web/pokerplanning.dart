@@ -47,5 +47,3 @@ main() async {
   .addModule(new NodeBindModule())
   .run();
 }
-
-void showError(error) => querySelector("#error").appendHtml("$error.toString() <br>");
