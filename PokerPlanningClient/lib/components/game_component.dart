@@ -13,7 +13,7 @@ import 'package:poker_planning_client/socket_communication.dart';
     selector: 'game-component',
     cssUrl: 'packages/poker_planning_client/components/game_component.css',
     templateUrl: 'packages/poker_planning_client/components/game_component.html')
-class GameComponent implements ScopeAware, DetachAware {
+class GameComponent implements ScopeAware, AttachAware, DetachAware {
   CurrentUser currentUser;
   Router router;
   SocketCommunication socketCommunication;
@@ -25,9 +25,7 @@ class GameComponent implements ScopeAware, DetachAware {
   @NgOneWay("gameRevealed")
   bool gameRevealed;
 
-  GameComponent(this.currentUser, this.router, this.socketCommunication) {
-    socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
-  }
+  GameComponent(this.currentUser, this.router, this.socketCommunication);
 
   void revealOthersCards() => socketCommunication.sendSocketMsg({
       "revealAll": ""
@@ -45,6 +43,10 @@ class GameComponent implements ScopeAware, DetachAware {
   }
 
   void handleMessage(data) {
+    if (_scope.isDestroyed) {
+      return;
+    }
+
     var decoded = JSON.decode(data);
 
     Map game = decoded["game"];
@@ -123,7 +125,11 @@ class GameComponent implements ScopeAware, DetachAware {
     _scope.rootScope.broadcast("check-login", []);
   }
 
+  void attach() {
+    socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
+  }
+
   void detach() {
-    socketCommunication.sendSocketMsg({"disconnect":currentUser.userName});
+    players = [];
   }
 }

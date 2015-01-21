@@ -30,7 +30,7 @@ class PokerPlanningModule extends Module {
     bind(TableCard);
     bind(GameComponent);
     bind(CurrentUser);
-    bind(RouteInitializerFn, toValue: routeInitializer);
+    bind(RouteInitializerFn, toImplementation: AppRouter);
     bind(NgRoutingUsePushState, toValue: new NgRoutingUsePushState.value(false));
   }
 }

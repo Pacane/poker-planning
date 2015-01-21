@@ -2,6 +2,7 @@ library socket_communication;
 
 import 'dart:html';
 import 'dart:convert';
+import 'dart:async';
 import 'package:angular/angular.dart';
 
 @Injectable()
@@ -19,7 +20,8 @@ class SocketCommunication {
     ws.onOpen.listen((_) => print("Connected"));
 
     ws.onClose.listen((e) {
-      print('Websocket closed, retrying in $retrySeconds seconds');
+      print('Websocket closed, retrying');
+      initWebSocket();
     });
 
     ws.onError.listen((e) {
@@ -30,7 +32,11 @@ class SocketCommunication {
   }
 
   void sendSocketMsg(Object jsObject) {
-    ws.send(JSON.encode(jsObject));
+    if (ws != null && ws.readyState == WebSocket.CONNECTING) {
+      new Future.delayed(new Duration(microseconds: 1), () => sendSocketMsg(jsObject));
+    } else {
+      ws.send(JSON.encode(jsObject));
+    }
   }
 
   void close() {
