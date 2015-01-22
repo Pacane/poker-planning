@@ -3,6 +3,7 @@ import 'dart:html';
 import 'package:angular/angular.dart';
 
 import 'package:poker_planning_client/socket_communication.dart';
+import 'package:poker_planning_client/routes.dart';
 
 @Injectable()
 class CurrentUser {
@@ -14,7 +15,7 @@ class CurrentUser {
   CurrentUser(this.router, this.socketCommunication, this.scope) {
     scope.on("check-login").listen((_) {
       if(userName == null) {
-        router.go("login", {});
+        router.go(Routes.LOGIN, {});
       } else {
         onUserExists();
       }
@@ -47,13 +48,13 @@ class CurrentUser {
 
     showLoginSuccessful();
 
-    router.go("game", {});
+    router.go(Routes.GAME, {});
   }
 
   void logout(String msg) {
     window.alert(msg);
     logOffCurrentUser();
     socketCommunication.sendSocketMsg({"disconnect":userName});
-    router.go("root", {});
+    router.go(Routes.ROOT, {});
   }
 }
