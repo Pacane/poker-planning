@@ -1,14 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html ng-app>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Poker Planning</title>
-
-    <link rel="import" href="packages/polymer/polymer.html">
-    <link rel="import" href="components/table_card.html">
-    <link rel="import" href="components/my_card.html">
 
     <script async type="application/dart" src="pokerplanning.dart"></script>
     <script async src="packages/browser/dart.js"></script>
@@ -32,34 +28,7 @@
 </header>
 
 <div class="container" unresolved>
-
-    <div id="error"></div>
-
-    <div id="login">
-        <p>Please sign in</p>
-
-        <label for="nameInput">Name:<input id="nameInput"></label>
-        <button id="loginButton">Sign in</button>
-    </div>
-
-    <div class="hidden" id="game">
-
-        <h2>Others cards</h2>
-
-        <div id="othersCards">
-        </div>
-
-        <h2>My cards</h2>
-
-        <div id="myCards"></div>
-
-        <div id="actions">
-            <button id="revealOthersCards">Reveal others' cards</button>
-            <button id="reset">Reset</button>
-        </div>
-
-    </div>
-    <div id="output"></div>
+    <ng-view></ng-view>
 </div>
 </body>
 </html>

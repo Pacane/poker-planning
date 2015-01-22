@@ -1,5 +1,5 @@
 /* -> PokerPlanning Layout ---- */
-@import "core.css";
+@import "packages/poker_planning_client/components/core.css";
 
 html {
     font-size: 62.5%;
@@ -44,37 +44,4 @@ header {
     position: absolute;
     bottom: -0.3em;
     right: 0;
-}
-
-/* --> App content ----------- */
-
-#othersCards {
-    text-align: center;
-
-    margin-bottom: 2em;
-}
-
-#myCards {
-    text-align: center;
-
-    border-bottom: 2px solid #3f3f3f;
-    margin-bottom: 2em;
-}
-
-#actions {
-    text-align: center;
-}
-
-.cardSpacer {
-    height: 76px;
-    width: 0;
-    min-width: 0;
-    padding: 0;
-    margin: 0;
-    border: 0;
-}
-
-.cardsContainer {
-    vertical-align: bottom;
-    display: inline-block;
 }
