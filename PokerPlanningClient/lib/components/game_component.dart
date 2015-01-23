@@ -106,6 +106,8 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
     String kicked = kick["kicked"];
     String kickedBy = kick["kickedBy"];
 
+    players.removeWhere((p) => p.first == kicked);
+
     if (kicked == currentUser.userName) {
       var msg = "you have been kicked by: $kickedBy";
       _scope.rootScope.broadcast("kicked", msg);
@@ -121,7 +123,6 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   }
 
   void checkLogin() {
-    print("check login");
     _scope.rootScope.broadcast("check-login", []);
   }
 
