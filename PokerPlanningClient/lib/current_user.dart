@@ -53,8 +53,8 @@ class CurrentUser {
 
   void logout(String msg) {
     window.alert(msg);
-    logOffCurrentUser();
     socketCommunication.sendSocketMsg({"disconnect":userName});
+    logOffCurrentUser();
     router.go(Routes.ROOT, {});
   }
 }
