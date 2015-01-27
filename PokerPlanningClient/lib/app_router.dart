@@ -23,8 +23,9 @@ class AppRouter implements Function {
             view: 'view/game.html',
             enter: (_) {
               new JsObject(context['ga'], ['send', 'pageview', Routes.toPath(Routes.GAME)]);
-              scope.broadcast("check-login", {
-              });
+            },
+            preEnter: (_) {
+              scope.broadcast("check-login", {});
             },
             leave: (_) {
               socketCommunication.sendSocketMsg(
