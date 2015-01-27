@@ -42,9 +42,9 @@ class AppRouter implements Function {
             }),
         Routes.ROOT: ngRoute(
             path: '/',
-            view: 'view/login.html',
+            view: 'view/home.html',
             enter: (_) {
-              new JsObject(context['ga'], ['send', 'pageview', Routes.toPath(Routes.ROOT)]);
+              new JsObject(context['ga'], ['send', 'pageview', '/']);
             },
             defaultRoute: true),
     });

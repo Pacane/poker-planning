@@ -20,8 +20,7 @@ class SocketCommunication {
     ws.onOpen.listen((_) => print("Connected"));
 
     ws.onClose.listen((e) {
-      print('Websocket closed, retrying');
-      initWebSocket();
+      print('Websocket closed');
     });
 
     ws.onError.listen((e) {
