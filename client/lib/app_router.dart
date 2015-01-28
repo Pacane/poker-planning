@@ -29,32 +29,32 @@ class AppRouter implements Function {
         Routes.GAME: ngRoute(
             path: Routes.toPath(Routes.GAME),
             view: 'view/game.html',
-            enter: (_) => new JsObject(context['ga'], ['send', 'pageview', Routes.toPath(Routes.GAME)]),
+            enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.GAME)),
             preEnter: (_) => checkLogin(Routes.GAME),
             leave: (_) => socketCommunication.sendSocketMsg({"disconnect":currentUser.userName})
         ),
         Routes.GAMES: ngRoute(
             path: Routes.toPath(Routes.GAMES),
             view: 'view/games.html',
-            enter: (_) => new JsObject(context['ga'], ['send', 'pageview', Routes.toPath(Routes.GAME)]),
+            enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.GAMES)),
             preEnter: (_) => checkLogin(Routes.GAMES),
             leave: (_) => socketCommunication.sendSocketMsg({"disconnect":currentUser.userName})
         ),
         Routes.NEW_GAME: ngRoute(
             path: Routes.toPath(Routes.NEW_GAME),
             viewHtml: '<create-game-component></create-game-component>',
-            enter: (_) => new JsObject(context['ga'], ['send', 'pageview', Routes.toPath(Routes.NEW_GAME)]),
+            enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.NEW_GAME)),
             preEnter: (_) => checkLogin(Routes.NEW_GAME)
         ),
         Routes.LOGIN: ngRoute(
             path: Routes.toPath(Routes.LOGIN),
             view: 'view/login.html',
-            enter: (_) => new JsObject(context['ga'], ['send', 'pageview', Routes.toPath(Routes.LOGIN)])
+            enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.LOGIN))
         ),
         Routes.ROOT: ngRoute(
             path: '/',
             view: 'view/home.html',
-            enter: (_) => new JsObject(context['ga'], ['send', 'pageview', '/']),
+            enter: (_) => sendGoogleAnalyticsPageView('/'),
             defaultRoute: true
         ),
     });
