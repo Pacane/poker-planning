@@ -48,7 +48,7 @@ class CurrentUser {
 
     showLoginSuccessful();
 
-    router.go(Routes.GAME, {});
+    router.go(Routes.GAMES, {});
   }
 
   void logout(String msg) {

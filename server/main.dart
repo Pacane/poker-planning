@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:dart_config/default_server.dart';
 
+import 'games.dart';
+
 Map<String, String> game = {
 };
 var allConnections = [];
@@ -133,8 +135,13 @@ void main() {
   .then((_) {
     if (port == null) throw("port wasn't set in config.yaml");
   }).catchError(showError)
-  .then((_) => startSocket());
+  .then((_) => startSocket())
+  .then((_) => startGamesServer());
 }
 
 void showError(error) => print(error);
 
+void startGamesServer() {
+  Games games = new Games();
+  games.startGamesServer();
+}

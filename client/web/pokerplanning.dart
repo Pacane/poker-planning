@@ -7,6 +7,7 @@ import 'package:poker_planning_client/components/my_card.dart';
 import 'package:poker_planning_client/components/table_card.dart';
 import 'package:poker_planning_client/components/login_component.dart';
 import 'package:poker_planning_client/components/game_component.dart';
+import 'package:poker_planning_client/components/games_component.dart';
 import 'package:poker_planning_client/components/home_component.dart';
 
 import 'package:poker_planning_client/socket_communication.dart';
@@ -31,6 +32,7 @@ class PokerPlanningModule extends Module {
     bind(MyCard);
     bind(TableCard);
     bind(GameComponent);
+    bind(GamesComponent);
     bind(CurrentUser);
     bind(RouteInitializerFn, toImplementation: AppRouter);
     bind(NgRoutingUsePushState, toValue: new NgRoutingUsePushState.value(false));

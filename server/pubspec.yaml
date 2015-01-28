@@ -3,3 +3,6 @@ version: 0.0.1
 description: PokerPlanning app backend
 dependencies:
   dart_config: any
+  start: ">=0.2.7 <0.3.0"
+  poker_planning_shared:
+      path: ../shared

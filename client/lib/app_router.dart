@@ -35,6 +35,23 @@ class AppRouter implements Function {
               );
             }
         ),
+        Routes.GAMES: ngRoute(
+            path: Routes.toPath(Routes.GAMES),
+            view: 'view/games.html',
+            enter: (_) {
+              new JsObject(context['ga'], ['send', 'pageview', Routes.toPath(Routes.GAME)]);
+            },
+            preEnter: (_) {
+              scope.broadcast("check-login", {});
+            },
+            leave: (_) {
+              socketCommunication.sendSocketMsg(
+                  {
+                      "disconnect":currentUser.userName
+                  }
+              );
+            }
+        ),
         Routes.LOGIN: ngRoute(
             path: Routes.toPath(Routes.LOGIN),
             view: 'view/login.html',
