@@ -8,6 +8,8 @@ import 'package:angular/angular.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 
+import 'package:poker_planning_client/routes.dart';
+
 import 'package:poker_planning_shared/game.dart';
 
 @Component(
@@ -48,4 +50,7 @@ class GamesComponent implements ScopeAware, AttachAware, DetachAware, ShadowRoot
     _shadowRoot = shadowRoot;
   }
 
+  void createGame() {
+    router.go(Routes.NEW_GAME, {});
+  }
 }

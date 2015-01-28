@@ -13,17 +13,21 @@ class CurrentUser {
   Scope scope;
 
   CurrentUser(this.router, this.socketCommunication, this.scope) {
-    scope.on("check-login").listen((_) {
-      if(userName == null) {
-        router.go(Routes.LOGIN, {});
+    scope.on("check-login").listen((ScopeEvent event) {
+      String sourceRoute = event.data.length == 0 ? "" : event.data[0];
+      print("source route: $sourceRoute");
+
+      if (userName == null) {
+        router.go(Routes.LOGIN, {"source" : sourceRoute});
       } else {
-        onUserExists();
+        onUserExists(sourceRoute);
       }
     });
     scope.on("kicked").listen((event) => logout(event.data));
   }
 
   String get userName => localStorage['username'];
+
   void set userName(String userName) {
     localStorage['username'] = userName;
   }
@@ -39,21 +43,23 @@ class CurrentUser {
     querySelector("#loggedIn").classes.remove("hidden");
   }
 
-  void onUserExists() {
-    var loginInfo = {
-        'login' : userName
-    };
+  void onUserExists(String sourceRoute) {
+    var loginInfo = {'login' : userName};
 
     socketCommunication.sendSocketMsg(loginInfo);
 
     showLoginSuccessful();
 
-    router.go(Routes.GAMES, {});
+    if (sourceRoute != "") {
+      router.go(sourceRoute, {});
+    } else {
+      router.go(Routes.GAMES, {});
+    }
   }
 
   void logout(String msg) {
     window.alert(msg);
-    socketCommunication.sendSocketMsg({"disconnect":userName});
+    socketCommunication.sendSocketMsg({"disconnect" : userName});
     logOffCurrentUser();
     router.go(Routes.ROOT, {});
   }

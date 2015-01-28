@@ -26,7 +26,7 @@ class LoginComponent implements ScopeAware, ShadowRootAware {
     if (newName.isEmpty) return;
 
     _session.userName = newName;
-    _session.onUserExists();
+    _session.onUserExists("");
   }
 
   void set scope(Scope scope) {
