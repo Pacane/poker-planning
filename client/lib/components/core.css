@@ -46,3 +46,28 @@ button:hover {
     background-color: #3f3f3f;
     color: #fff;
 }
+
+/* -- Grid system ---------------------------- */
+
+.row:before,
+.row:after {
+    content: "";
+
+    display: table;
+    clear: both;
+}
+
+[class*='col-'] {
+    min-height: 1px;
+    width: 16.66%;
+    padding: 12px;
+    
+    float: left;
+}
+
+.col-1 { width: 16.66%; }
+.col-2 { width: 33.33%; }
+.col-3 { width: 50%;    }
+.col-4 { width: 66.66%; }
+.col-5 { width: 83.33%; }
+.col-6 { width: 100%;   }
