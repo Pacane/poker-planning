@@ -43,7 +43,7 @@ class CurrentUser {
 
     showLoginSuccessful();
 
-    if (sourceRoute != "") {
+    if (sourceRoute != null) {
       router.go(sourceRoute, {}, forceReload: true);
     } else {
       router.go(Routes.GAMES, {});

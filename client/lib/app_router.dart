@@ -51,6 +51,11 @@ class AppRouter implements Function {
             view: 'view/login.html',
             enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.LOGIN))
         ),
+        'login_without_route': ngRoute(
+            path: Routes.toPath(Routes.LOGIN),
+            view: 'view/login.html',
+            enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.LOGIN))
+        ),
         Routes.ROOT: ngRoute(
             path: '/',
             view: 'view/home.html',
