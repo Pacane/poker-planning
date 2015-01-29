@@ -119,18 +119,20 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   void set scope(Scope scope) {
     this._scope = scope;
     scope.on("kick-player").listen((event) => kickPlayer(event.data));
-    checkLogin();
   }
 
   void checkLogin() {
-    _scope.rootScope.broadcast("check-login", []);
   }
 
   void attach() {
+    var loginInfo = {'login' : currentUser.userName};
+
+    socketCommunication.sendSocketMsg(loginInfo); // TODO: Change this to use REST API
     socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
   }
 
   void detach() {
+
     players = [];
   }
 }

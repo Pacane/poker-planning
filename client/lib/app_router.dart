@@ -17,7 +17,7 @@ class AppRouter implements Function {
   AppRouter(this.socketCommunication, this.currentUser, this.scope);
 
   void checkLogin(String sourceRoute) {
-    scope.broadcast("check-login", [sourceRoute]);
+    currentUser.checkLogin(sourceRoute);
   }
 
   void sendGoogleAnalyticsPageView(String path) {
@@ -26,12 +26,11 @@ class AppRouter implements Function {
 
   call(Router router, RouteViewFactory views) {
     views.configure({
-        Routes.GAME: ngRoute(
-            path: Routes.toPath(Routes.GAME),
-            view: 'view/game.html',
-            enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.GAME)),
-            preEnter: (_) => checkLogin(Routes.GAME),
-            leave: (_) => socketCommunication.sendSocketMsg({"disconnect":currentUser.userName})
+        Routes.NEW_GAME: ngRoute(
+            path: Routes.toPath(Routes.NEW_GAME),
+            view: 'view/new_game.html',
+            enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.NEW_GAME)),
+            preEnter: (_) => checkLogin(Routes.NEW_GAME)
         ),
         Routes.GAMES: ngRoute(
             path: Routes.toPath(Routes.GAMES),
@@ -40,14 +39,15 @@ class AppRouter implements Function {
             preEnter: (_) => checkLogin(Routes.GAMES),
             leave: (_) => socketCommunication.sendSocketMsg({"disconnect":currentUser.userName})
         ),
-        Routes.NEW_GAME: ngRoute(
-            path: Routes.toPath(Routes.NEW_GAME),
-            viewHtml: '<create-game-component></create-game-component>',
-            enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.NEW_GAME)),
-            preEnter: (_) => checkLogin(Routes.NEW_GAME)
+        Routes.GAME: ngRoute(
+            path: Routes.toPath(Routes.GAME),
+            view: 'view/game.html',
+            enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.GAME)),
+            preEnter: (_) => checkLogin(Routes.GAME),
+            leave: (_) => socketCommunication.sendSocketMsg({"disconnect":currentUser.userName})
         ),
         Routes.LOGIN: ngRoute(
-            path: Routes.toPath(Routes.LOGIN),
+            path: Routes.toPath('${Routes.LOGIN}/:sourceRoute'),
             view: 'view/login.html',
             enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.LOGIN))
         ),

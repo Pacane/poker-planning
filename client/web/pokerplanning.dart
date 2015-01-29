@@ -22,8 +22,14 @@ import 'package:angular_node_bind/angular_node_bind.dart';
 import 'package:angular/angular.dart';
 import 'package:angular/application_factory.dart';
 
+import 'package:logging/logging.dart';
+
 class PokerPlanningModule extends Module {
   PokerPlanningModule(String hostname, int port) {
+
+    Logger.root..level = Level.FINER
+    ..onRecord.listen((LogRecord r) { print(r.message); });
+
     SocketCommunication socket = new SocketCommunication(hostname, port);
     socket.initWebSocket();
 

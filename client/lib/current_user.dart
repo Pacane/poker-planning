@@ -13,16 +13,6 @@ class CurrentUser {
   Scope scope;
 
   CurrentUser(this.router, this.socketCommunication, this.scope) {
-    scope.on("check-login").listen((ScopeEvent event) {
-      String sourceRoute = event.data.length == 0 ? "" : event.data[0];
-      print("source route: $sourceRoute");
-
-      if (userName == null) {
-        router.go(Routes.LOGIN, {"source" : sourceRoute});
-      } else {
-        onUserExists(sourceRoute);
-      }
-    });
     scope.on("kicked").listen((event) => logout(event.data));
   }
 
@@ -43,15 +33,18 @@ class CurrentUser {
     querySelector("#loggedIn").classes.remove("hidden");
   }
 
-  void onUserExists(String sourceRoute) {
-    var loginInfo = {'login' : userName};
+  void hideLoginStatus() {
+    querySelector("#nameSpan").text = "";
+    querySelector("#loggedIn").classes.add("hidden");
+  }
 
-    socketCommunication.sendSocketMsg(loginInfo);
+  void onUserExists(String sourceRoute) {
+    print("source route: $sourceRoute");
 
     showLoginSuccessful();
 
     if (sourceRoute != "") {
-      router.go(sourceRoute, {});
+      router.go(sourceRoute, {}, forceReload: true);
     } else {
       router.go(Routes.GAMES, {});
     }
@@ -63,4 +56,14 @@ class CurrentUser {
     logOffCurrentUser();
     router.go(Routes.ROOT, {});
   }
+
+  void checkLogin(String sourceRoute) {
+      if (userName == null) {
+        hideLoginStatus();
+        print("Cannot access $sourceRoute, sending back to login.");
+        router.go("login", {"sourceRoute" : sourceRoute});
+      } else {
+        showLoginSuccessful();
+      }
+    }
 }

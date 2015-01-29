@@ -34,7 +34,6 @@ class CreateGameComponent implements ScopeAware, AttachAware, DetachAware, Shado
 
   void set scope(Scope scope) {
     this._scope = scope;
-    _scope.rootScope.broadcast("check-login", [Routes.NEW_GAME]);
   }
 
   void attach() {
