@@ -13,18 +13,33 @@ class Games {
 
     return start(port: 3010).then((Server app) {
       print("Starting http server");
-
       app.get(GAMES).listen((request) {
         request.response
         .header("Access-Control-Allow-Origin", "*")
         .json(games);
       });
 
-      app.put(GAMES).listen((request) {
-        games.add(new Game({}, ""));
+      app.options(GAMES).listen((Request request) {
+        print("options");
+        request.response.header("Access-Control-Allow-Origin", "http://localhost:8080");
+        request.response.header("Access-Control-Allow-Methods", "PUT, POST, GET, OPTIONS");
+        request.response.status(200);
+        request.response.send("");
+      });
 
-        request.response
-        .send(JSON.encode(games.length - 1));
+      app.put(GAMES).listen((Request request) {
+        request.response.header("Access-Control-Allow-Origin", "http://localhost:8080");
+
+        if (request.method == 'PUT') {
+          print("put");
+          request.input.listen((data) {
+            print(JSON.decode(new String.fromCharCodes(data)));
+          });
+        } else if (request.method == 'OPTIONS'){
+          print("options");
+        }
+
+        request.response.send("OK");
       });
 
       app.get(GAME).listen((request) {
@@ -42,7 +57,7 @@ class Games {
         int gameId = int.parse(request.param('id'));
         Game game = games[gameId];
 
-        game.test = 'allo';
+        game.name = 'allo';
 
         request.response
         .send(JSON.encode(game));

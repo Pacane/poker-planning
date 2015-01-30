@@ -33,13 +33,13 @@ class GamesComponent implements ScopeAware, AttachAware, DetachAware, ShadowRoot
   }
 
   void attach() {
-//    var url = "http://localhost:3010/games";
-//
-//    // call the web server asynchronously
-//    var request = HttpRequest.getString(url).then((value){
-//      var games = JSON.decode(value).map((map) => new Game.fromMap(map));
-//      games.forEach((Game game) => _shadowRoot.querySelector("#games").appendHtml("<li>${game.test}</li>"));
-//    });
+    var url = "http://localhost:3010/games";
+
+    // call the web server asynchronously
+    var request = HttpRequest.getString(url).then((value){
+      var games = JSON.decode(value).map((map) => new Game.fromMap(map));
+      games.forEach((Game game) => _shadowRoot.querySelector("#games").appendHtml("<li>${game.name}</li>"));
+    });
   }
 
   void detach() {

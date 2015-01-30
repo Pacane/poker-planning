@@ -37,13 +37,6 @@ class CreateGameComponent implements ScopeAware, AttachAware, DetachAware, Shado
   }
 
   void attach() {
-//    var url = "http://localhost:3010/games";
-//
-//    // call the web server asynchronously
-//    var request = HttpRequest.getString(url).then((value){
-//      var games = JSON.decode(value).map((map) => new Game.fromMap(map));
-//      games.forEach((Game game) => _shadowRoot.querySelector("#games").appendHtml("<li>${game.test}</li>"));
-//    });
   }
 
   void detach() {
@@ -51,5 +44,11 @@ class CreateGameComponent implements ScopeAware, AttachAware, DetachAware, Shado
 
   void onShadowRoot(ShadowRoot shadowRoot) {
     _shadowRoot = shadowRoot;
+  }
+
+  void createGame() {
+    var url = "http://localhost:3010/games";
+
+    HttpRequest.request(url, method: "PUT", sendData: JSON.encode({"name":gameName}));
   }
 }

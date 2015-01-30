@@ -31,5 +31,4 @@ class HomeComponent implements AttachAware {
       currentUser.hideLoginStatus();
     }
   }
-
 }
