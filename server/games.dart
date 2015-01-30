@@ -30,16 +30,13 @@ class Games {
       app.put(GAMES).listen((Request request) {
         request.response.header("Access-Control-Allow-Origin", "http://localhost:8080");
 
-        if (request.method == 'PUT') {
-          print("put");
-          request.input.listen((data) {
-            print(JSON.decode(new String.fromCharCodes(data)));
-          });
-        } else if (request.method == 'OPTIONS'){
-          print("options");
-        }
-
-        request.response.send("OK");
+        request.input.listen((data) {
+          String json = new String.fromCharCodes(data);
+          Game newGame = new Game.fromJson(json)..id = Game.getNewId;
+          games.add(newGame);
+          request.response.json(newGame.toJson());
+          print('received: $json');
+        });
       });
 
       app.get(GAME).listen((request) {

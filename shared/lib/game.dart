@@ -20,7 +20,9 @@ class Game {
 
   factory Game.fromMap(Map jsonMap) {
     return new Game(jsonMap["name"], jsonMap["game"])
-      ..id = jsonMap["id"];
+      ..id = jsonMap["id"]
+      ..game = jsonMap["game"] == null ? {} : jsonMap["game"]
+    ;
   }
 
   factory Game.fromJson(String json) {
