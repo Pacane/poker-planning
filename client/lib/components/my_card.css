@@ -32,13 +32,13 @@
 
 .card:hover {
     padding-bottom: 10px;
-    background-color: #3f3f3f;
+    background-color: #5b5e6d;
     color: #fff;
 
     cursor: pointer;
 }
 
 .selected {
-    background-color: #3f3f3f;
+    background-color: #5b5e6d;
     color: #fff;
 }

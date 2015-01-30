@@ -9,12 +9,12 @@ html {
 }
 
 body {
-    background-color: #fff;
+    background: #fff url('/background.jpg') no-repeat center top;
     color: #3f3f3f;
     font-family: 'Open Sans', sans-serif;
     font-size: 1.4em;
     font-weight: normal;
-    line-height: 1.2em;
+    line-height: 1;
 }
 
 :focus {
@@ -30,18 +30,50 @@ body {
     position: relative;
 }
 
+@media(max-width: 959px) {
+    .container {
+        width: 100%;
+    }
+}
+
 /* --> Header section -------- */
 
 header {
-    background-color: #3f3f3f;
-    color: #fff;
-
-    padding: 3em 0 1.4em;
+    color: #d3e2c7;
+    
+    padding: 5.5em 0 1.4em;
     margin-bottom: 2em;
 }
 
 #loggedIn {
+    text-align: right;
+    
     position: absolute;
-    bottom: -0.3em;
-    right: 0;
+    bottom: 1em;
+    right: 11px;
+}
+
+#loggedIn a {
+    color: #eee;
+    font-size: 80%;
+    
+    text-decoration: none;
+}
+
+#loggedIn a:hover {
+    border-bottom: 1px dotted #fff;
+}
+
+@media(max-width: 959px) {
+    header {
+        padding-top: 1.5em;
+    }
+    
+    #loggedIn {
+        position: relative;
+        top: 0;
+        left: 0;
+        right: auto;
+        bottom: auto;
+    }
 }

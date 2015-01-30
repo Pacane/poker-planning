@@ -19,6 +19,10 @@ class AppRouter implements Function {
   void checkLogin(String sourceRoute) {
     currentUser.checkLogin(sourceRoute);
   }
+  
+  void logout() {
+    print("LOGGING OUT ALMOST");
+  }
 
   void sendGoogleAnalyticsPageView(String path) {
     new JsObject(context['ga'], ['send', 'pageview', path]);
@@ -55,6 +59,10 @@ class AppRouter implements Function {
             path: Routes.toPath(Routes.LOGIN),
             view: 'view/login.html',
             enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.LOGIN))
+        ),
+        Routes.LOGOUT: ngRoute(
+            path: Routes.toPath('${Routes.LOGOUT}/:sourceRoute'),
+            preEnter: (_) => logout()
         ),
         Routes.ROOT: ngRoute(
             path: '/',
