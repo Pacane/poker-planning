@@ -40,14 +40,14 @@ body {
 
 header {
     color: #d3e2c7;
-    
+
     padding: 5.5em 0 1.4em;
     margin-bottom: 2em;
 }
 
 #loggedIn {
     text-align: right;
-    
+
     position: absolute;
     bottom: 1em;
     right: 11px;
@@ -56,7 +56,7 @@ header {
 #loggedIn a {
     color: #eee;
     font-size: 80%;
-    
+
     text-decoration: none;
 }
 
@@ -68,7 +68,7 @@ header {
     header {
         padding-top: 1.5em;
     }
-    
+
     #loggedIn {
         position: relative;
         top: 0;

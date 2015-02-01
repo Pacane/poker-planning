@@ -47,15 +47,9 @@ class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
   }
 
   void checkDisplayState() {
-    if(_session.userName != null) {
-      shadowRoot.querySelector(".is-logout").classes.add("hidden");
-      shadowRoot.querySelector(".is-login").classes.remove("hidden");
-      shadowRoot.querySelector(".js-show-name").text = _session.userName;
-    }else{
-      shadowRoot.querySelector(".is-logout").classes.remove("hidden");
-      shadowRoot.querySelector(".is-login").classes.add("hidden");
-      shadowRoot.querySelector(".js-show-name").text = "";
-    }
+    shadowRoot.querySelector(".is-logout").classes.toggle("hidden", _session.userExists);
+    shadowRoot.querySelector(".is-login").classes.toggle("hidden", !_session.userExists);
+    shadowRoot.querySelector(".js-show-name").text = _session.userName;
   }
 
   void attach() {
