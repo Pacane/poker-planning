@@ -45,11 +45,11 @@ class CurrentUser {
 
     showLoginSuccessful();
 
-    /*if (sourceRoute != null) {
+    if (sourceRoute != null) {
       router.go(sourceRoute, {}, forceReload: true);
     } else {
       router.go(Routes.GAMES, {});
-    }*/
+    }
   }
 
   void logout(String msg) {
