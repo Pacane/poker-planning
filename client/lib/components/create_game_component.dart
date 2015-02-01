@@ -49,6 +49,8 @@ class CreateGameComponent implements ScopeAware, AttachAware, DetachAware, Shado
   void createGame() {
     var url = "http://localhost:3010/games";
 
-    HttpRequest.request(url, method: "PUT", sendData: JSON.encode({"name":gameName}));
+    HttpRequest
+      .request(url, method: "PUT", requestHeaders: {'Content-type': 'application/json'}, sendData: JSON.encode({"name":gameName}))
+      .then((HttpRequest response) => print(response.responseText));
   }
 }

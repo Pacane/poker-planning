@@ -3,7 +3,11 @@ import 'dart:convert';
 
 import 'package:dart_config/default_server.dart';
 
-import 'games.dart';
+import 'package:poker_planning_server/interceptors.dart';
+import 'package:poker_planning_server/resources/games.dart';
+import 'package:logging/logging.dart';
+import 'package:di/di.dart';
+import 'package:redstone/server.dart' as app;
 
 Map<String, String> game = {
 };
@@ -141,7 +145,11 @@ void main() {
 
 void showError(error) => print(error);
 
-void startGamesServer() {
-  Games games = new Games();
-  games.startGamesServer();
+startGamesServer() {
+  app.setupConsoleLog(Level.FINE);
+  app.addModule(new Module()
+    ..bind(Interceptors)
+    ..bind(Games)
+  );
+  app.start(port:3010);
 }
