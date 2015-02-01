@@ -18,6 +18,8 @@ class CurrentUser {
 
   String get userName => localStorage['username'];
 
+  bool get userExists => userName != null;
+
   void set userName(String userName) {
     localStorage['username'] = userName;
   }
@@ -43,11 +45,11 @@ class CurrentUser {
 
     showLoginSuccessful();
 
-    if (sourceRoute != null) {
+    /*if (sourceRoute != null) {
       router.go(sourceRoute, {}, forceReload: true);
     } else {
       router.go(Routes.GAMES, {});
-    }
+    }*/
   }
 
   void logout(String msg) {
@@ -58,12 +60,12 @@ class CurrentUser {
   }
 
   void checkLogin(String sourceRoute) {
-      if (userName == null) {
-        hideLoginStatus();
-        print("Cannot access $sourceRoute, sending back to login.");
-        router.go("login", {"sourceRoute" : sourceRoute});
-      } else {
-        showLoginSuccessful();
-      }
+    if (userName == null) {
+      hideLoginStatus();
+      print("Cannot access $sourceRoute, sending back to login.");
+      router.go("login", {"sourceRoute" : sourceRoute});
+    } else {
+      showLoginSuccessful();
     }
+  }
 }

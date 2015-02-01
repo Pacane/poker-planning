@@ -1,6 +1,16 @@
-<div id="login">
-    <p>Please sign in</p>
-
-    <label for="nameInput">Name:<input id="nameInput"></label>
-    <button ng-click="handleLoginClick()" id="loginButton">Sign in</button>
+<div id="login" class="row">
+    <div class="col">
+        <div class="group-actions is-logout">
+            <label><span>Who are you, stranger?</span> <input id="nameInput"></label>
+            <p class="group-actions-btn">
+                <button ng-click="handleLoginClick()" id="loginButton">Sign in</button>
+            </p>
+        </div>
+        <div class="group-actions is-login">
+            <p>You are ready to start, <span class="js-show-name"></span></p>
+            <div class="group-actions-btn">
+                <button ng-click="start()">Join a game</button>
+            </div>
+        </div>
+    </div>
 </div>
