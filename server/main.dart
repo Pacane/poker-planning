@@ -5,17 +5,24 @@ import 'package:dart_config/default_server.dart';
 
 import 'package:poker_planning_server/interceptors.dart';
 import 'package:poker_planning_server/resources/games.dart';
-import 'package:logging/logging.dart';
+import 'package:poker_planning_server/repository/game_repository.dart';
+
+import 'package:poker_planning_shared/game.dart';
+
 import 'package:di/di.dart';
+
+import 'package:logging/logging.dart';
 import 'package:redstone/server.dart' as app;
 
-Map<String, String> game = {
-};
+GameRepository gameRepository;
+
+Map<String, String> game = {};
 var allConnections = [];
 Map<WebSocket, String> loggedInUsers = {
 };
 var hostname;
 var port;
+
 
 void printGame() {
   print("The players connected are : ");
@@ -54,10 +61,16 @@ void handleMessage(socket, message) {
   var disconnect = json["disconnect"];
 
   if (login != null) {
-    print("Adding $login to the logged in users");
-    game.putIfAbsent(login, () => "");
-    loggedInUsers.putIfAbsent(socket, () => login);
-    broadcastGame(false);
+    int gameId = int.parse(login['gameId']);
+    String username = login['username'];
+
+    print("Adding $login to the logged in users of the game # $gameId");
+    Game game = gameRepository.games[gameId];
+
+    game.players.putIfAbsent(username, () => '');
+    gameRepository.addConnection(game, socket);
+
+    broadcastGame2(game, false);
   } else if (cardSelection != null) {
     var playerName = cardSelection[0];
     var selectedCard = cardSelection[1];
@@ -76,6 +89,31 @@ void handleMessage(socket, message) {
   }
 
   printGame();
+}
+
+void broadcastGame2(Game game, bool reveal) {
+  var encodedGame = {
+  };
+
+  if (reveal) {
+    encodedGame = {
+        "revealedGame" : game
+    };
+  } else {
+    Map newGame = new Map.from(game.players);
+    newGame.forEach((player, card) {
+      if (card != "") {
+        newGame[player] = "Y";
+      }
+    });
+
+    encodedGame = {
+        "game" : newGame
+    };
+  }
+
+  print("PRINTING GAME : $encodedGame");
+  broadcastData2(game, JSON.encode(encodedGame));
 }
 
 void broadcastGame(bool reveal) {
@@ -100,6 +138,10 @@ void broadcastGame(bool reveal) {
 
   print("PRINTING GAME : $encodedGame");
   broadcastData(JSON.encode(encodedGame));
+}
+
+void broadcastData2(Game game, data) {
+  gameRepository.activeConnections[game].forEach((s) => s.add(data));
 }
 
 void broadcastData(data) {
@@ -139,17 +181,26 @@ void main() {
   .then((_) {
     if (port == null) throw("port wasn't set in config.yaml");
   }).catchError(showError)
-  .then((_) => startSocket())
-  .then((_) => startGamesServer());
+  .then((_) => startGamesServer())
+  .then((_) => startSocket()
+  );
 }
 
 void showError(error) => print(error);
 
 startGamesServer() {
+  Injector injector = new ModuleInjector([new Module()
+    ..bind(GameRepository)
+  ]);
+
+  gameRepository = injector.get(GameRepository);
+
   app.setupConsoleLog(Level.FINE);
   app.addModule(new Module()
     ..bind(Interceptors)
     ..bind(Games)
+    ..bind(GameRepository, toValue: gameRepository)
   );
+
   app.start(port:3010);
 }

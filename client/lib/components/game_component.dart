@@ -18,6 +18,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   Router router;
   SocketCommunication socketCommunication;
   Scope _scope;
+  RouteProvider routeProvider;
 
   @NgOneWay("players")
   List<Tuple<String, String>> players = [];
@@ -25,7 +26,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   @NgOneWay("gameRevealed")
   bool gameRevealed;
 
-  GameComponent(this.currentUser, this.router, this.socketCommunication);
+  GameComponent(this.currentUser, this.router, this.socketCommunication, this.routeProvider);
 
   void revealOthersCards() => socketCommunication.sendSocketMsg({
       "revealAll": ""
@@ -125,14 +126,22 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   }
 
   void attach() {
-    var loginInfo = {'login' : currentUser.userName};
+    var gameId = routeProvider.parameters['id'];
+
+    var loginInfo = {
+        'login' :
+        {
+            'gameId': gameId,
+            'username': currentUser.userName
+        }
+    };
+
 
     socketCommunication.sendSocketMsg(loginInfo); // TODO: Change this to use REST API
     socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
   }
 
   void detach() {
-
     players = [];
   }
 }

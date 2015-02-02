@@ -6,14 +6,14 @@ class Game {
   int id;
 
   String name;
-  Map<String, String> game = {};
+  Map<String, String> players = {};
 
-  Game(this.name, this.game);
+  Game(this.name, this.players);
 
   Map toJson() {
     Map map = new Map();
     map["name"] = name;
-    map["game"] = game;
+    map["game"] = players;
     map["id"] = id;
     return map;
   }
@@ -21,7 +21,7 @@ class Game {
   factory Game.fromMap(Map jsonMap) {
     return new Game(jsonMap["name"], jsonMap["game"])
       ..id = jsonMap["id"]
-      ..game = jsonMap["game"] == null ? {} : jsonMap["game"]
+      ..players = jsonMap["game"] == null ? {} : jsonMap["game"]
     ;
   }
 
