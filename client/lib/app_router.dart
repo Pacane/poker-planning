@@ -20,6 +20,10 @@ class AppRouter implements Function {
     currentUser.checkLogin(sourceRoute);
   }
 
+  void logout() {
+    print("LOGGING OUT ALMOST");
+  }
+
   void sendGoogleAnalyticsPageView(String path) {
     new JsObject(context['ga'], ['send', 'pageview', path]);
   }
@@ -40,7 +44,7 @@ class AppRouter implements Function {
             leave: (_) => socketCommunication.sendSocketMsg({"disconnect":currentUser.userName})
         ),
         Routes.GAME: ngRoute(
-            path: Routes.toPath(Routes.GAME),
+            path: '${Routes.toPath(Routes.GAMES)}/:id',
             view: 'view/game.html',
             enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.GAME)),
             preEnter: (_) => checkLogin(Routes.GAME),
@@ -55,6 +59,10 @@ class AppRouter implements Function {
             path: Routes.toPath(Routes.LOGIN),
             view: 'view/login.html',
             enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.LOGIN))
+        ),
+        Routes.LOGOUT: ngRoute(
+            path: Routes.toPath('${Routes.LOGOUT}/:sourceRoute'),
+            preEnter: (_) => logout()
         ),
         Routes.ROOT: ngRoute(
             path: '/',

@@ -1,5 +1,13 @@
-<h2>Games</h2>
-<ul id="games">
-</ul>
-
-<button ng-click="createGame()">Create a new game</button>
+<div class="row">
+    <div class="col-6">
+        <h2 class="lonely">Games</h2>
+    </div>
+    <div class="col-3 col-m-6">
+        <h3>Available games</h3>
+        <p><em>No games available</em></p>
+        <ul id="games"></ul>
+    </div>
+    <div class="col-3 col-m-6">
+        <create-game-component></create-game-component>
+    </div>
+</div>

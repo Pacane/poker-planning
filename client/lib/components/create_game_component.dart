@@ -15,7 +15,7 @@ import 'package:poker_planning_shared/game.dart';
     selector: 'create-game-component',
     cssUrl: 'packages/poker_planning_client/components/core.css',
     templateUrl: 'packages/poker_planning_client/components/create_game_component.html')
-class CreateGameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootAware {
+class CreateGameComponent implements ScopeAware, ShadowRootAware {
   CurrentUser currentUser;
   Router router;
   SocketCommunication socketCommunication;
@@ -36,21 +36,21 @@ class CreateGameComponent implements ScopeAware, AttachAware, DetachAware, Shado
     this._scope = scope;
   }
 
-  void attach() {
-  }
-
-  void detach() {
-  }
-
   void onShadowRoot(ShadowRoot shadowRoot) {
     _shadowRoot = shadowRoot;
   }
 
   void createGame() {
-    var url = "http://localhost:3010/games";
+    var url = "http://localhost:3010/games"; // TODO: Extract api's address
 
     HttpRequest
-      .request(url, method: "PUT", requestHeaders: {'Content-type': 'application/json'}, sendData: JSON.encode({"name":gameName}))
-      .then((HttpRequest response) => print(response.responseText));
+      .request(url, method: "PUT", requestHeaders: {'Content-type': 'application/json'}, sendData: JSON.encode({"name":gameName})) // TODO: Wrap this
+      .then((HttpRequest response) {
+      if (response.status == 200) { // TODO: Find this constant
+        var createdGame = JSON.decode(response.response);
+        var gameId = createdGame["id"];
+        router.go(Routes.GAME, {"id" : gameId});
+      }
+    });
   }
 }
