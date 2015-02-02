@@ -34,5 +34,4 @@ class HomeComponent implements ShadowRootAware, AttachAware {
       currentUser.hideLoginStatus();
     }
   }
-
 }
