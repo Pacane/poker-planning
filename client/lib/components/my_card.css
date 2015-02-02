@@ -31,9 +31,10 @@
 }
 
 .card:hover {
-    padding-bottom: 10px;
     background-color: #5b5e6d;
     color: #fff;
+    
+    padding-bottom: 10px;
 
     cursor: pointer;
 }
