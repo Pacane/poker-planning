@@ -1,4 +1,4 @@
-library config;
+library poker_planning_config;
 
 import 'package:angular/angular.dart';
 
