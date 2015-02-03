@@ -59,6 +59,7 @@ main() async {
   if (hostname == null) throw("hostname wasn't set in config.yaml");
   if (port == null) throw("port wasn't set in config.yaml");
   if (restPort == null) throw("restPort wasn't set in config.yaml");
+  config.initConfig();
 
   applicationFactory()
     .addModule(new PokerPlanningModule(hostname, port)

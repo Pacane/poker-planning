@@ -35,9 +35,7 @@ class GamesComponent implements ScopeAware, AttachAware, DetachAware, ShadowRoot
   }
 
   void attach() {
-    var hostname = config.config['hostname'];
-    var restPort = config.config['restPort'];
-    var url = "http://$hostname:$restPort/games";
+    var url = "http://${config.hostname}:${config.restPort}/games"; // TODO: Extract route
 
     // call the web server asynchronously
     var request = HttpRequest.getString(url).then((value){

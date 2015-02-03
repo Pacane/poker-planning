@@ -8,6 +8,7 @@ import 'package:angular/angular.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/routes.dart';
+import 'package:poker_planning_client/config.dart';
 
 import 'package:poker_planning_shared/game.dart';
 
@@ -21,13 +22,14 @@ class CreateGameComponent implements ScopeAware, ShadowRootAware {
   SocketCommunication socketCommunication;
   Scope _scope;
   ShadowRoot _shadowRoot;
+  Config config;
 
   @NgTwoWay("gameName")
   String gameName;
   @NgTwoWay("password")
   String password;
 
-  CreateGameComponent(this.currentUser, this.router, this.socketCommunication);
+  CreateGameComponent(this.currentUser, this.router, this.socketCommunication, this.config);
 
   void handleMessage(data) {
   }
@@ -41,7 +43,7 @@ class CreateGameComponent implements ScopeAware, ShadowRootAware {
   }
 
   void createGame() {
-    var url = "http://localhost:3010/games"; // TODO: Extract api's address
+    var url = "http://${config.hostname}:${config.restPort}/games"; // TODO: Extract api's address
 
     HttpRequest
       .request(url, method: "PUT", requestHeaders: {'Content-type': 'application/json'}, sendData: JSON.encode({"name":gameName})) // TODO: Wrap this
