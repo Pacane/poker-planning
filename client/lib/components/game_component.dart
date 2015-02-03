@@ -7,6 +7,7 @@ import 'package:angular/angular.dart';
 
 import 'package:poker_planning_client/tuple.dart';
 import 'package:poker_planning_client/current_user.dart';
+import 'package:poker_planning_client/current_game.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 
 @Component(
@@ -18,6 +19,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   Router router;
   SocketCommunication socketCommunication;
   Scope _scope;
+  CurrentGame currentGame;
   RouteProvider routeProvider;
 
   @NgOneWay("players")
@@ -26,15 +28,15 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   @NgOneWay("gameRevealed")
   bool gameRevealed;
 
-  GameComponent(this.currentUser, this.router, this.socketCommunication, this.routeProvider);
+  GameComponent(this.currentUser, this.router, this.socketCommunication, this.currentGame, this.routeProvider);
 
   void revealOthersCards() => socketCommunication.sendSocketMsg({
-      "revealAll": ""
+      "revealAll": currentGame.getGameId()
   });
 
   void initReset() {
     socketCommunication.sendSocketMsg({
-        "resetRequest": ""
+        "resetRequest": currentGame.getGameId()
     });
   }
 
@@ -52,14 +54,24 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
 
     Map game = decoded["game"];
     Map revealedGame = decoded["revealedGame"];
-    String reset = decoded["gameHasReset"];
+    var reset = decoded["gameHasReset"];
     Map kick = decoded["kick"];
+    var gameId = decoded['gameId'];
 
     if (game != null) {
+      if (gameId != currentGame.getGameId()) {
+        return;
+      }
       displayCards(game, false);
     } else if (revealedGame != null) {
+      if (gameId != currentGame.getGameId()) {
+        return;
+      }
       displayCards(revealedGame, true);
     } else if (reset != null) {
+      if (reset != currentGame.getGameId()) {
+        return;
+      }
       print("Game has reset!");
       gameHasReset();
     } else if (kick != null) {
@@ -99,13 +111,17 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
 
   void kickPlayer(String player) {
     socketCommunication.sendSocketMsg({
-        "kicked" : player
+        "kicked" : [player, currentUser.userName, currentGame.getGameId()]
     });
   }
 
   void handleKick(Map kick) {
     String kicked = kick["kicked"];
     String kickedBy = kick["kickedBy"];
+    int gameId = kick["gameId"];
+    if (gameId != currentGame.getGameId()) {
+      return;
+    }
 
     players.removeWhere((p) => p.first == kicked);
 
@@ -122,20 +138,16 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
     scope.on("kick-player").listen((event) => kickPlayer(event.data));
   }
 
-  void checkLogin() {
-  }
-
   void attach() {
-    var gameId = routeProvider.parameters['id'];
+    currentGame.setGameId(routeProvider.parameters['id']);
 
     var loginInfo = {
         'login' :
         {
-            'gameId': gameId,
+            'gameId': currentGame.getGameId(),
             'username': currentUser.userName
         }
     };
-
 
     socketCommunication.sendSocketMsg(loginInfo); // TODO: Change this to use REST API
     socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
@@ -143,5 +155,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
 
   void detach() {
     players = [];
+    socketCommunication.sendSocketMsg({"disconnect":[currentUser.userName, currentGame.getGameId()]});
+    currentGame.resetGameId();
   }
 }

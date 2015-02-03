@@ -13,7 +13,7 @@ class CurrentUser {
   Scope scope;
 
   CurrentUser(this.router, this.socketCommunication, this.scope) {
-    scope.on("kicked").listen((event) => logout(event.data));
+    scope.on("kicked").listen((event) => sendBackToGames(event.data));
   }
 
   String get userName => localStorage['username'];
@@ -52,11 +52,9 @@ class CurrentUser {
     }
   }
 
-  void logout(String msg) {
+  void sendBackToGames(String msg) {
     window.alert(msg);
-    socketCommunication.sendSocketMsg({"disconnect" : userName});
-    logOffCurrentUser();
-    router.go(Routes.ROOT, {});
+    router.go(Routes.GAMES, {});
   }
 
   void checkLogin(String sourceRoute) {

@@ -29,23 +29,15 @@ void printGame() {
   game.forEach((k, v) => print("$k and their current card choice is: $v"));
 }
 
-void resetGame() {
-  game.forEach((player, _) => game[player] = "");
+void resetGame(Game game) {
   print("sending reset signal");
   broadcastData(JSON.encode({
-      "gameHasReset": ""
+      "gameHasReset": game.id
   }));
 }
 
 void kick(String kicked, String kickedBy) {
-  broadcastData(JSON.encode(
-      {
-          "kick" :
-          {
-              "kicked" : kicked,
-              "kickedBy" : kickedBy
-          }
-      }));
+
 }
 
 void handleMessage(socket, message) {
@@ -61,11 +53,16 @@ void handleMessage(socket, message) {
   var disconnect = json["disconnect"];
 
   if (login != null) {
-    int gameId = int.parse(login['gameId']);
+    int gameId = login['gameId'];
     String username = login['username'];
 
     print("Adding $login to the logged in users of the game # $gameId");
     Game game = gameRepository.games[gameId];
+
+    if (game == null) {
+      print("Game doesn't exist"); // TODO: Do something
+      return;
+    }
 
     game.players.putIfAbsent(username, () => '');
     gameRepository.addConnection(game, socket);
@@ -74,21 +71,77 @@ void handleMessage(socket, message) {
   } else if (cardSelection != null) {
     var playerName = cardSelection[0];
     var selectedCard = cardSelection[1];
-    print("Adding $playerName card selection: $selectedCard.");
-    game[playerName] = selectedCard;
-    broadcastGame(false);
-  } else if (reveal != null) {
-    broadcastGame(true);
-  } else if (reset != null) {
-    resetGame();
-    broadcastGame(false);
-  } else if (kicked != null) {
-    kick(kicked, loggedInUsers[socket]);
-  } else if (disconnect != null) {
-    handleClose(socket);
-  }
+    int gameId = cardSelection[2];
+    print("Adding $playerName card selection: $selectedCard in game $gameId");
 
-  printGame();
+    Game game = gameRepository.games[gameId];
+
+    if (game == null) {
+      print("Game doesn't exist"); // TODO: Do something
+      return;
+    }
+
+    game.players[playerName] = selectedCard;
+
+    broadcastGame2(game, false);
+  } else if (reveal != null) {
+    Game game = gameRepository.games[reveal];
+
+    if (game == null) {
+      print("Game doesn't exist"); // TODO: Do something
+      return;
+    }
+
+    broadcastGame2(game, true);
+  } else if (reset != null) {
+    Game game = gameRepository.games[reset];
+
+    if (game == null) {
+      print("Game doesn't exist"); // TODO: Do something
+      return;
+    }
+
+    game.players.forEach((player, _) => game.players[player] = "");
+    resetGame(game);
+    broadcastGame2(game, false);
+  } else if (kicked != null) {
+    String kickedPlayer = kicked[0];
+    String kickedBy = kicked[1];
+    int gameId = kicked[2];
+
+    Game game = gameRepository.games[gameId];
+
+    if (game == null) {
+      print("Game doesn't exist"); // TODO: Do something
+      return;
+    }
+
+    game.players.remove(kickedPlayer);
+    broadcastData2(game, JSON.encode(
+        {
+            "kick" :
+            {
+                "kicked" : kickedPlayer,
+                "kickedBy" : kickedBy,
+                "gameId" : game.id
+            }
+        })
+    );
+  } else if (disconnect != null) {
+    String playerName = disconnect[0];
+    int gameId = disconnect[1];
+    Game game = gameRepository.games[gameId];
+
+    if (game == null) {
+      print("Game doesn't exist"); // TODO: Do something
+      return;
+    }
+
+    gameRepository.activeConnections[game].remove(socket);
+    game.players.remove(playerName);
+
+    broadcastGame2(game, false);
+  }
 }
 
 void broadcastGame2(Game game, bool reveal) {
@@ -97,7 +150,8 @@ void broadcastGame2(Game game, bool reveal) {
 
   if (reveal) {
     encodedGame = {
-        "revealedGame" : game
+        'gameId': game.id,
+        "revealedGame" : game.players
     };
   } else {
     Map newGame = new Map.from(game.players);
@@ -108,6 +162,7 @@ void broadcastGame2(Game game, bool reveal) {
     });
 
     encodedGame = {
+        'gameId': game.id,
         "game" : newGame
     };
   }
