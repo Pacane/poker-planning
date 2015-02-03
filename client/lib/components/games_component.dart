@@ -9,6 +9,7 @@ import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 
 import 'package:poker_planning_client/routes.dart';
+import 'package:poker_planning_client/config.dart';
 
 import 'package:poker_planning_shared/game.dart';
 
@@ -22,8 +23,9 @@ class GamesComponent implements ScopeAware, AttachAware, DetachAware, ShadowRoot
   SocketCommunication socketCommunication;
   Scope _scope;
   ShadowRoot _shadowRoot;
+  Config config;
 
-  GamesComponent(this.currentUser, this.router, this.socketCommunication);
+  GamesComponent(this.currentUser, this.router, this.socketCommunication, this.config);
 
   void handleMessage(data) {
   }
@@ -33,7 +35,9 @@ class GamesComponent implements ScopeAware, AttachAware, DetachAware, ShadowRoot
   }
 
   void attach() {
-    var url = "http://localhost:3010/games";
+    var hostname = config.config['hostname'];
+    var restPort = config.config['restPort'];
+    var url = "http://$hostname:$restPort/games";
 
     // call the web server asynchronously
     var request = HttpRequest.getString(url).then((value){
