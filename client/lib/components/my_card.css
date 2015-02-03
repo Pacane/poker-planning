@@ -1,0 +1,45 @@
+@import url("packages/poker_planning_client/components/core.css");
+
+.cardsContainer {
+    vertical-align: bottom;
+    display: inline-block;
+}
+
+.card {
+    font-size: 2em;
+    line-height: 65px;
+    text-align: center;
+
+    min-width: 45px;
+    height: 65px;
+    margin: 0 5px;
+    padding-left: 3px;
+    padding-right: 3px;
+    border: solid black 1px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+
+    border-bottom: 0;
+    border-radius: 5px 5px 0 0;
+
+    -webkit-transition: all .1s;
+    transition: all .1s;
+}
+
+.card:hover {
+    background-color: #5b5e6d;
+    color: #fff;
+    
+    padding-bottom: 10px;
+
+    cursor: pointer;
+}
+
+.selected {
+    background-color: #5b5e6d;
+    color: #fff;
+}
