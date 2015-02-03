@@ -149,7 +149,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
         }
     };
 
-    socketCommunication.sendSocketMsg(loginInfo); // TODO: Change this to use REST API
+    socketCommunication.sendSocketMsg(loginInfo);
     socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
   }
 

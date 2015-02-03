@@ -31,13 +31,9 @@ void printGame() {
 
 void resetGame(Game game) {
   print("sending reset signal");
-  broadcastData(JSON.encode({
+  broadcastData(game, JSON.encode({
       "gameHasReset": game.id
   }));
-}
-
-void kick(String kicked, String kickedBy) {
-
 }
 
 void handleMessage(socket, message) {
@@ -67,7 +63,7 @@ void handleMessage(socket, message) {
     game.players.putIfAbsent(username, () => '');
     gameRepository.addConnection(game, socket);
 
-    broadcastGame2(game, false);
+    broadcastGame(game, false);
   } else if (cardSelection != null) {
     var playerName = cardSelection[0];
     var selectedCard = cardSelection[1];
@@ -83,7 +79,7 @@ void handleMessage(socket, message) {
 
     game.players[playerName] = selectedCard;
 
-    broadcastGame2(game, false);
+    broadcastGame(game, false);
   } else if (reveal != null) {
     Game game = gameRepository.games[reveal];
 
@@ -92,7 +88,7 @@ void handleMessage(socket, message) {
       return;
     }
 
-    broadcastGame2(game, true);
+    broadcastGame(game, true);
   } else if (reset != null) {
     Game game = gameRepository.games[reset];
 
@@ -103,7 +99,7 @@ void handleMessage(socket, message) {
 
     game.players.forEach((player, _) => game.players[player] = "");
     resetGame(game);
-    broadcastGame2(game, false);
+    broadcastGame(game, false);
   } else if (kicked != null) {
     String kickedPlayer = kicked[0];
     String kickedBy = kicked[1];
@@ -117,7 +113,7 @@ void handleMessage(socket, message) {
     }
 
     game.players.remove(kickedPlayer);
-    broadcastData2(game, JSON.encode(
+    broadcastData(game, JSON.encode(
         {
             "kick" :
             {
@@ -140,11 +136,11 @@ void handleMessage(socket, message) {
     gameRepository.activeConnections[game].remove(socket);
     game.players.remove(playerName);
 
-    broadcastGame2(game, false);
+    broadcastGame(game, false);
   }
 }
 
-void broadcastGame2(Game game, bool reveal) {
+void broadcastGame(Game game, bool reveal) {
   var encodedGame = {
   };
 
@@ -168,46 +164,11 @@ void broadcastGame2(Game game, bool reveal) {
   }
 
   print("PRINTING GAME : $encodedGame");
-  broadcastData2(game, JSON.encode(encodedGame));
+  broadcastData(game, JSON.encode(encodedGame));
 }
 
-void broadcastGame(bool reveal) {
-  var encodedGame = {
-  };
-  if (reveal) {
-    encodedGame = {
-        "revealedGame" : game
-    };
-  } else {
-    var newGame = new Map.from(game);
-    newGame.forEach((player, card) {
-      if (card != "") {
-        newGame[player] = "Y";
-      }
-    });
-
-    encodedGame = {
-        "game" : newGame
-    };
-  }
-
-  print("PRINTING GAME : $encodedGame");
-  broadcastData(JSON.encode(encodedGame));
-}
-
-void broadcastData2(Game game, data) {
+void broadcastData(Game game, data) {
   gameRepository.activeConnections[game].forEach((s) => s.add(data));
-}
-
-void broadcastData(data) {
-  allConnections.forEach((s) => s.add(data));
-}
-
-void handleClose(WebSocket socket) {
-  String playerName = loggedInUsers[socket];
-
-  game.remove(playerName);
-  broadcastGame(false);
 }
 
 void startSocket() {
@@ -216,8 +177,7 @@ void startSocket() {
     server.listen((HttpRequest req) {
       if (req.uri.path == '/ws') {
         WebSocketTransformer.upgrade(req)
-          ..then((socket) => allConnections.add(socket))
-          ..then((socket) => socket.listen((msg) => handleMessage(socket, msg), onDone: () => handleClose(socket)));
+          ..then((socket) => socket.listen((msg) => handleMessage(socket, msg)));
       }
     })
       ..onError((e) => print("An error occurred."));
