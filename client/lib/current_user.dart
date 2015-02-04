@@ -48,20 +48,20 @@ class CurrentUser {
     if (sourceRoute != null) {
       router.go(sourceRoute, {}, forceReload: true);
     } else {
-      router.go(Routes.GAMES, {});
+      router.go(Routes.GAMES, {}, forceReload: true);
     }
   }
 
   void sendBackToGames(String msg) {
     window.alert(msg);
-    router.go(Routes.GAMES, {});
+    router.go(Routes.GAMES, {}, forceReload: true);
   }
 
   void checkLogin(String sourceRoute) {
     if (userName == null) {
       hideLoginStatus();
       print("Cannot access $sourceRoute, sending back to login.");
-      router.go("login", {"sourceRoute" : sourceRoute});
+      router.go("login", {"sourceRoute" : sourceRoute}, forceReload: true);
     } else {
       showLoginSuccessful();
     }
