@@ -8,7 +8,9 @@ import 'package:angular/angular.dart';
 import 'package:poker_planning_client/tuple.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/current_game.dart';
+import 'package:poker_planning_client/config.dart';
 import 'package:poker_planning_client/socket_communication.dart';
+import 'package:poker_planning_client/routes.dart';
 
 @Component(
     selector: 'game-component',
@@ -21,6 +23,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   Scope _scope;
   CurrentGame currentGame;
   RouteProvider routeProvider;
+  Config config;
 
   @NgOneWay("players")
   List<Tuple<String, String>> players = [];
@@ -28,7 +31,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   @NgOneWay("gameRevealed")
   bool gameRevealed;
 
-  GameComponent(this.currentUser, this.router, this.socketCommunication, this.currentGame, this.routeProvider);
+  GameComponent(this.currentUser, this.router, this.socketCommunication, this.currentGame, this.routeProvider, this.config);
 
   void revealOthersCards() => socketCommunication.sendSocketMsg({
       "revealAll": currentGame.getGameId()
@@ -138,8 +141,24 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
     scope.on("kick-player").listen((event) => kickPlayer(event.data));
   }
 
+  void checkIfGameExists() {
+    var url = "http://${config.hostname}:${config.restPort}/games/${currentGame.getGameId()}"; // TODO: Extract route
+
+    HttpRequest httpRequest = new HttpRequest();
+    httpRequest
+      ..open('GET', url)
+      ..onLoadEnd.listen((_) {
+        var status = httpRequest.status;
+        if (status == 404) {
+          router.go(Routes.GAMES, {});
+        }
+      })..send();
+  }
+
   void attach() {
     currentGame.setGameId(routeProvider.parameters['id']);
+
+    checkIfGameExists();
 
     var loginInfo = {
         'login' :
@@ -155,7 +174,12 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
 
   void detach() {
     players = [];
-    socketCommunication.sendSocketMsg({"disconnect":[currentUser.userName, currentGame.getGameId()]});
+    socketCommunication.sendSocketMsg(
+        {
+            "disconnect": [currentUser.userName, currentGame.getGameId()]
+        }
+    );
+
     currentGame.resetGameId();
   }
 }
