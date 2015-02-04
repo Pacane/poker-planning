@@ -4,6 +4,7 @@ import 'package:poker_planning_shared/game.dart';
 import 'package:poker_planning_server/repository/game_repository.dart';
 
 import 'package:redstone/server.dart' as app;
+import 'package:shelf/shelf.dart' as shelf;
 
 final GAMES = "/games";
 final PATH_ID = "/:id/";
@@ -26,5 +27,15 @@ class Games {
     gameRepository.games.putIfAbsent(newGame.id, () => newGame);
 
     return newGame.toJson();
+  }
+
+  @app.Route('/:id', responseType: 'application/json')
+  getGame(int id) {
+    Game game = gameRepository.games[id];
+    if (gameRepository.games[id] == null) {
+      return new shelf.Response.notFound("");
+    } else {
+      return game;
+    }
   }
 }
