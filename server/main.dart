@@ -22,7 +22,7 @@ Map<WebSocket, String> loggedInUsers = {
 };
 var hostname;
 var port;
-
+var restPort;
 
 void printGame() {
   print("The players connected are : ");
@@ -189,12 +189,10 @@ void main() {
   .then((Map config) {
     hostname = config["hostname"];
     port = config["port"];
-  }).catchError((error) => print(error))
-  .then((_) {
+    restPort = config["restPort"];
     if (hostname == null) throw("hostname wasn't set in config.yaml");
-  }).catchError(showError)
-  .then((_) {
     if (port == null) throw("port wasn't set in config.yaml");
+    if (restPort == null) throw("restPort wasn't set in config.yaml");
   }).catchError(showError)
   .then((_) => startGamesServer())
   .then((_) => startSocket()
@@ -217,5 +215,5 @@ startGamesServer() {
     ..bind(GameRepository, toValue: gameRepository)
   );
 
-  app.start(port:3010);
+  app.start(port:restPort);
 }
