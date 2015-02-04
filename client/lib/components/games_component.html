@@ -4,8 +4,12 @@
     </div>
     <div class="col-3 col-m-6">
         <h3>Available games</h3>
-        <p><em>No games available</em></p>
-        <ul id="games"></ul>
+        <p ng-if="games.isEmpty"><em>No games available</em></p>
+        <ul id="games">
+            <li ng-repeat="game in games">
+                {{ game.id }} - <a href="/#/games/{{game.id}}">{{ game.name }}</a>
+            </li>
+        </ul>
     </div>
     <div class="col-3 col-m-6">
         <create-game-component></create-game-component>

@@ -24,6 +24,8 @@ class GamesComponent implements ScopeAware, AttachAware, DetachAware, ShadowRoot
   Scope _scope;
   ShadowRoot _shadowRoot;
   Config config;
+  @NgTwoWay("games")
+  List<Game> games;
 
   GamesComponent(this.currentUser, this.router, this.socketCommunication, this.config);
 
@@ -36,11 +38,8 @@ class GamesComponent implements ScopeAware, AttachAware, DetachAware, ShadowRoot
 
   void attach() {
     var url = "http://${config.hostname}:${config.restPort}/games"; // TODO: Extract route
-
-    // call the web server asynchronously
     var request = HttpRequest.getString(url).then((value){
-      var games = JSON.decode(value).map((map) => new Game.fromMap(map));
-      games.forEach((Game game) => _shadowRoot.querySelector("#games").appendHtml("<li>${game.name}</li>"));
+      games = JSON.decode(value).map((map) => new Game.fromMap(map)).toList();
     });
   }
 
