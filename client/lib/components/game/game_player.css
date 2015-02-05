@@ -1,18 +1,28 @@
-@import url("_layout.css");
+@import url("../../css/layout.css");
 
-.cardsContainer {
+h3 {
+    background-color: #3f3f3f;
+    color: #fff;
+
+    padding: 5px;
+    margin-bottom: 10px;
+    margin-top: 0;
+}
+
+.player {
     vertical-align: bottom;
+
     display: inline-block;
 }
 
-.card {
+#card {
     font-size: 2em;
     line-height: 65px;
     text-align: center;
 
-    min-width: 45px;
+    min-width: 50px;
     height: 65px;
-    margin: 0 5px;
+    margin: 0;
     padding-left: 3px;
     padding-right: 3px;
     border: solid black 1px;
@@ -23,23 +33,19 @@
     -moz-box-sizing: content-box;
     box-sizing: content-box;
 
-    border-bottom: 0;
     border-radius: 5px 5px 0 0;
+    border-bottom: 0;
 
-    -webkit-transition: all .1s;
-    transition: all .1s;
 }
 
-.card:hover {
-    background-color: #5b5e6d;
+#card:hover {
+    background-color: #3f3f3f;
     color: #fff;
-    
-    padding-bottom: 10px;
 
     cursor: pointer;
 }
 
 .selected {
-    background-color: #5b5e6d;
+    background-color: #3f3f3f;
     color: #fff;
 }

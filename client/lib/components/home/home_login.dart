@@ -9,9 +9,9 @@ import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 
 @Component(
-    selector: 'login-component',
-    cssUrl: 'packages/poker_planning_client/components/css/_layout.css',
-    templateUrl: 'packages/poker_planning_client/components/login_component.html')
+    selector: 'home-login',
+    cssUrl: 'packages/poker_planning_client/css/layout.css',
+    templateUrl: 'packages/poker_planning_client/components/home/home_login.html')
 class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
   ShadowRoot shadowRoot;
   Router router;
@@ -23,7 +23,7 @@ class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
 
   LoginComponent(this._session, this._socketCommunication, this.router, this.routeProvider);
 
-  start() => router.go(Routes.GAMES, {});
+  start() => router.go(Routes.LOBBY, {});
 
   void handleLoginClick() {
     InputElement nameInput = shadowRoot.querySelector("#nameInput");

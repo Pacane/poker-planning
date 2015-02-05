@@ -9,9 +9,9 @@ import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/current_game.dart';
 
 @Component(
-    selector: 'my-card',
-    cssUrl: 'packages/poker_planning_client/components/css/my_card.css',
-    templateUrl: 'packages/poker_planning_client/components/my_card.html')
+    selector: 'game-card',
+    cssUrl: 'packages/poker_planning_client/components/game/game_card.css',
+    templateUrl: 'packages/poker_planning_client/components/game/game_card.html')
 class MyCard implements ShadowRootAware, ScopeAware {
   @NgAttr("value")
   String value;

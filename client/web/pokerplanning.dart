@@ -3,13 +3,13 @@ library poker_planning;
 import 'dart:html';
 import 'dart:async';
 
-import 'package:poker_planning_client/components/my_card.dart';
-import 'package:poker_planning_client/components/table_card.dart';
-import 'package:poker_planning_client/components/login_component.dart';
-import 'package:poker_planning_client/components/game_component.dart';
-import 'package:poker_planning_client/components/games_component.dart';
-import 'package:poker_planning_client/components/create_game_component.dart';
-import 'package:poker_planning_client/components/home_component.dart';
+import 'package:poker_planning_client/components/home/home.dart';
+import 'package:poker_planning_client/components/home/home_login.dart';
+import 'package:poker_planning_client/components/lobby/lobby.dart';
+import 'package:poker_planning_client/components/lobby/lobby_game.dart';
+import 'package:poker_planning_client/components/game/game.dart';
+import 'package:poker_planning_client/components/game/game_card.dart';
+import 'package:poker_planning_client/components/game/game_player.dart';
 
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/current_user.dart';
