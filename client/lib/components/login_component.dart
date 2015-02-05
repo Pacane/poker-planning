@@ -10,7 +10,7 @@ import 'package:poker_planning_client/socket_communication.dart';
 
 @Component(
     selector: 'login-component',
-    cssUrl: 'packages/poker_planning_client/components/core.css',
+    cssUrl: 'packages/poker_planning_client/components/css/_layout.css',
     templateUrl: 'packages/poker_planning_client/components/login_component.html')
 class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
   ShadowRoot shadowRoot;

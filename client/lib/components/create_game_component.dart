@@ -14,7 +14,7 @@ import 'package:poker_planning_shared/game.dart';
 
 @Component(
     selector: 'create-game-component',
-    cssUrl: 'packages/poker_planning_client/components/core.css',
+    cssUrl: 'packages/poker_planning_client/components/css/_layout.css',
     templateUrl: 'packages/poker_planning_client/components/create_game_component.html')
 class CreateGameComponent implements ScopeAware, ShadowRootAware {
   CurrentUser currentUser;

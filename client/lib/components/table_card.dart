@@ -6,7 +6,7 @@ import 'package:angular/angular.dart';
 
 @Component(
     selector: 'table-card',
-    cssUrl: 'packages/poker_planning_client/components/table_card.css',
+    cssUrl: 'packages/poker_planning_client/components/css/table_card.css',
     templateUrl: 'packages/poker_planning_client/components/table_card.html')
 class TableCard implements ShadowRootAware, ScopeAware {
   @NgTwoWay("playerName")
