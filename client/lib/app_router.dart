@@ -9,12 +9,15 @@ import 'package:poker_planning_client/socket_communication.dart';
 
 import 'package:poker_planning_client/routes.dart';
 
+import "package:logging/logging.dart";
+
 @Injectable()
 class AppRouter implements Function {
   SocketCommunication socketCommunication;
   CurrentUser currentUser;
   Scope scope;
   CurrentGame currentGame;
+  Logger logger = Logger.root;
 
   AppRouter(this.socketCommunication, this.currentUser, this.scope, this.currentGame);
 
@@ -23,7 +26,7 @@ class AppRouter implements Function {
   }
 
   void logout() {
-    print("LOGGING OUT ALMOST");
+    logger.info("LOGGING OUT ALMOST");
   }
 
   void sendGoogleAnalyticsPageView(String path) {

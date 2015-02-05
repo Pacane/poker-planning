@@ -8,10 +8,14 @@ import 'package:poker_planning_server/resources/games.dart';
 import 'package:poker_planning_server/repository/game_repository.dart';
 
 import 'package:poker_planning_shared/game.dart';
+import 'package:poker_planning_shared/loglevel_parser.dart';
 
 import 'package:di/di.dart';
 
 import 'package:logging/logging.dart';
+import 'package:logging_handlers/server_logging_handlers.dart';
+import 'package:stack_trace/stack_trace.dart';
+
 import 'package:redstone/server.dart' as app;
 
 GameRepository gameRepository;
@@ -23,21 +27,17 @@ Map<WebSocket, String> loggedInUsers = {
 var hostname;
 var port;
 var restPort;
-
-void printGame() {
-  print("The players connected are : ");
-  game.forEach((k, v) => print("$k and their current card choice is: $v"));
-}
+Logger logger = Logger.root;
 
 void resetGame(Game game) {
-  print("sending reset signal");
+  logger.info("sending reset signal");
   broadcastData(game, JSON.encode({
       "gameHasReset": game.id
   }));
 }
 
 void handleMessage(socket, message) {
-  print("Received : " + message);
+  logger.info("Received : " + message);
 
   Map json = JSON.decode(message);
 
@@ -52,11 +52,11 @@ void handleMessage(socket, message) {
     int gameId = login['gameId'];
     String username = login['username'];
 
-    print("Adding $login to the logged in users of the game # $gameId");
+    logger.info("Adding $login to the logged in users of the game # $gameId");
     Game game = gameRepository.games[gameId];
 
     if (game == null) {
-      print("Game doesn't exist"); // TODO: Do something
+      logger.info("Game doesn't exist"); // TODO: Do something
       return;
     }
 
@@ -68,12 +68,12 @@ void handleMessage(socket, message) {
     var playerName = cardSelection[0];
     var selectedCard = cardSelection[1];
     int gameId = cardSelection[2];
-    print("Adding $playerName card selection: $selectedCard in game $gameId");
+    logger.info("Adding $playerName card selection: $selectedCard in game $gameId");
 
     Game game = gameRepository.games[gameId];
 
     if (game == null) {
-      print("Game doesn't exist"); // TODO: Do something
+      logger.info("Game doesn't exist"); // TODO: Do something
       return;
     }
 
@@ -84,7 +84,7 @@ void handleMessage(socket, message) {
     Game game = gameRepository.games[reveal];
 
     if (game == null) {
-      print("Game doesn't exist"); // TODO: Do something
+      logger.info("Game doesn't exist"); // TODO: Do something
       return;
     }
 
@@ -93,7 +93,7 @@ void handleMessage(socket, message) {
     Game game = gameRepository.games[reset];
 
     if (game == null) {
-      print("Game doesn't exist"); // TODO: Do something
+      logger.info("Game doesn't exist"); // TODO: Do something
       return;
     }
 
@@ -108,7 +108,7 @@ void handleMessage(socket, message) {
     Game game = gameRepository.games[gameId];
 
     if (game == null) {
-      print("Game doesn't exist"); // TODO: Do something
+      logger.info("Game doesn't exist"); // TODO: Do something
       return;
     }
 
@@ -129,7 +129,7 @@ void handleMessage(socket, message) {
     Game game = gameRepository.games[gameId];
 
     if (game == null) {
-      print("Game doesn't exist"); // TODO: Do something
+      logger.info("Game doesn't exist"); // TODO: Do something
       return;
     }
 
@@ -163,7 +163,7 @@ void broadcastGame(Game game, bool reveal) {
     };
   }
 
-  print("PRINTING GAME : $encodedGame");
+  logger.info("PRINTING GAME : $encodedGame");
   broadcastData(game, JSON.encode(encodedGame));
 }
 
@@ -172,7 +172,7 @@ void broadcastData(Game game, data) {
 }
 
 void startSocket() {
-  print("Starting websocket...!");
+  logger.info("Starting websocket...!");
   HttpServer.bind(hostname, port).then((server) {
     server.listen((HttpRequest req) {
       if (req.uri.path == '/ws') {
@@ -180,7 +180,7 @@ void startSocket() {
           ..then((socket) => socket.listen((msg) => handleMessage(socket, msg)));
       }
     })
-      ..onError((e) => print("An error occurred."));
+      ..onError((e) => logger.warning("An error occurred."));
   });
 }
 
@@ -193,13 +193,14 @@ void main() {
     if (hostname == null) throw("hostname wasn't set in config.yaml");
     if (port == null) throw("port wasn't set in config.yaml");
     if (restPort == null) throw("restPort wasn't set in config.yaml");
+    logger.level = LogLevelParser.logLevel(config["logLevel"]);
   }).catchError(showError)
   .then((_) => startGamesServer())
   .then((_) => startSocket()
   );
 }
 
-void showError(error) => print(error);
+void showError(error) => logger.severe(error);
 
 startGamesServer() {
   Injector injector = new ModuleInjector([new Module()
@@ -208,7 +209,8 @@ startGamesServer() {
 
   gameRepository = injector.get(GameRepository);
 
-  app.setupConsoleLog(Level.FINE);
+  setupLogging();
+
   app.addModule(new Module()
     ..bind(Interceptors)
     ..bind(Games)
@@ -216,4 +218,16 @@ startGamesServer() {
   );
 
   app.start(port:restPort);
+}
+
+void setupLogging() {
+  Logger.root.onRecord.asBroadcastStream()
+    ..listen((LogRecord rec) {
+      if (rec.level >= Level.SEVERE) {
+        var stack = rec.stackTrace != null ? "\n${Trace.format(rec.stackTrace)}" : "";
+        print('${rec.level.name}: ${rec.time}: ${rec.message} - ${rec.error}${stack}');
+      } else {
+        print('${rec.level.name}: ${rec.time}: ${rec.message}');
+      }
+  })..listen(new SyncFileLoggingHandler("logging.txt"));
 }

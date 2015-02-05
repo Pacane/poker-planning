@@ -28,9 +28,7 @@ import 'package:logging/logging.dart';
 
 class PokerPlanningModule extends Module {
   PokerPlanningModule(String hostname, int port) {
-
-    Logger.root..level = Level.FINER
-    ..onRecord.listen((LogRecord r) { print(r.message); });
+    Logger.root..onRecord.listen((LogRecord r) { print(r.message); });
 
     SocketCommunication socket = new SocketCommunication(hostname, port);
     socket.initWebSocket();
