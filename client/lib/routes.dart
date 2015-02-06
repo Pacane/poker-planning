@@ -8,7 +8,7 @@ class Routes {
   static const String ROOT = 'root';
   static const String LOBBY = 'lobby';
   static const String GAME = 'game';
-  
+
   static const String GAMES = 'games';
   static const String LOGOUT = 'logout';
 
