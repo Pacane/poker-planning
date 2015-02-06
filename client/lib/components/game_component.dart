@@ -12,6 +12,8 @@ import 'package:poker_planning_client/config.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/routes.dart';
 
+import "package:logging/logging.dart";
+
 @Component(
     selector: 'game-component',
     cssUrl: 'packages/poker_planning_client/components/css/game_component.css',
@@ -24,6 +26,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   CurrentGame currentGame;
   RouteProvider routeProvider;
   Config config;
+  Logger logger = Logger.root;
 
   @NgOneWay("players")
   List<Tuple<String, String>> players = [];
@@ -75,7 +78,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
       if (reset != currentGame.getGameId()) {
         return;
       }
-      print("Game has reset!");
+      logger.info("Game has reset!");
       gameHasReset();
     } else if (kick != null) {
       handleKick(kick);
@@ -96,7 +99,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   }
 
   void displayCards(Map game, bool revealed) {
-    print("display cards with revealed : $revealed");
+    logger.info("display cards with revealed : $revealed");
     gameRevealed = revealed;
 
     removePlayersWhoLeft(game);
@@ -132,7 +135,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
       var msg = "you have been kicked by: $kickedBy";
       _scope.rootScope.broadcast("kicked", msg);
     } else {
-      print("$kicked has been kicked by $kickedBy");
+      logger.warning("$kicked has been kicked by $kickedBy");
     }
   }
 

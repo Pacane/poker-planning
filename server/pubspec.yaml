@@ -7,3 +7,4 @@ dependencies:
   shelf: ">=0.5.7 <0.6.0"
   poker_planning_shared:
       path: ../shared
+  logging_handlers: any

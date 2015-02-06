@@ -8,6 +8,8 @@ import 'package:poker_planning_client/routes.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 
+import "package:logging/logging.dart";
+
 @Component(
     selector: 'login-component',
     cssUrl: 'packages/poker_planning_client/components/css/_layout.css',
@@ -19,6 +21,7 @@ class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
   SocketCommunication _socketCommunication;
   Scope _scope;
   RouteProvider routeProvider;
+  Logger logger = Logger.root;
   String get previousRoute => routeProvider.parameters["sourceRoute"];
 
   LoginComponent(this._session, this._socketCommunication, this.router, this.routeProvider);
@@ -54,7 +57,7 @@ class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
 
   void attach() {
     if (previousRoute == null && _session.userName != null) {
-      print("attached null route");
+      logger.info("attached null route");
       _session.onUserExists(null);
     } else if (_session.userName == null) {
       _session.hideLoginStatus();
