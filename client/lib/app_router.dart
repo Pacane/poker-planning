@@ -50,7 +50,7 @@ class AppRouter implements Function {
             enter: (_) {
               sendGoogleAnalyticsPageView(Routes.toPath(Routes.GAME));
             },
-            preEnter: (_) => checkLogin(Routes.GAME)
+            preEnter: (_) => checkLogin('${Routes.GAME}/:id')
         ),
         Routes.LOGIN: ngRoute(
             path: Routes.toPath('${Routes.LOGIN}/:sourceRoute'),
