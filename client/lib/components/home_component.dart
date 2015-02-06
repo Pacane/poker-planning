@@ -8,7 +8,7 @@ import 'package:poker_planning_client/current_user.dart';
 
 @Component(
     selector: 'home-component',
-    cssUrl: 'packages/poker_planning_client/components/core.css',
+    cssUrl: 'packages/poker_planning_client/components/css/_layout.css',
     templateUrl: 'packages/poker_planning_client/components/home_component.html')
 class HomeComponent implements ShadowRootAware, AttachAware {
   ShadowRoot shadowRoot;

@@ -1,0 +1,114 @@
+@import url("_core.css");
+@import url("_effects.css");
+
+/* -- Document container ----- */
+
+.container {
+    width: 960px;
+    margin: 0 auto;
+
+    position: relative;
+}
+
+@media(max-width: 959px) {
+    .container {
+        width: 640px;
+    }
+}
+
+@media(max-width: 649px) {
+    .container {
+        width: 100%;
+    }
+}
+
+/* --> Header section -------- */
+
+header {
+    color: #d3e2c7;
+
+    padding: 5.5em 0 1.4em;
+    margin-bottom: 2em;
+}
+
+#loggedIn {
+    text-align: right;
+
+    position: absolute;
+    bottom: 1em;
+    right: 11px;
+}
+
+#loggedIn a {
+    color: #eee;
+    font-size: 80%;
+    text-decoration: none;
+}
+
+#loggedIn a:hover {
+    border-bottom: 1px dotted #fff;
+}
+
+@media(max-width: 959px) {
+    header {
+        padding-top: 1.5em;
+    }
+
+    #loggedIn {
+        position: relative;
+        top: 0;
+        left: 0;
+        right: auto;
+        bottom: auto;
+    }
+}
+
+/* -- Group actions ---------- */
+
+.group-actions {
+    background-color: rgba(90,94,108,0.1);
+
+    padding: 2rem 2rem 1rem;
+}
+
+.group-actions label {
+    font-weight: bold;
+
+    display: block;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.group-actions label span {
+    display: block;
+    padding-left: 10px;
+    margin-bottom: 2px;
+}
+
+.group-actions input {
+    font-size: 1.2rem;
+
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #5b5e6d;
+}
+
+.group-actions input:focus {
+    background-color: #d7d9e3;
+
+    outline: 0;
+}
+
+.group-actions input[type="submit"],
+.group-actions button {
+    font-weight: bold;
+
+    width: auto;
+    padding: 1rem 4rem;
+    margin: 0 0 0 auto;
+}
+
+.group-actions-btn {
+    text-align: right;
+}

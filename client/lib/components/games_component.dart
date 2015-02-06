@@ -15,7 +15,7 @@ import 'package:poker_planning_shared/game.dart';
 
 @Component(
     selector: 'games-component',
-    cssUrl: 'packages/poker_planning_client/components/core.css',
+    cssUrl: 'packages/poker_planning_client/components/css/games_component.css',
     templateUrl: 'packages/poker_planning_client/components/games_component.html')
 class GamesComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootAware {
   CurrentUser currentUser;
