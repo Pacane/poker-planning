@@ -32,27 +32,25 @@ class AppRouter implements Function {
 
   call(Router router, RouteViewFactory views) {
     views.configure({
-        Routes.LOBBY: ngRoute(
-            path: Routes.toPath(Routes.LOBBY),
+        Routes.GAMES: ngRoute(
+            path: Routes.toPath(Routes.GAMES),
             view: 'view/lobby.html',
-            enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.LOBBY)),
-            preEnter: (_) => checkLogin(Routes.LOBBY)
-        ),
-        // TODO: Create a Routes.GAMES that redirect to /lobby
-        Routes.GAME: ngRoute(
-            path: '${Routes.toPath(Routes.GAMES)}/:id',
-            view: 'view/game.html',
-            enter: (_) {
-              sendGoogleAnalyticsPageView(Routes.toPath(Routes.GAME));
-            },
-            preEnter: (_) => checkLogin(Routes.GAME)
+            enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.GAMES)),
+            preEnter: (RoutePreEnterEvent e) => checkLogin(Routes.GAMES + e.path),
+            mount : {
+                Routes.GAME: ngRoute(
+                    path: '${Routes.toPath(Routes.GAMES)}/:id',
+                    view: 'view/game.html',
+                    enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.GAME))
+                )
+            }
         ),
         Routes.LOGOUT: ngRoute(
             path: Routes.toPath('${Routes.LOGOUT}/:sourceRoute'),
             preEnter: (_) => logout()
         ),
         Routes.ROOT: ngRoute(
-            path: '/',
+            path: '${Routes.toPath(Routes.LOGIN)}/:sourceRoute',
             view: 'view/home.html',
             enter: (_) => sendGoogleAnalyticsPageView('/'),
             defaultRoute: true
