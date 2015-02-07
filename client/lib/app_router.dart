@@ -18,8 +18,8 @@ class AppRouter implements Function {
 
   AppRouter(this.socketCommunication, this.currentUser, this.scope, this.currentGame);
 
-  void checkLogin(String sourceRoute) {
-    currentUser.checkLogin(sourceRoute);
+  void checkLogin(String sourceRoute, [Map parameters]) {
+    currentUser.checkLogin(sourceRoute, parameters);
   }
 
   void logout() {
@@ -32,29 +32,35 @@ class AppRouter implements Function {
 
   call(Router router, RouteViewFactory views) {
     views.configure({
-        Routes.GAMES: ngRoute(
-            path: Routes.toPath(Routes.GAMES),
-            view: 'view/lobby.html',
-            enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.GAMES)),
-            preEnter: (RoutePreEnterEvent e) => checkLogin(Routes.GAMES + e.path),
-            mount : {
-                Routes.GAME: ngRoute(
-                    path: '${Routes.toPath(Routes.GAMES)}/:id',
-                    view: 'view/game.html',
-                    enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.GAME))
-                )
-            }
-        ),
-        Routes.LOGOUT: ngRoute(
-            path: Routes.toPath('${Routes.LOGOUT}/:sourceRoute'),
-            preEnter: (_) => logout()
-        ),
         Routes.ROOT: ngRoute(
-            path: '${Routes.toPath(Routes.LOGIN)}/:sourceRoute',
+            path: '/',
             view: 'view/home.html',
             enter: (_) => sendGoogleAnalyticsPageView('/'),
             defaultRoute: true
         ),
+        Routes.LOGIN: ngRoute(
+            path: '${Routes.toPath(Routes.LOGIN)}/:sourceRoute/:id',
+            view: 'view/home.html',
+            enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.LOGIN))
+        ),
+        Routes.GAME: ngRoute(
+            path: '${Routes.toPath(Routes.GAMES)}/:id',
+            view: 'view/game.html',
+            enter: (_) {
+              sendGoogleAnalyticsPageView(Routes.toPath(Routes.GAME));
+            },
+            preEnter: (RoutePreEnterEvent e) {print(e.parameters); checkLogin(Routes.GAME, e.parameters);}
+        ),
+        Routes.GAMES: ngRoute(
+            path: Routes.toPath(Routes.GAMES),
+            view: 'view/lobby.html',
+            enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.GAMES)),
+            preEnter: (RoutePreEnterEvent e) => checkLogin(Routes.GAMES, e.parameters)
+        ),
+        Routes.LOGOUT: ngRoute(
+            path: Routes.toPath('${Routes.LOGOUT}/:sourceRoute'),
+            preEnter: (_) => logout()
+        )
     });
   }
 }

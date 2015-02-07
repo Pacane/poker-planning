@@ -6,9 +6,8 @@ class Routes {
       (which is not what I want to do here...) */
 
   static const String ROOT = 'root';
-  static const String GAME = 'game';
-  
   static const String GAMES = 'games';
+  static const String GAME = 'game';
   static const String LOGIN = 'login';
   static const String LOGOUT = 'logout';
 

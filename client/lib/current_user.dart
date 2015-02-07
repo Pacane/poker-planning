@@ -55,12 +55,17 @@ class CurrentUser {
     router.go(Routes.GAMES, {});
   }
 
-  void checkLogin(String sourceRoute) {
-    print(sourceRoute);
+  void checkLogin(String sourceRoute, [Map parameters]) {
     if (userName == null) {
       hideLoginStatus();
       print("Cannot access $sourceRoute, sending back to login.");
-      router.go(Routes.ROOT, {"sourceRoute" : sourceRoute});
+
+      if (parameters == null) {
+        parameters = new Map();
+      }
+      parameters["sourceRoute"] = sourceRoute;
+
+      router.go(Routes.LOGIN, parameters);
     } else {
       showLoginSuccessful();
     }

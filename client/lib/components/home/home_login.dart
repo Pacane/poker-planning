@@ -23,7 +23,7 @@ class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
 
   LoginComponent(this._session, this._socketCommunication, this.router, this.routeProvider);
 
-  start() => router.go(Routes.GAMES, {});
+  start([String route = Routes.GAMES, Map parameters]) => router.go(route, parameters);
 
   void handleLoginClick() {
     InputElement nameInput = shadowRoot.querySelector("#nameInput");
@@ -35,7 +35,12 @@ class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
     _session.onUserExists(previousRoute);
 
     checkDisplayState();
-    start();
+
+    if (previousRoute == null) {
+      start();
+    } else {
+      start(previousRoute, routeProvider.parameters);
+    }
   }
 
   void set scope(Scope scope) {
