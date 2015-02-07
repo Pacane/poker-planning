@@ -23,7 +23,13 @@ class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
 
   LoginComponent(this._session, this._socketCommunication, this.router, this.routeProvider);
 
-  start([String route = Routes.GAMES, Map parameters]) => router.go(route, parameters);
+  start([String route = Routes.GAMES, Map parameters]) {
+    if (parameters == null) {
+      parameters = {};
+    }
+
+    router.go(route, parameters);
+  }
 
   void handleLoginClick() {
     InputElement nameInput = shadowRoot.querySelector("#nameInput");

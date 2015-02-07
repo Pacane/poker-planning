@@ -61,8 +61,9 @@ class CurrentUser {
       print("Cannot access $sourceRoute, sending back to login.");
 
       if (parameters == null) {
-        parameters = new Map();
+        parameters = {};
       }
+
       parameters["sourceRoute"] = sourceRoute;
 
       router.go(Routes.LOGIN, parameters);
