@@ -55,7 +55,7 @@ class AppRouter implements Function {
             enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.LOGIN)),
             preEnter: (RoutePreEnterEvent e) {
               if (e.parameters['id'] == 'null') {
-                router.go('login_without_id', e.parameters);
+                router.go('login_without_id', e.parameters, replace: true);
               }
             }
         ),
@@ -66,7 +66,7 @@ class AppRouter implements Function {
             preEnter: (RoutePreEnterEvent e) {
               print(e.parameters);
               if (e.parameters['id'] == 'null') {
-                router.go('lobby', e.parameters);
+                router.go('lobby', e.parameters, replace: true);
               } else {
                 e.allowEnter(checkLogin(Routes.GAMES, router.activePath, e.parameters));
               }
