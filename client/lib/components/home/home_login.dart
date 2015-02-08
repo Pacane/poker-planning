@@ -19,7 +19,22 @@ class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
   SocketCommunication _socketCommunication;
   Scope _scope;
   RouteProvider routeProvider;
-  String get previousRoute => routeProvider.parameters["sourceRoute"];
+
+  String get previousRoute {
+    if (!router.activePath.isEmpty && _parameters != null) {
+      return _parameters["sourceRoute"];
+    } else {
+      return null;
+    }
+  }
+
+  Map<String, String> get _parameters {
+    if (!router.activePath.isEmpty) {
+      return router.activePath.last.parameters;
+    } else {
+      return null;
+    }
+  }
 
   LoginComponent(this._session, this._socketCommunication, this.router, this.routeProvider);
 
@@ -38,15 +53,9 @@ class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
     if (newName.isEmpty) return;
 
     _session.userName = newName;
-    _session.onUserExists(previousRoute);
+    _session.onUserExists(previousRoute, _parameters);
 
     checkDisplayState();
-
-    if (previousRoute == null) {
-      start();
-    } else {
-      start(previousRoute, routeProvider.parameters);
-    }
   }
 
   void set scope(Scope scope) {
@@ -67,7 +76,7 @@ class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
   void attach() {
     if (previousRoute == null && _session.userName != null) {
       print("attached null route");
-      _session.onUserExists(null);
+      _session.onUserExists(Routes.GAMES, {});
     } else if (_session.userName == null) {
       _session.hideLoginStatus();
     }

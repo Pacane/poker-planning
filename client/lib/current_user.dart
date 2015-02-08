@@ -40,35 +40,33 @@ class CurrentUser {
     querySelector("#loggedIn").classes.add("hidden");
   }
 
-  void onUserExists(String sourceRoute) {
+  void onUserExists(String sourceRoute, Map parameters) {
     print("source route: $sourceRoute");
 
     showLoginSuccessful();
 
     if (sourceRoute != null) {
-      router.go(sourceRoute, {}, forceReload: true);
+      router.go(sourceRoute, parameters, forceReload: true);
     }
   }
 
   void sendBackToGames(String msg) {
     window.alert(msg);
-    router.go(Routes.GAMES, {});
+    router.go(Routes.GAMES, {'id' : null}, replace: true, forceReload: true);
   }
 
-  void checkLogin(String sourceRoute, [Map parameters]) {
+  bool checkLogin(String sourceRoute, Map parameters) {
     if (userName == null) {
       hideLoginStatus();
       print("Cannot access $sourceRoute, sending back to login.");
 
-      if (parameters == null) {
-        parameters = {};
-      }
-
       parameters["sourceRoute"] = sourceRoute;
 
       router.go(Routes.LOGIN, parameters);
+      return false;
     } else {
       showLoginSuccessful();
+      return true;
     }
   }
 }

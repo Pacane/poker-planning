@@ -7,7 +7,6 @@ class Routes {
 
   static const String ROOT = 'root';
   static const String GAMES = 'games';
-  static const String GAME = 'game';
   static const String LOGIN = 'login';
   static const String LOGOUT = 'logout';
 
