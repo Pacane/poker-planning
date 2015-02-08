@@ -21,7 +21,7 @@ class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
   RouteProvider routeProvider;
 
   String get previousRoute {
-    if (!router.activePath.isEmpty && _parameters != null) {
+    if (_parameters != null) {
       return _parameters["sourceRoute"];
     } else {
       return null;
