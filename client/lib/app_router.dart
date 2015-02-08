@@ -64,7 +64,6 @@ class AppRouter implements Function {
             view: 'view/game.html',
             enter: (e) => sendGoogleAnalyticsPageView(e.path),
             preEnter: (RoutePreEnterEvent e) {
-              print(e.parameters);
               if (e.parameters['id'] == 'null') {
                 router.go('lobby', e.parameters, replace: true);
               } else {
