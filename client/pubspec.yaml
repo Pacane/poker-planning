@@ -14,3 +14,7 @@ dev_dependencies:
 transformers:
 - async_await
 - angular
+dependency_overrides:
+  route_hierarchical:
+    version: any
+    path: "lib/route_hierarchical"
