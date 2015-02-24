@@ -1,0 +1,29 @@
+@import url("../../css/layout.css");
+
+.cardsContainer {
+    vertical-align: bottom;
+    display: inline-block;
+}
+
+.card {
+    font-size: 2em;
+    background-color: #5b5e6d;
+    color: #fff;
+
+    padding: 10px 0;
+
+    -webkit-transition: all .1s;
+    transition: all .1s;
+}
+
+.card:hover {
+    background-color: #5b5e6d;
+    color: #fff;
+
+    cursor: pointer;
+}
+
+.selected {
+    background-color: #5b5e6d;
+    color: #fff;
+}

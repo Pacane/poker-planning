@@ -1,5 +1,0 @@
-name: poker_planning_server
-version: 0.0.1
-description: PokerPlanning app backend
-dependencies:
-  dart_config: any

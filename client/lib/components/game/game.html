@@ -1,0 +1,40 @@
+<div id="game" class="row">
+    <div class="col-6">
+        <h2>Players in game</h2>
+    </div>
+
+    <div id="players">
+        <game-player ng-repeat="tuple in players"
+                    playerName="tuple.first"
+                    value="tuple.second"
+                    revealed="gameRevealed">
+        </game-player>
+    </div>
+
+    <div class="col-6">
+        <h2>My cards</h2>
+    </div>
+    
+    <div id="myCards">
+        <game-card value="0"></game-card>
+        <game-card value="½"></game-card>
+        <game-card value="1"></game-card>
+        <game-card value="2"></game-card>
+        <game-card value="3"></game-card>
+        <game-card value="5"></game-card>
+        <game-card value="8"></game-card>
+        <game-card value="13"></game-card>
+        <game-card value="20"></game-card>
+        <game-card value="40"></game-card>
+        <game-card value="∞"></game-card>
+        <game-card value="?"></game-card>
+    </div>
+
+    <div class="col-6">
+        <div id="actions">
+            <button id="revealOthersCards" ng-click="revealOthersCards()">Reveal others' cards</button>
+            <button id="reset" ng-click="initReset()">Reset</button>
+        </div>
+    </div>
+</div>
+

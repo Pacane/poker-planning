@@ -1,0 +1,147 @@
+@import url("reset.css");
+@import url("fonts/icomoon/icomoon.css");
+
+html {
+    font-size: 62.5%;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    background: #fff url('/background.jpg') no-repeat center top;
+    color: #3f3f3f;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.4em;
+    font-weight: normal;
+    line-height: 1;
+}
+
+/* -- Elements ------------------------------- */
+
+h1,
+h1 a {
+    font-size: 3rem;
+    text-transform: uppercase;
+    color: #fff;
+    text-decoration: none;
+}
+
+h1 strong {
+    text-transform: lowercase;
+}
+
+h1 span {
+    font-weight: 300;
+}
+
+h2 {
+    font-size: 2.5rem;
+    line-height: 1;
+
+    margin-bottom: 1em;
+}
+
+h3 {
+    margin-bottom: .6em;
+    
+}
+
+p {
+    line-height: 1.4;
+
+    margin-bottom: 1.4rem;
+}
+
+hr {
+    background-color: #de6e7c;
+    
+    display: block;
+    width: 100%;
+    height: 1px;
+    border: 0;
+    margin: 2em 0;
+}
+
+button,
+input[type="submit"] {
+    background-color: #5b5e6d;
+    color: #fff;
+
+    display: inline-block;
+    padding: 10px;
+    border: 2px solid #5b5e6d;
+
+    -webkit-transition: all .1s;
+    transition: all .1s;
+}
+
+button:hover,
+input[type="submit"]:hover {
+    background-color: #2b2d34;
+    
+    border-color: #2b2d34;
+
+    cursor: pointer;
+}
+
+/* -- Grid system ---------------------------- */
+
+.row:before,
+.row:after {
+    content: "";
+
+    display: table;
+    clear: both;
+}
+
+[class*='col-'] {
+    min-height: 1px;
+    width: 16.66%;
+    padding: 12px;
+    
+    float: left;
+}
+
+/* -> Default grid -- */
+.col-half { width: 8.33%; }
+.col-1 { width: 16.66%; }
+.col-2 { width: 33.33%; }
+.col-3 { width: 50%;    }
+.col-4 { width: 66.66%; }
+.col-5 { width: 83.33%; }
+.col-6 { width: 100%;   }
+
+/* -> Medium grid -- */
+@media(max-width: 959px) {
+    .col-m-1 { width: 16.66%; }
+    .col-m-2 { width: 33.33%; }
+    .col-m-3 { width: 50%;    }
+    .col-m-4 { width: 66.66%; }
+    .col-m-5 { width: 83.33%; }
+    .col-m-6 { width: 100%;   }
+}
+
+/* -> Small grid -- */
+@media(max-width: 649px) {
+    .col-s-1 { width: 16.66%; }
+    .col-s-2 { width: 33.33%; }
+    .col-s-3 { width: 50%;    }
+    .col-s-4 { width: 66.66%; }
+    .col-s-5 { width: 83.33%; }
+    .col-s-6 { width: 100%;   }
+}
+
+/* -- Classes --------------------------------- */
+
+.clearfix:before, .clearfix:after { content: "\0020"; display: block; height: 0; overflow: hidden; }
+.clearfix:after { clear: both; }
+.clearfix { zoom: 1; }
+
+.hidden {
+    display: none;
+}
+
+.lonely {
+    margin-bottom: 0;
+}

@@ -13,9 +13,18 @@ And create the following entries for local development:
 ```
 hostname: localhost
 port: whateverYouWant
+restPort: somethingElse
 ```
 
 Use whatever port you'd like (e.g.: 4040) and use it on both projects
+
+This is what I use for both client and server when developing:
+
+```
+hostname: localhost
+port: 4040
+restPort: 3010
+```
 
 Then to launch the server, cd into the server directory and type `dart main.dart`
 

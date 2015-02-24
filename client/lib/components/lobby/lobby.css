@@ -1,0 +1,35 @@
+@import url("../../css/layout.css");
+
+#games {
+    list-style-type: none;
+
+    margin-top: 1.2rem;
+}
+
+#games > li {
+    margin-bottom: 1rem;
+}
+
+#games > li > a {
+    color: #3f3f3f;
+    background-color: #eeedef;
+    text-decoration: none;
+
+    display: block;
+    padding: 1rem;
+}
+
+#games > li > a:hover {
+    color: #fff;
+}
+
+#games > li > a > span {
+    background-color: #5c5d6d;
+    color: #fff;
+    
+    display: inline-block;
+    margin: -1rem 1rem 0 -1rem;
+    padding: 1rem;
+
+    float: left;
+}

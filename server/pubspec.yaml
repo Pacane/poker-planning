@@ -1,0 +1,14 @@
+name: poker_planning_server
+version: 0.0.1
+description: PokerPlanning app backend
+dependencies:
+  dart_config: any
+  redstone: any
+  shelf: ">=0.5.7 <0.6.0"
+  poker_planning_shared:
+      path: ../shared
+  logging_handlers: any
+dependency_overrides:
+  route_hierarchical:
+    version: any
+    git: https://github.com/ArcBees/route.dart.git
