@@ -29,8 +29,9 @@ class AppRouter implements Function {
     return new Future.value(currentUser.checkLogin(sourceRoute, parameters));
   }
 
-  void logout() {
-    print("LOGGING OUT ALMOST");
+  void logout(Router router) {
+    currentUser.logOffCurrentUser();
+    router.go(Routes.ROOT, {});
   }
 
   void sendGoogleAnalyticsPageView(String path) {
@@ -39,6 +40,10 @@ class AppRouter implements Function {
 
   call(Router router, RouteViewFactory views) {
     views.configure({
+        Routes.LOGOUT: ngRoute(
+            path: Routes.toPath('${Routes.LOGOUT}'),
+            enter: (_) => logout(router)
+        ),
         'login_without_params': ngRoute(
             path: Routes.toPath('${Routes.LOGIN}'),
             view: 'view/home.html',
@@ -55,7 +60,7 @@ class AppRouter implements Function {
             enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.LOGIN)),
             preEnter: (RoutePreEnterEvent e) {
               if (e.parameters['id'] == 'null') {
-                router.go('login_without_id', e.parameters, replace: true);
+                router.go('login_without_id', e.parameters, replace: true, forceReload: true);
               }
             }
         ),
@@ -77,11 +82,8 @@ class AppRouter implements Function {
             enter: (_) => sendGoogleAnalyticsPageView(Routes.toPath(Routes.GAMES)),
             preEnter: (RoutePreEnterEvent e) => e.allowEnter(checkLogin(Routes.GAMES, router.activePath))
         ),
-        Routes.LOGOUT: ngRoute(
-            path: Routes.toPath('${Routes.LOGOUT}/:sourceRoute'),
-            preEnter: (_) => logout()
-        ),
         Routes.ROOT: ngRoute(
+            path: '/',
             view: 'view/home.html',
             enter: (_) => sendGoogleAnalyticsPageView('/'),
             defaultRoute: true

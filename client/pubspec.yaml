@@ -14,3 +14,7 @@ dev_dependencies:
 transformers:
 - async_await
 - angular
+dependency_overrides:
+  route_hierarchical:
+    version: any
+    git: https://github.com/ArcBees/route.dart.git

@@ -1,4 +1,5 @@
 import 'dart:html';
+import 'dart:async';
 
 import 'package:angular/angular.dart';
 
@@ -26,8 +27,7 @@ class CurrentUser {
 
   void logOffCurrentUser() {
     localStorage.remove('username');
-    querySelector("#nameSpan").text = userName;
-    querySelector("#loggedIn").classes.add("hidden");
+    hideLoginStatus();
   }
 
   void showLoginSuccessful() {
@@ -52,7 +52,7 @@ class CurrentUser {
 
   void sendBackToGames(String msg) {
     window.alert(msg);
-    router.go(Routes.GAMES, {'id' : null}, replace: true, forceReload: true);
+    router.go(Routes.GAMES, {}, replace: true, forceReload: true);
   }
 
   bool checkLogin(String sourceRoute, Map parameters) {
@@ -62,7 +62,8 @@ class CurrentUser {
 
       parameters["sourceRoute"] = sourceRoute;
 
-      router.go(Routes.LOGIN, parameters);
+      new Future.delayed(new Duration(milliseconds:10),
+          () => router.go(Routes.LOGIN, parameters, replace: true, forceReload:true));
       return false;
     } else {
       showLoginSuccessful();
