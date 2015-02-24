@@ -51,7 +51,7 @@ class CreateGameComponent implements ScopeAware, ShadowRootAware {
       if (response.status == 200) { // TODO: Find this constant
         var createdGame = JSON.decode(response.response);
         var gameId = createdGame["id"];
-        router.go(Routes.GAME, {"id" : gameId});
+        router.go(Routes.GAMES, {"id" : gameId});
       }
     });
   }
