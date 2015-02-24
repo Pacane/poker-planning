@@ -17,40 +17,19 @@ import 'package:poker_planning_shared/game.dart';
     selector: 'lobby',
     cssUrl: 'packages/poker_planning_client/components/lobby/lobby.css',
     templateUrl: 'packages/poker_planning_client/components/lobby/lobby.html')
-class GamesComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootAware {
+class GamesComponent implements AttachAware {
   CurrentUser currentUser;
-  Router router;
   SocketCommunication socketCommunication;
-  Scope _scope;
-  ShadowRoot _shadowRoot;
   Config config;
   @NgTwoWay("games")
   List<Game> games;
 
-  GamesComponent(this.currentUser, this.router, this.socketCommunication, this.config);
-
-  void handleMessage(data) {
-  }
-
-  void set scope(Scope scope) {
-    this._scope = scope;
-  }
+  GamesComponent(this.currentUser, this.socketCommunication, this.config);
 
   void attach() {
     var url = "http://${config.hostname}:${config.restPort}/games"; // TODO: Extract route
     var request = HttpRequest.getString(url).then((value){
       games = JSON.decode(value).map((map) => new Game.fromMap(map)).toList();
     });
-  }
-
-  void detach() {
-  }
-
-  void onShadowRoot(ShadowRoot shadowRoot) {
-    _shadowRoot = shadowRoot;
-  }
-
-  void createGame() {
-    router.go(Routes.NEW_GAME, {});
   }
 }
