@@ -8,3 +8,7 @@ dependencies:
   poker_planning_shared:
       path: ../shared
   logging_handlers: any
+dependency_overrides:
+  route_hierarchical:
+    version: any
+    git: https://github.com/ArcBees/route.dart.git

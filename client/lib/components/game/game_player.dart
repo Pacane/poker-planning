@@ -5,9 +5,9 @@ import 'dart:html';
 import 'package:angular/angular.dart';
 
 @Component(
-    selector: 'table-card',
-    cssUrl: 'packages/poker_planning_client/components/css/table_card.css',
-    templateUrl: 'packages/poker_planning_client/components/table_card.html')
+    selector: 'game-player',
+    cssUrl: 'packages/poker_planning_client/components/game/game_player.css',
+    templateUrl: 'packages/poker_planning_client/components/game/game_player.html')
 class TableCard implements ShadowRootAware, ScopeAware {
   @NgTwoWay("playerName")
   String playerName;
@@ -27,13 +27,14 @@ class TableCard implements ShadowRootAware, ScopeAware {
 
   void applyStyles() {
     if (value == "Y") {
-      setSelected(true);
-      valueToDisplay = "...";
+      setClass("selected");
+      valueToDisplay = "";
     } else if (revealed) {
+      setClass("");
       valueToDisplay = value;
-      setSelected(false);
     } else if (value == "") {
-      valueToDisplay = "...";
+      setClass("waiting");
+      valueToDisplay = "";
     }
   }
 
@@ -44,8 +45,11 @@ class TableCard implements ShadowRootAware, ScopeAware {
     applyStyles();
   }
 
-  void setSelected(bool selected) {
-    _cardDiv.classes.toggle("selected", selected);
+  void setClass(String classname) {
+    _cardDiv.classes.clear();
+    if(classname != "") {
+      _cardDiv.classes.add(classname);
+    }
   }
 
   void kickPlayer() {

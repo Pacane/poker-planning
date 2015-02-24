@@ -1,4 +1,4 @@
-@import url("_layout.css");
+@import url("../../css/layout.css");
 
 .cardSpacer {
     height: 76px;
@@ -17,11 +17,10 @@
 #myCards {
     text-align: center;
 
-    border-bottom: 2px solid #3f3f3f;
     margin-bottom: 2em;
 }
 
-#othersCards {
+#players {
     text-align: center;
 
     margin-bottom: 2em;

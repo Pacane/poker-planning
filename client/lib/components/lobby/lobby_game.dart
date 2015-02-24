@@ -13,9 +13,9 @@ import 'package:poker_planning_client/config.dart';
 import 'package:poker_planning_shared/game.dart';
 
 @Component(
-    selector: 'create-game-component',
-    cssUrl: 'packages/poker_planning_client/components/css/_layout.css',
-    templateUrl: 'packages/poker_planning_client/components/create_game_component.html')
+    selector: 'lobby-gameCreate',
+    cssUrl: 'packages/poker_planning_client/css/layout.css',
+    templateUrl: 'packages/poker_planning_client/components/lobby/lobby_game.html')
 class CreateGameComponent implements ScopeAware, ShadowRootAware {
   CurrentUser currentUser;
   Router router;
@@ -51,7 +51,7 @@ class CreateGameComponent implements ScopeAware, ShadowRootAware {
       if (response.status == 200) { // TODO: Find this constant
         var createdGame = JSON.decode(response.response);
         var gameId = createdGame["id"];
-        router.go(Routes.GAME, {"id" : gameId});
+        router.go(Routes.GAMES, {"id" : gameId});
       }
     });
   }

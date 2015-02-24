@@ -11,9 +11,9 @@ import 'package:poker_planning_client/socket_communication.dart';
 import "package:logging/logging.dart";
 
 @Component(
-    selector: 'login-component',
-    cssUrl: 'packages/poker_planning_client/components/css/_layout.css',
-    templateUrl: 'packages/poker_planning_client/components/login_component.html')
+    selector: 'home-login',
+    cssUrl: 'packages/poker_planning_client/css/layout.css',
+    templateUrl: 'packages/poker_planning_client/components/home/home_login.html')
 class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
   ShadowRoot shadowRoot;
   Router router;
@@ -22,11 +22,32 @@ class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
   Scope _scope;
   RouteProvider routeProvider;
   Logger logger = Logger.root;
-  String get previousRoute => routeProvider.parameters["sourceRoute"];
+
+  String get previousRoute {
+    if (_parameters != null) {
+      return _parameters["sourceRoute"];
+    } else {
+      return null;
+    }
+  }
+
+  Map<String, String> get _parameters {
+    if (!router.activePath.isEmpty) {
+      return router.activePath.last.parameters;
+    } else {
+      return null;
+    }
+  }
 
   LoginComponent(this._session, this._socketCommunication, this.router, this.routeProvider);
 
-  start() => router.go(Routes.GAMES, {});
+  start([String route = Routes.GAMES, Map parameters]) {
+    if (parameters == null) {
+      parameters = {};
+    }
+
+    router.go(route, parameters);
+  }
 
   void handleLoginClick() {
     InputElement nameInput = shadowRoot.querySelector("#nameInput");
@@ -35,7 +56,7 @@ class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
     if (newName.isEmpty) return;
 
     _session.userName = newName;
-    _session.onUserExists(previousRoute);
+    _session.onUserExists(previousRoute, _parameters);
 
     checkDisplayState();
   }
@@ -58,7 +79,7 @@ class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
   void attach() {
     if (previousRoute == null && _session.userName != null) {
       logger.info("attached null route");
-      _session.onUserExists(null);
+      _session.onUserExists(Routes.GAMES, {});
     } else if (_session.userName == null) {
       _session.hideLoginStatus();
     }

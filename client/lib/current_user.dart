@@ -1,4 +1,5 @@
 import 'dart:html';
+import 'dart:async';
 
 import 'package:angular/angular.dart';
 
@@ -29,8 +30,7 @@ class CurrentUser {
 
   void logOffCurrentUser() {
     localStorage.remove('username');
-    querySelector("#nameSpan").text = userName;
-    querySelector("#loggedIn").classes.add("hidden");
+    hideLoginStatus();
   }
 
   void showLoginSuccessful() {
@@ -43,30 +43,34 @@ class CurrentUser {
     querySelector("#loggedIn").classes.add("hidden");
   }
 
-  void onUserExists(String sourceRoute) {
+  void onUserExists(String sourceRoute, Map parameters) {
     logger.fine("source route: $sourceRoute");
 
     showLoginSuccessful();
 
     if (sourceRoute != null) {
-      router.go(sourceRoute, {}, forceReload: true);
-    } else {
-      router.go(Routes.GAMES, {}, forceReload: true);
+      router.go(sourceRoute, parameters, forceReload: true);
     }
   }
 
   void sendBackToGames(String msg) {
     window.alert(msg);
-    router.go(Routes.GAMES, {}, forceReload: true);
+    router.go(Routes.GAMES, {}, replace: true, forceReload: true);
   }
 
-  void checkLogin(String sourceRoute) {
+  bool checkLogin(String sourceRoute, Map parameters) {
     if (userName == null) {
       hideLoginStatus();
       logger.info("Cannot access $sourceRoute, sending back to login.");
-      router.go("login", {"sourceRoute" : sourceRoute}, forceReload: true);
+
+      parameters["sourceRoute"] = sourceRoute;
+
+      new Future.delayed(new Duration(milliseconds:10),
+          () => router.go(Routes.LOGIN, parameters, replace: true, forceReload:true));
+      return false;
     } else {
       showLoginSuccessful();
+      return true;
     }
   }
 }

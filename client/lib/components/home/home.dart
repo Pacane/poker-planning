@@ -7,18 +7,13 @@ import 'package:angular/angular.dart';
 import 'package:poker_planning_client/current_user.dart';
 
 @Component(
-    selector: 'home-component',
-    cssUrl: 'packages/poker_planning_client/components/css/_layout.css',
-    templateUrl: 'packages/poker_planning_client/components/home_component.html')
-class HomeComponent implements ShadowRootAware, AttachAware {
-  ShadowRoot shadowRoot;
+    selector: 'home',
+    cssUrl: 'packages/poker_planning_client/css/layout.css',
+    templateUrl: 'packages/poker_planning_client/components/home/home.html')
+class HomeComponent implements AttachAware {
   CurrentUser currentUser;
 
   HomeComponent(this.currentUser);
-
-  void onShadowRoot(ShadowRoot shadowRoot) {
-    this.shadowRoot = shadowRoot;
-  }
 
   void attach() {
     /* TODO: Find a better way to manage the "logged in as XXX" for the cases of
