@@ -27,13 +27,14 @@ class TableCard implements ShadowRootAware, ScopeAware {
 
   void applyStyles() {
     if (value == "Y") {
-      setSelected(true);
-      valueToDisplay = "...";
+      setClass("selected");
+      valueToDisplay = "";
     } else if (revealed) {
+      setClass("");
       valueToDisplay = value;
-      setSelected(false);
     } else if (value == "") {
-      valueToDisplay = "...";
+      setClass("waiting");
+      valueToDisplay = "";
     }
   }
 
@@ -44,8 +45,11 @@ class TableCard implements ShadowRootAware, ScopeAware {
     applyStyles();
   }
 
-  void setSelected(bool selected) {
-    _cardDiv.classes.toggle("selected", selected);
+  void setClass(String classname) {
+    _cardDiv.classes.clear();
+    if(classname != "") {
+      _cardDiv.classes.add(classname);
+    }
   }
 
   void kickPlayer() {
