@@ -17,4 +17,4 @@ transformers:
 dependency_overrides:
   route_hierarchical:
     version: any
-    path: "lib/route_hierarchical"
+    git: https://github.com/ArcBees/route.dart.git
