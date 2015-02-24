@@ -5,29 +5,32 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:angular/angular.dart';
 
+import "package:logging/logging.dart";
+
 @Injectable()
 class SocketCommunication {
   String hostname;
   int port;
   WebSocket ws;
+  Logger logger = Logger.root;
 
   SocketCommunication(this.hostname, this.port);
 
   void initWebSocket([retrySeconds = 2]) {
-    print("Connecting to websocket");
+    logger.info("Connecting to websocket");
     ws = new WebSocket('ws://$hostname:$port/ws');
 
-    ws.onOpen.listen((_) => print("Connected"));
+    ws.onOpen.listen((_) => logger.info("Connected"));
 
     ws.onClose.listen((e) {
-      print('Websocket closed');
+      logger.info('Websocket closed');
     });
 
     ws.onError.listen((e) {
-      print("Error connecting to ws");
+      logger.warning("Error connecting to ws");
     });
 
-    ws.onMessage.listen((MessageEvent e) => print(e.data));
+    ws.onMessage.listen((MessageEvent e) => logger.info(e.data));
   }
 
   void sendSocketMsg(Object jsObject) {
