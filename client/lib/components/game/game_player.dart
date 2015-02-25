@@ -63,7 +63,7 @@ class TableCard implements ShadowRootAware, ScopeAware {
   }
 
   void resetCard(_) {
-    setSelected(false);
+    setClass("");
     value = "";
     valueToDisplay = "...";
   }
