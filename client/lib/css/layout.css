@@ -28,7 +28,7 @@ header {
     color: #d3e2c7;
 
     padding: 5.5em 0 1.4em;
-    margin-bottom: 2em;
+    margin-bottom: 2rem;
 }
 
 #loggedIn {
@@ -52,6 +52,7 @@ header {
 @media(max-width: 959px) {
     header {
         padding-top: 1.5em;
+        margin-bottom: 5rem;
     }
 
     #loggedIn {
