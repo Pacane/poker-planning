@@ -8,7 +8,7 @@ class CurrentGame {
   int _gameId;
 
   void setGameId(String newGameId) {
-    _gameId = int.parse(newGameId);
+    _gameId = int.parse(newGameId, onError: (_) => null);
   }
 
   int getGameId() {
