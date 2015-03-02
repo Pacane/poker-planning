@@ -31,12 +31,14 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   Logger logger = Logger.root;
 
   @NgOneWay("players")
-  List<Tuple<String, String>> players = [];
+  List<Tuple<String, String>> players;
 
   @NgOneWay("gameRevealed")
   bool gameRevealed;
 
-  GameComponent(this.currentUser, this.router, this.socketCommunication, this.currentGame, this.routeProvider, this.config);
+  GameComponent(this.currentUser, this.router, this.socketCommunication, this.currentGame, this.routeProvider, this.config) {
+    players = currentGame.players;
+  }
 
   void revealOthersCards() => socketCommunication.sendSocketMsg({
       "revealAll": currentGame.getGameId()
@@ -49,7 +51,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   }
 
   void gameHasReset() {
-    players.forEach((t) => t.second = "");
+    currentGame.players.forEach((t) => t.second = "");
     _scope.broadcast("game-has-reset", {});
   }
 
@@ -88,10 +90,10 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   }
 
   void updateCard(String player, String card) {
-    if (!players.any((x) => x.first == player)) {
-      players.add(new Tuple(player, card));
+    if (!currentGame.players.any((x) => x.first == player)) {
+      currentGame.players.add(new Tuple(player, card));
     } else {
-      players.forEach((t) {
+      currentGame.players.forEach((t) {
         if (t.first == player) {
           t.second = card;
           return;
@@ -114,7 +116,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   }
 
   void removePlayersWhoLeft(Map game) {
-    players.removeWhere((t) => !game.containsKey(t.first));
+    currentGame.players.removeWhere((t) => !game.containsKey(t.first));
   }
 
   void kickPlayer(String player) {
@@ -122,15 +124,15 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
         new KickEvent(currentGame.getGameId(), player, currentUser.userName).toJson());
   }
 
-  void handleKick(Map kick) {
-    String kicked = kick["kicked"];
-    String kickedBy = kick["kickedBy"];
-    int gameId = kick["gameId"];
+  void handleKick(KickEvent kick) {
+    int gameId = kick.gameId;
     if (gameId != currentGame.getGameId()) {
       return;
     }
 
-    players.removeWhere((p) => p.first == kicked);
+    String kicked = kick.kickedBy;
+    String kickedBy = kick.kickedBy;
+    currentGame.players.removeWhere((p) => p.first == kicked);
 
     if (kicked == currentUser.userName) {
       var msg = "you have been kicked by: $kickedBy";

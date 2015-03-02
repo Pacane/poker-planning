@@ -30,15 +30,6 @@ class KickEventHandler extends MessageHandler<KickEvent> {
     }
 
     game.players.remove(kickedPlayer);
-    broadcaster.broadcastData(game, JSON.encode(
-        {
-            "kick" :
-            {
-                "kicked" : kickedPlayer,
-                "kickedBy" : kickedBy,
-                "gameId" : game.id
-            }
-        })
-    );
+    broadcaster.broadcastData(game, JSON.encode(message.toJson()));
   }
 }

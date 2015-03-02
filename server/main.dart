@@ -38,7 +38,7 @@ Logger logger = Logger.root;
 
 void resetGame(Game game) {
   logger.info("sending reset signal");
-  broadcastData(game, JSON.encode({
+  broadcaster.broadcastData(game, JSON.encode({
       "gameHasReset": game.id
   }));
 }

@@ -3,7 +3,18 @@ import 'kick_event.dart';
 import 'error.dart';
 
 class MessageFactory {
-  Message create(String type, Map content) {
+  Message create(Map data) {
+    String type = data['type'];
+    Map content = data['content'];
+
+    if (type != null && content != null) {
+      return _create(type, content);
+    }
+
+    return null;
+  }
+
+  Message _create(String type, Map content) {
     switch (type) {
       case KickEvent.MSG_TYPE:
         return new KickEvent.fromJson(content);

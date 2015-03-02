@@ -10,11 +10,8 @@ class MessageHandlers {
   MessageHandlers(this.messageFactory, this._handlers);
 
   void handleMessage(Map json) {
-    String type = json['type'];
-    Map content = json['content'];
-
-    if (type != null && content != null) {
-      Message message = messageFactory.create(type, content);
+    Message message = messageFactory.create(json);
+    if (message != null) {
       for (MessageHandler handler in _handlers) {
         handler.handleMessage(message);
       }
