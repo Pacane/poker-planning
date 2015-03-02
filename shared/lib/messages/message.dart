@@ -1,22 +1,24 @@
 library message;
 
-class Message {
+abstract class Message {
   String type;
   Map content = {};
 
-  Message(this.type, this.content) {
+  Message(this.type) {
     if (type == null) {
       throw new ArgumentError.notNull('type');
     }
-    if (content == null) {
-      throw new ArgumentError.notNull('content');
-    }
   }
+
+  void setContent();
 
   Map toJson() {
     Map map = new Map();
     map['type'] = type;
     map['content'] = content;
+
+    setContent();
+
     return map;
   }
 }

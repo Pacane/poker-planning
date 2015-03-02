@@ -1,15 +1,11 @@
 import '../message.dart';
 
-abstract class MessageHandler {
-  String messageType;
-
-  MessageHandler(this.messageType);
-
+abstract class MessageHandler<T extends Message> {
   void tryHandlingMessage(Message message) {
-    if (this.messageType == message.type) {
+    if (message is T) {
       handleMessage(message);
     }
   }
 
-  void handleMessage(Message message);
+  void handleMessage(T message);
 }

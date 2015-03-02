@@ -1,12 +1,21 @@
 import 'message.dart';
 
-class Error extends Message {
-  Error(Map content) : super('error', content) {
-    if (content == null) {
-      throw new ArgumentError.notNull('content');
-    }
+class ErrorEvent extends Message {
+  static const String MSG_TYPE = "error";
+
+  String message;
+
+  ErrorEvent(this.message) : super(MSG_TYPE) {
     if (content['message'] == null) {
       throw new ArgumentError.notNull('message');
     }
+  }
+
+  factory ErrorEvent.fromJson(Map content) {
+    return new ErrorEvent(content['message']);
+  }
+
+  void setContent() {
+    content['message'] = message;
   }
 }

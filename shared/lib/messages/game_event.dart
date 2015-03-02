@@ -1,23 +1,15 @@
 import 'message.dart';
 
-class GameEvent extends Message {
-  String event;
+abstract class GameEvent extends Message {
   int gameId;
 
-  GameEvent(this.event, this.gameId, Map content) : super('gameEvent', content) {
-    if (event == null) {
-      throw new ArgumentError.notNull('event');
-    }
+  GameEvent(type, this.gameId) : super(type) {
     if (gameId == null) {
       throw new ArgumentError.notNull('gameId');
     }
   }
 
-  Map toJson() {
-    Map json = super.toJson();
-    json['event'] = event;
-    json['gameId'] = gameId;
-
-    return json;
+  void setContent() {
+    content['gameId'] = gameId;
   }
 }

@@ -12,6 +12,8 @@ import 'package:poker_planning_client/config.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/routes.dart';
 
+import 'package:poker_planning_shared/messages/kick_event.dart';
+
 import "package:logging/logging.dart";
 
 @Component(
@@ -116,9 +118,8 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   }
 
   void kickPlayer(String player) {
-    socketCommunication.sendSocketMsg({
-        "kicked" : [player, currentUser.userName, currentGame.getGameId()]
-    });
+    socketCommunication.sendSocketMsg(
+        new KickEvent(currentGame.getGameId(), player, currentUser.userName).toJson());
   }
 
   void handleKick(Map kick) {
