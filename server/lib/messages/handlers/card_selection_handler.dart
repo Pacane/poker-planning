@@ -1,6 +1,4 @@
-library kick_event_handler;
-
-import 'dart:convert';
+library card_selection_handler;
 
 import 'package:logging/logging.dart';
 
@@ -9,20 +7,22 @@ import 'package:poker_planning_server/repository/game_repository.dart';
 
 import 'package:poker_planning_shared/game.dart';
 import 'package:poker_planning_shared/messages/handlers/message_handler.dart';
-import 'package:poker_planning_shared/messages/kick_event.dart';
+import 'package:poker_planning_shared/messages/card_selection_event.dart';
 
 
-class KickEventHandler extends MessageHandler<KickEvent> {
+class CardSelectionHandler extends MessageHandler<CardSelectionEvent> {
   Broadcaster broadcaster;
   GameRepository gameRepository;
   Logger logger = Logger.root;
 
-  KickEventHandler(this.gameRepository, this.broadcaster) : super();
+  CardSelectionHandler(this.gameRepository, this.broadcaster) : super();
 
-  void handleMessage(KickEvent message) {
-    String kickedPlayer = message.kicked;
-    String kickedBy = message.kickedBy;
+  void handleMessage(CardSelectionEvent message) {
+    var playerName = message.playerName;
+    var selectedCard = message.selectedCard;
     int gameId = message.gameId;
+
+    logger.info("Adding $playerName card selection: $selectedCard in game $gameId");
 
     Game game = gameRepository.games[gameId];
 
@@ -31,7 +31,8 @@ class KickEventHandler extends MessageHandler<KickEvent> {
       return;
     }
 
-    game.players.remove(kickedPlayer);
-    broadcaster.broadcastData(game, JSON.encode(message.toJson()));
+    game.players[playerName] = selectedCard;
+
+    broadcaster.broadcastGame(game, false);
   }
 }
