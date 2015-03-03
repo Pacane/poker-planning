@@ -20,18 +20,18 @@ class KickEventHandler extends MessageHandler<KickEvent> {
   KickEventHandler(this.game, this.scope, this.currentUser);
 
   void handleMessage(KickEvent message) {
-      int gameId = message.gameId;
+    int gameId = message.gameId;
 
-      String kicked = message.kicked;
-      String kickedBy = message.kickedBy;
+    String kicked = message.kicked;
+    String kickedBy = message.kickedBy;
 
-      game.players.removeWhere((p) => p.first == kicked);
+    game.players.removeWhere((p) => p.first == kicked);
 
-      if (kicked == currentUser.userName) {
-        var msg = "you have been kicked by: $kickedBy";
-        scope.rootScope.broadcast("kicked", msg);
-      } else {
-        logger.warning("$kicked has been kicked by $kickedBy");
-      }
+    if (kicked == currentUser.userName) {
+      var msg = "you have been kicked by: $kickedBy";
+      scope.rootScope.broadcast("kicked", msg);
+    } else {
+      logger.warning("$kicked has been kicked by $kickedBy");
+    }
   }
 }
