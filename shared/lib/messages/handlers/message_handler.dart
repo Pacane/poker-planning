@@ -1,3 +1,5 @@
+library message_handler;
+
 import '../message.dart';
 
 abstract class MessageHandler<T extends Message> {

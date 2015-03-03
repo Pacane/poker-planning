@@ -1,14 +1,37 @@
-import 'package:poker_planning_client/components/game/game.dart';
+library kick_event_handler;
+
+import 'package:angular/angular.dart';
+
+import "package:logging/logging.dart";
 
 import 'package:poker_planning_shared/messages/kick_event.dart';
 import 'package:poker_planning_shared/messages/handlers/message_handler.dart';
 
-class KickEventHandler extends MessageHandler<KickEvent> {
-  GameComponent _game;
+import 'package:poker_planning_client/current_game.dart';
+import 'package:poker_planning_client/current_user.dart';
 
-  KickEventHandler(this._game);
+@Injectable()
+class KickEventHandler extends MessageHandler<KickEvent> {
+  CurrentGame game;
+  CurrentUser currentUser;
+  Scope scope;
+  Logger logger = Logger.root;
+
+  KickEventHandler(this.game, this.scope, this.currentUser);
 
   void handleMessage(KickEvent message) {
-    _game.handleKick(message);
+      int gameId = message.gameId;
+
+      String kicked = message.kicked;
+      String kickedBy = message.kickedBy;
+
+      game.players.removeWhere((p) => p.first == kicked);
+
+      if (kicked == currentUser.userName) {
+        var msg = "you have been kicked by: $kickedBy";
+        scope.rootScope.broadcast("kicked", msg);
+      } else {
+        logger.warning("$kicked has been kicked by $kickedBy");
+      }
   }
 }

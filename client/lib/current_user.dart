@@ -1,3 +1,5 @@
+library current_user;
+
 import 'dart:html';
 import 'dart:async';
 
