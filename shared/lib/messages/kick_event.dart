@@ -5,8 +5,8 @@ import 'game_event.dart';
 class KickEvent extends GameEvent {
   static const String MSG_TYPE = "kickEvent";
 
-  String kicked;
-  String kickedBy;
+  final String kicked;
+  final String kickedBy;
 
   KickEvent(gameId, this.kicked, this.kickedBy) : super(MSG_TYPE, gameId) {
     if (kicked == null) {

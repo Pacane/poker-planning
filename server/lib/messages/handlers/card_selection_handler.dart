@@ -9,7 +9,6 @@ import 'package:poker_planning_shared/game.dart';
 import 'package:poker_planning_shared/messages/handlers/message_handler.dart';
 import 'package:poker_planning_shared/messages/card_selection_event.dart';
 
-
 class CardSelectionHandler extends MessageHandler<CardSelectionEvent> {
   Broadcaster broadcaster;
   GameRepository gameRepository;

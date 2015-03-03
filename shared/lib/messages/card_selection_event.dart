@@ -5,8 +5,8 @@ import 'game_event.dart';
 class CardSelectionEvent extends GameEvent {
   static const String MSG_TYPE = "cardSelectionEvent";
 
-  String playerName;
-  String selectedCard;
+  final String playerName;
+  final String selectedCard;
 
   CardSelectionEvent(gameId, this.playerName, this.selectedCard) : super(MSG_TYPE, gameId) {
     if (playerName == null) {
