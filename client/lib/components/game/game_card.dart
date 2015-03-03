@@ -8,6 +8,8 @@ import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/current_game.dart';
 
+import 'package:poker_planning_shared/messages/card_selection_event.dart';
+
 @Component(
     selector: 'game-card',
     cssUrl: 'packages/poker_planning_client/components/game/game_card.css',
@@ -33,9 +35,7 @@ class MyCard implements ShadowRootAware, ScopeAware {
   }
 
   void onCardSelected() {
-    socketCommunication.sendSocketMsg({
-        "cardSelection": [currentUser.userName, value, currentGame.getGameId()]
-    });
+    socketCommunication.sendSocketMsg(new CardSelectionEvent(currentGame.getGameId(), currentUser.userName, value).toJson());
 
     setSelected(true);
 

@@ -1,6 +1,9 @@
+library message_factory;
+
 import 'message.dart';
 import 'kick_event.dart';
 import 'error.dart';
+import 'card_selection_event.dart';
 
 class MessageFactory {
   Message create(Map data) {
@@ -20,6 +23,8 @@ class MessageFactory {
         return new KickEvent.fromJson(content);
       case ErrorEvent.MSG_TYPE:
         return new ErrorEvent.fromJson(content);
+      case CardSelectionEvent.MSG_TYPE:
+        return new CardSelectionEvent.fromJson(content);
       default:
         return null;
     }

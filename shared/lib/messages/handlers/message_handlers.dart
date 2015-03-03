@@ -1,3 +1,5 @@
+library message_handlers;
+
 import 'message_handler.dart';
 import '../message.dart';
 import '../message_factory.dart';
@@ -12,9 +14,7 @@ class MessageHandlers {
   void handleMessage(Map json) {
     Message message = messageFactory.create(json);
     if (message != null) {
-      for (MessageHandler handler in _handlers) {
-        handler.handleMessage(message);
-      }
+      _handlers.forEach((MessageHandler handler) => handler.tryHandlingMessage(message));
     }
   }
 }
