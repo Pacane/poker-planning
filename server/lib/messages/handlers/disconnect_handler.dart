@@ -11,7 +11,6 @@ import 'package:poker_planning_shared/game.dart';
 import 'package:poker_planning_shared/messages/handlers/connection_message_handler.dart';
 import 'package:poker_planning_shared/messages/disconnect_event.dart';
 
-
 class DisconnectHandler extends ConnectionMessageHandler<DisconnectEvent> {
   Broadcaster broadcaster;
   GameRepository gameRepository;
