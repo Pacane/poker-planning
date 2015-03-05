@@ -5,7 +5,9 @@ import 'package:dart_config/default_server.dart';
 
 import 'package:poker_planning_server/interceptors.dart';
 import 'package:poker_planning_server/broadcaster.dart';
-import 'package:poker_planning_server/messages/handlers/kick_event_handler.dart';
+import 'package:poker_planning_server/messages/handlers/login_handler.dart';
+import 'package:poker_planning_server/messages/handlers/disconnect_handler.dart';
+import 'package:poker_planning_server/messages/handlers/kick_handler.dart';
 import 'package:poker_planning_server/messages/handlers/card_selection_handler.dart';
 import 'package:poker_planning_server/resources/games.dart';
 import 'package:poker_planning_server/repository/game_repository.dart';
@@ -13,6 +15,7 @@ import 'package:poker_planning_server/repository/game_repository.dart';
 import 'package:poker_planning_shared/game.dart';
 import 'package:poker_planning_shared/messages/message_factory.dart';
 import 'package:poker_planning_shared/messages/handlers/message_handlers.dart';
+import 'package:poker_planning_shared/messages/handlers/connection_message_handlers.dart';
 import 'package:poker_planning_shared/loglevel_parser.dart';
 
 import 'package:di/di.dart';
@@ -26,6 +29,7 @@ import 'package:redstone/server.dart' as app;
 GameRepository gameRepository;
 MessageFactory messageFactory;
 MessageHandlers messageHandlers;
+ConnectionMessageHandlers connectionMessageHandlers;
 Broadcaster broadcaster;
 
 Map<String, String> game = {};
@@ -49,30 +53,13 @@ void handleMessage(socket, message) {
   Map decodedMessage = JSON.decode(message);
 
   messageHandlers.handleMessage(decodedMessage);
+  connectionMessageHandlers.handleMessage(decodedMessage, socket);
 
-  var login = decodedMessage["login"];
   var reveal = decodedMessage["revealAll"];
   var reset = decodedMessage["resetRequest"];
   var kicked = decodedMessage["kicked"];
-  var disconnect = decodedMessage["disconnect"];
 
-  if (login != null) {
-    int gameId = login['gameId'];
-    String username = login['username'];
-
-    logger.info("Adding $login to the logged in users of the game # $gameId");
-    Game game = gameRepository.games[gameId];
-
-    if (game == null) {
-      logger.info("Game doesn't exist"); // TODO: Do something
-      return;
-    }
-
-    game.players.putIfAbsent(username, () => '');
-    gameRepository.addConnection(game, socket);
-
-    broadcaster.broadcastGame(game, false);
-  } else if (reveal != null) {
+  if (reveal != null) {
     Game game = gameRepository.games[reveal];
 
     if (game == null) {
@@ -91,20 +78,6 @@ void handleMessage(socket, message) {
 
     game.players.forEach((player, _) => game.players[player] = "");
     resetGame(game);
-    broadcaster.broadcastGame(game, false);
-  } else if (disconnect != null) {
-    String playerName = disconnect[0];
-    int gameId = disconnect[1];
-    Game game = gameRepository.games[gameId];
-
-    if (game == null) {
-      logger.info("Game doesn't exist"); // TODO: Do something
-      return;
-    }
-
-    gameRepository.activeConnections[game].remove(socket);
-    game.players.remove(playerName);
-
     broadcaster.broadcastGame(game, false);
   }
 }
@@ -152,8 +125,14 @@ startGamesServer() {
 
   messageHandlers = new MessageHandlers(messageFactory,
   [
-      new KickEventHandler(gameRepository, broadcaster),
+      new KickHandler(gameRepository, broadcaster),
       new CardSelectionHandler(gameRepository, broadcaster)
+  ]);
+
+  connectionMessageHandlers = new ConnectionMessageHandlers(messageFactory,
+  [
+      new LoginHandler(gameRepository, broadcaster),
+      new DisconnectHandler(gameRepository, broadcaster)
   ]);
 
   setupLogging();

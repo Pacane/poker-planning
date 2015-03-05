@@ -1,4 +1,4 @@
-library kick_event_handler;
+library kick_handler;
 
 import 'dart:convert';
 
@@ -12,12 +12,12 @@ import 'package:poker_planning_shared/messages/handlers/message_handler.dart';
 import 'package:poker_planning_shared/messages/kick_event.dart';
 
 
-class KickEventHandler extends MessageHandler<KickEvent> {
+class KickHandler extends MessageHandler<KickEvent> {
   Broadcaster broadcaster;
   GameRepository gameRepository;
   Logger logger = Logger.root;
 
-  KickEventHandler(this.gameRepository, this.broadcaster) : super();
+  KickHandler(this.gameRepository, this.broadcaster) : super();
 
   void handleMessage(KickEvent message) {
     String kickedPlayer = message.kicked;

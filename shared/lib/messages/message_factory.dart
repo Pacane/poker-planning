@@ -2,6 +2,8 @@ library message_factory;
 
 import 'message.dart';
 import 'kick_event.dart';
+import 'login_event.dart';
+import 'disconnect_event.dart';
 import 'error.dart';
 import 'card_selection_event.dart';
 
@@ -25,6 +27,10 @@ class MessageFactory {
         return new ErrorEvent.fromJson(content);
       case CardSelectionEvent.MSG_TYPE:
         return new CardSelectionEvent.fromJson(content);
+      case LoginEvent.MSG_TYPE:
+        return new LoginEvent.fromJson(content);
+      case DisconnectEvent.MSG_TYPE:
+        return new DisconnectEvent.fromJson(content);
       default:
         return null;
     }

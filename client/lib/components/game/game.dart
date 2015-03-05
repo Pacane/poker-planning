@@ -14,6 +14,8 @@ import 'package:poker_planning_client/routes.dart';
 import 'package:poker_planning_client/messages/handlers/kick_event_handler.dart';
 
 import 'package:poker_planning_shared/messages/kick_event.dart';
+import 'package:poker_planning_shared/messages/login_event.dart';
+import 'package:poker_planning_shared/messages/disconnect_event.dart';
 import 'package:poker_planning_shared/messages/message_factory.dart';
 import 'package:poker_planning_shared/messages/message.dart';
 import 'package:poker_planning_shared/messages/handlers/message_handler.dart';
@@ -157,25 +159,13 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
 
     checkIfGameExists();
 
-    var loginInfo = {
-        'login' :
-        {
-            'gameId': currentGame.getGameId(),
-            'username': currentUser.userName
-        }
-    };
-
-    socketCommunication.sendSocketMsg(loginInfo);
+    socketCommunication.sendSocketMsg(new LoginEvent(currentGame.getGameId(), currentUser.userName));
     socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
   }
 
   void detach() {
     players = [];
-    socketCommunication.sendSocketMsg(
-        {
-            "disconnect": [currentUser.userName, currentGame.getGameId()]
-        }
-    );
+    socketCommunication.sendSocketMsg(new DisconnectEvent(currentGame.getGameId(), currentUser.userName));
 
     currentGame.resetGameId();
   }
