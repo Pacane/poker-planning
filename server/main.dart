@@ -6,6 +6,7 @@ import 'package:dart_config/default_server.dart';
 import 'package:poker_planning_server/interceptors.dart';
 import 'package:poker_planning_server/broadcaster.dart';
 import 'package:poker_planning_server/messages/handlers/login_handler.dart';
+import 'package:poker_planning_server/messages/handlers/disconnect_handler.dart';
 import 'package:poker_planning_server/messages/handlers/kick_handler.dart';
 import 'package:poker_planning_server/messages/handlers/card_selection_handler.dart';
 import 'package:poker_planning_server/resources/games.dart';
@@ -57,7 +58,6 @@ void handleMessage(socket, message) {
   var reveal = decodedMessage["revealAll"];
   var reset = decodedMessage["resetRequest"];
   var kicked = decodedMessage["kicked"];
-  var disconnect = decodedMessage["disconnect"];
 
   if (reveal != null) {
     Game game = gameRepository.games[reveal];
@@ -78,20 +78,6 @@ void handleMessage(socket, message) {
 
     game.players.forEach((player, _) => game.players[player] = "");
     resetGame(game);
-    broadcaster.broadcastGame(game, false);
-  } else if (disconnect != null) {
-    String playerName = disconnect[0];
-    int gameId = disconnect[1];
-    Game game = gameRepository.games[gameId];
-
-    if (game == null) {
-      logger.info("Game doesn't exist"); // TODO: Do something
-      return;
-    }
-
-    gameRepository.activeConnections[game].remove(socket);
-    game.players.remove(playerName);
-
     broadcaster.broadcastGame(game, false);
   }
 }
@@ -145,7 +131,8 @@ startGamesServer() {
 
   connectionMessageHandlers = new ConnectionMessageHandlers(messageFactory,
   [
-    new LoginHandler(gameRepository, broadcaster)
+      new LoginHandler(gameRepository, broadcaster),
+      new DisconnectHandler(gameRepository, broadcaster)
   ]);
 
   setupLogging();
