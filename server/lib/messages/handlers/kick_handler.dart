@@ -1,4 +1,4 @@
-library kick_handler_handler;
+library kick_handler;
 
 import 'dart:convert';
 

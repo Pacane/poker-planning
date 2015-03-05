@@ -11,7 +11,6 @@ import 'package:poker_planning_shared/game.dart';
 import 'package:poker_planning_shared/messages/handlers/connection_message_handler.dart';
 import 'package:poker_planning_shared/messages/login_event.dart';
 
-
 class LoginHandler extends ConnectionMessageHandler<LoginEvent> {
   Broadcaster broadcaster;
   GameRepository gameRepository;
