@@ -18,6 +18,8 @@ import 'package:poker_planning_client/app_router.dart';
 import 'package:poker_planning_client/messages/handlers/kick_handler.dart';
 import 'package:poker_planning_client/messages/handlers/game_information_handler.dart';
 import 'package:poker_planning_client/messages/handlers/game_reset_handler.dart';
+import 'package:poker_planning_shared/messages/message_factory.dart';
+import 'package:poker_planning_shared/messages/handlers/message_handlers.dart';
 import 'package:poker_planning_client/config.dart' as PPConfig;
 
 import 'package:dart_config/default_browser.dart' as Config;
@@ -36,6 +38,12 @@ class PokerPlanningModule extends Module {
     SocketCommunication socket = new SocketCommunication(hostname, port);
     socket.initWebSocket();
 
+    bind(MessageFactory, toValue: new MessageFactory());
+    bind(MessageHandlers,
+      toFactory: (MessageFactory messageFactory, kickHandler, resetHandler, gameInformationHandler) {
+        new MessageHandlers(messageFactory, [kickHandler, resetHandler, gameInformationHandler]);
+      },
+      inject: [MessageFactory, KickHandler, GameResetHandler, GameInformationHandler]);
     bind(SocketCommunication, toValue: socket);
     bind(HomeComponent);
     bind(LoginComponent);
