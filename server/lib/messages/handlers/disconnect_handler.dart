@@ -10,6 +10,7 @@ import 'package:poker_planning_server/repository/game_repository.dart';
 import 'package:poker_planning_shared/game.dart';
 import 'package:poker_planning_shared/messages/handlers/connection_message_handler.dart';
 import 'package:poker_planning_shared/messages/disconnect_event.dart';
+import 'package:poker_planning_shared/messages/game_information.dart';
 
 class DisconnectHandler extends ConnectionMessageHandler<DisconnectEvent> {
   Broadcaster broadcaster;
@@ -32,6 +33,6 @@ class DisconnectHandler extends ConnectionMessageHandler<DisconnectEvent> {
     gameRepository.activeConnections[game].remove(socket);
     game.players.remove(username);
 
-    broadcaster.broadcastGame(game, false);
+    broadcaster.broadcastData(game, new GameInformation(gameId, false, game));
   }
 }

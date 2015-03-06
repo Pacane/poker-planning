@@ -1,4 +1,4 @@
-library kick_event_handler;
+library kick_handler;
 
 import 'package:angular/angular.dart';
 
@@ -11,13 +11,13 @@ import 'package:poker_planning_client/current_game.dart';
 import 'package:poker_planning_client/current_user.dart';
 
 @Injectable()
-class KickEventHandler extends MessageHandler<KickEvent> {
+class KickHandler extends MessageHandler<KickEvent> {
   CurrentGame game;
   CurrentUser currentUser;
   Scope scope;
   Logger logger = Logger.root;
 
-  KickEventHandler(this.game, this.scope, this.currentUser);
+  KickHandler(this.game, this.scope, this.currentUser);
 
   void handleMessage(KickEvent message) {
     int gameId = message.gameId;

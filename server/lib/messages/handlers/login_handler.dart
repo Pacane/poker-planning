@@ -10,6 +10,7 @@ import 'package:poker_planning_server/repository/game_repository.dart';
 import 'package:poker_planning_shared/game.dart';
 import 'package:poker_planning_shared/messages/handlers/connection_message_handler.dart';
 import 'package:poker_planning_shared/messages/login_event.dart';
+import 'package:poker_planning_shared/messages/game_information.dart';
 
 class LoginHandler extends ConnectionMessageHandler<LoginEvent> {
   Broadcaster broadcaster;
@@ -33,6 +34,6 @@ class LoginHandler extends ConnectionMessageHandler<LoginEvent> {
     game.players.putIfAbsent(username, () => '');
     gameRepository.addConnection(game, socket);
 
-    broadcaster.broadcastGame(game, false);
+    broadcaster.broadcastData(game, new GameInformation(gameId, false, game));
   }
 }

@@ -6,8 +6,7 @@
     <div id="players">
         <game-player ng-repeat="tuple in players"
                     playerName="tuple.first"
-                    value="tuple.second"
-                    revealed="gameRevealed">
+                    value="tuple.second">
         </game-player>
     </div>
 </div>
@@ -18,7 +17,7 @@
     <div class="col-6">
         <h2>My cards</h2>
     </div>
-    
+
     <div id="myCards">
         <game-card value="0"></game-card>
         <game-card value="½"></game-card>
@@ -36,7 +35,7 @@
 </div>
 
 <hr>
-        
+
 <div class="row">
     <div class="col-6">
         <div id="actions">

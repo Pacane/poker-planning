@@ -11,14 +11,13 @@ import 'package:poker_planning_client/current_game.dart';
 import 'package:poker_planning_client/config.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/routes.dart';
-import 'package:poker_planning_client/messages/handlers/kick_event_handler.dart';
 
 import 'package:poker_planning_shared/messages/kick_event.dart';
 import 'package:poker_planning_shared/messages/login_event.dart';
 import 'package:poker_planning_shared/messages/disconnect_event.dart';
-import 'package:poker_planning_shared/messages/message_factory.dart';
-import 'package:poker_planning_shared/messages/message.dart';
-import 'package:poker_planning_shared/messages/handlers/message_handler.dart';
+import 'package:poker_planning_shared/messages/reveal_request_event.dart';
+import 'package:poker_planning_shared/messages/game_reset_event.dart';
+import 'package:poker_planning_shared/messages/handlers/message_handlers.dart';
 
 import "package:logging/logging.dart";
 
@@ -35,30 +34,32 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   RouteProvider routeProvider;
   Config config;
   Logger logger = Logger.root;
-  List<MessageHandler> messageHandlers = [];
+  MessageHandlers messageHandlers;
 
   @NgOneWay("players")
   List<Tuple<String, String>> players;
 
-  @NgOneWay("gameRevealed")
+  @NgTwoWay("gameRevealed")
   bool gameRevealed;
 
-  GameComponent(this.currentUser, this.router, this.socketCommunication, this.currentGame, this.routeProvider, this.config, KickEventHandler kickHandler) {
+  GameComponent(this.currentUser,
+                this.router,
+                this.socketCommunication,
+                this.currentGame,
+                this.routeProvider,
+                this.config,
+                this.messageHandlers) {
     players = currentGame.players;
-    messageHandlers = [kickHandler];
   }
 
-  void revealOthersCards() => socketCommunication.sendSocketMsg({
-      "revealAll": currentGame.getGameId()
-  });
+  void revealOthersCards() => socketCommunication.sendSocketMsg(new RevealRequestEvent(currentGame.getGameId()));
 
   void initReset() {
-    socketCommunication.sendSocketMsg({
-        "resetRequest": currentGame.getGameId()
-    });
+    socketCommunication.sendSocketMsg(new GameResetEvent(currentGame.getGameId()));
   }
 
   void gameHasReset() {
+    gameRevealed = false;
     currentGame.players.forEach((t) => t.second = "");
     _scope.broadcast("game-has-reset", {});
   }
@@ -70,74 +71,20 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
 
     var decoded = JSON.decode(data);
 
-    Map game = decoded["game"];
-    Map revealedGame = decoded["revealedGame"];
-    var reset = decoded["gameHasReset"];
-    var gameId = decoded['gameId'];
-
-    MessageFactory factory = new MessageFactory();
-    Message message = factory.create(decoded);
-    if (message != null) {
-      messageHandlers.forEach((MessageHandler handler) => handler.tryHandlingMessage(message));
-    }
-
-    if (game != null) {
-      if (gameId != currentGame.getGameId()) {
-        return;
-      }
-      displayCards(game, false);
-    } else if (revealedGame != null) {
-      if (gameId != currentGame.getGameId()) {
-        return;
-      }
-      displayCards(revealedGame, true);
-    } else if (reset != null) {
-      if (reset != currentGame.getGameId()) {
-        return;
-      }
-      logger.info("Game has reset!");
-      gameHasReset();
-    }
-  }
-
-  void updateCard(String player, String card) {
-    if (!currentGame.players.any((x) => x.first == player)) {
-      currentGame.players.add(new Tuple(player, card));
-    } else {
-      currentGame.players.forEach((t) {
-        if (t.first == player) {
-          t.second = card;
-          return;
-        }
-      });
-    }
-  }
-
-  void displayCards(Map game, bool revealed) {
-    logger.info("display cards with revealed : $revealed");
-    gameRevealed = revealed;
-
-    removePlayersWhoLeft(game);
-
-    game.forEach((String player, String card) {
-      updateCard(player, card);
-    });
-
-    _scope.broadcast("card-update", [game, revealed]);
-  }
-
-  void removePlayersWhoLeft(Map game) {
-    currentGame.players.removeWhere((t) => !game.containsKey(t.first));
+    messageHandlers.handleMessage(decoded);
   }
 
   void kickPlayer(String player) {
     socketCommunication.sendSocketMsg(
-        new KickEvent(currentGame.getGameId(), player, currentUser.userName).toJson());
+        new KickEvent(currentGame.getGameId(), player, currentUser.userName));
   }
 
   void set scope(Scope scope) {
     this._scope = scope;
     scope.on("kick-player").listen((event) => kickPlayer(event.data));
+    scope.on("game-update").listen((event){
+      gameRevealed = event.data;
+    });
   }
 
   void checkIfGameExists() {
@@ -161,11 +108,13 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
 
     socketCommunication.sendSocketMsg(new LoginEvent(currentGame.getGameId(), currentUser.userName));
     socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
-  }
+    window.onBeforeUnload.listen((event){
+      socketCommunication.sendSocketMsg(new DisconnectEvent(currentGame.getGameId(), currentUser.userName));
+    });
+}
 
   void detach() {
     players = [];
-    socketCommunication.sendSocketMsg(new DisconnectEvent(currentGame.getGameId(), currentUser.userName));
 
     currentGame.resetGameId();
   }
