@@ -45,8 +45,4 @@ class GameInformation extends GameEvent {
       }
     });
   }
-
-  String toString() {
-    return "GameInformation: ${gameId} ${game.toJson()}";
-  }
 }

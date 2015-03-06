@@ -38,11 +38,12 @@ class PokerPlanningModule extends Module {
     SocketCommunication socket = new SocketCommunication(hostname, port);
     socket.initWebSocket();
 
-
     bind(MessageFactory, toValue: new MessageFactory());
     bind(MessageHandlers,
-    toFactory: (MessageFactory messageFactory, kickHandler, resetHandler, gameInformationHandler) => new MessageHandlers(messageFactory, [kickHandler, resetHandler, gameInformationHandler]),
-    inject: [MessageFactory, KickHandler, GameResetHandler, GameInformationHandler]);
+      toFactory: (MessageFactory messageFactory, kickHandler, resetHandler, gameInformationHandler) {
+        new MessageHandlers(messageFactory, [kickHandler, resetHandler, gameInformationHandler]);
+      },
+      inject: [MessageFactory, KickHandler, GameResetHandler, GameInformationHandler]);
     bind(SocketCommunication, toValue: socket);
     bind(HomeComponent);
     bind(LoginComponent);
@@ -72,7 +73,7 @@ main() async {
   if (restPort == null) throw("restPort wasn't set in config.yaml");
   config.initConfig();
 
-  var injector = applicationFactory()
+  applicationFactory()
     .addModule(new PokerPlanningModule(hostname, port)
       ..bind(PPConfig.Config, toValue: config))
     .addModule(new NodeBindModule())
