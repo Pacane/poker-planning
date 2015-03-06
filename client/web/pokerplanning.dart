@@ -41,7 +41,7 @@ class PokerPlanningModule extends Module {
     bind(MessageFactory, toValue: new MessageFactory());
     bind(MessageHandlers,
       toFactory: (MessageFactory messageFactory, kickHandler, resetHandler, gameInformationHandler) {
-        new MessageHandlers(messageFactory, [kickHandler, resetHandler, gameInformationHandler]);
+        return new MessageHandlers(messageFactory, [kickHandler, resetHandler, gameInformationHandler]);
       },
       inject: [MessageFactory, KickHandler, GameResetHandler, GameInformationHandler]);
     bind(SocketCommunication, toValue: socket);
