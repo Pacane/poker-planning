@@ -8,6 +8,7 @@ import 'error.dart';
 import 'card_selection_event.dart';
 import 'reveal_request_event.dart';
 import 'game_information.dart';
+import 'game_reset_event.dart';
 
 class MessageFactory {
   Message create(Map data) {
@@ -37,6 +38,8 @@ class MessageFactory {
         return new RevealRequestEvent.fromJson(content);
       case GameInformation.MSG_TYPE:
         return new GameInformation.fromJson(content);
+      case GameResetEvent.MSG_TYPE:
+        return new GameResetEvent.fromJson(content);
       default:
         return null;
     }

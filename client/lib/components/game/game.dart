@@ -12,15 +12,18 @@ import 'package:poker_planning_client/config.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/routes.dart';
 
+import 'package:poker_planning_client/messages/handlers/kick_handler.dart';
+import 'package:poker_planning_client/messages/handlers/game_reset_handler.dart';
+import 'package:poker_planning_client/messages/handlers/game_information_handler.dart';
+
 import 'package:poker_planning_shared/messages/message_factory.dart';
 import 'package:poker_planning_shared/messages/message.dart';
 import 'package:poker_planning_shared/messages/kick_event.dart';
 import 'package:poker_planning_shared/messages/login_event.dart';
 import 'package:poker_planning_shared/messages/disconnect_event.dart';
 import 'package:poker_planning_shared/messages/reveal_request_event.dart';
-import 'package:poker_planning_client/messages/handlers/kick_handler.dart';
+import 'package:poker_planning_shared/messages/game_reset_event.dart';
 import 'package:poker_planning_shared/messages/handlers/message_handler.dart';
-import 'package:poker_planning_client/messages/handlers/game_information_handler.dart';
 
 import "package:logging/logging.dart";
 
@@ -52,17 +55,16 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
                 this.routeProvider,
                 this.config,
                 KickHandler kickHandler,
-                GameInformationHandler gameInformationHandler) {
+                GameInformationHandler gameInformationHandler,
+                GameResetHandler gameResetHandler) {
     players = currentGame.players;
-    messageHandlers = [kickHandler, gameInformationHandler];
+    messageHandlers = [kickHandler, gameInformationHandler, gameResetHandler];
   }
 
   void revealOthersCards() => socketCommunication.sendSocketMsg(new RevealRequestEvent(currentGame.getGameId()));
 
   void initReset() {
-    socketCommunication.sendSocketMsg({
-        "resetRequest": currentGame.getGameId()
-    });
+    socketCommunication.sendSocketMsg(new GameResetEvent(currentGame.getGameId()));
   }
 
   void gameHasReset() {
@@ -77,24 +79,11 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
 
     var decoded = JSON.decode(data);
 
-    Map game = decoded["game"];
-    Map revealedGame = decoded["revealedGame"];
-    var reset = decoded["gameHasReset"];
-    var gameId = decoded['gameId'];
-
     MessageFactory factory = new MessageFactory();
     Message message = factory.create(decoded);
 
     if (message != null) {
       messageHandlers.forEach((MessageHandler handler) => handler.tryHandlingMessage(message));
-    }
-
-   if (reset != null) {
-      if (reset != currentGame.getGameId()) {
-        return;
-      }
-      logger.info("Game has reset!");
-      gameHasReset();
     }
   }
 
