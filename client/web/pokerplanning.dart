@@ -15,7 +15,8 @@ import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/current_game.dart';
 import 'package:poker_planning_client/app_router.dart';
-import 'package:poker_planning_client/messages/handlers/kick_event_handler.dart';
+import 'package:poker_planning_client/messages/handlers/kick_handler.dart';
+import 'package:poker_planning_client/messages/handlers/game_information_handler.dart';
 import 'package:poker_planning_client/config.dart' as PPConfig;
 
 import 'package:dart_config/default_browser.dart' as Config;
@@ -44,7 +45,8 @@ class PokerPlanningModule extends Module {
     bind(CreateGameComponent);
     bind(CurrentUser);
     bind(CurrentGame);
-    bind(KickEventHandler);
+    bind(KickHandler);
+    bind(GameInformationHandler);
     bind(RouteInitializerFn, toImplementation: AppRouter);
     bind(NgRoutingUsePushState, toValue: new NgRoutingUsePushState.value(false));
   }

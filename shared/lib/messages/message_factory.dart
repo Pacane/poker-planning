@@ -6,6 +6,8 @@ import 'login_event.dart';
 import 'disconnect_event.dart';
 import 'error.dart';
 import 'card_selection_event.dart';
+import 'reveal_request_event.dart';
+import 'game_information.dart';
 
 class MessageFactory {
   Message create(Map data) {
@@ -31,6 +33,10 @@ class MessageFactory {
         return new LoginEvent.fromJson(content);
       case DisconnectEvent.MSG_TYPE:
         return new DisconnectEvent.fromJson(content);
+      case RevealRequestEvent.MSG_TYPE:
+        return new RevealRequestEvent.fromJson(content);
+      case GameInformation.MSG_TYPE:
+        return new GameInformation.fromJson(content);
       default:
         return null;
     }

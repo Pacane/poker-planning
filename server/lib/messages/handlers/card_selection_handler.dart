@@ -8,6 +8,7 @@ import 'package:poker_planning_server/repository/game_repository.dart';
 import 'package:poker_planning_shared/game.dart';
 import 'package:poker_planning_shared/messages/handlers/message_handler.dart';
 import 'package:poker_planning_shared/messages/card_selection_event.dart';
+import 'package:poker_planning_shared/messages/game_information.dart';
 
 class CardSelectionHandler extends MessageHandler<CardSelectionEvent> {
   Broadcaster broadcaster;
@@ -32,6 +33,6 @@ class CardSelectionHandler extends MessageHandler<CardSelectionEvent> {
 
     game.players[playerName] = selectedCard;
 
-    broadcaster.broadcastGame(game, false);
+    broadcaster.broadcastData(game, new GameInformation(gameId, false, game));
   }
 }

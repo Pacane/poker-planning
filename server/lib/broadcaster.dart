@@ -39,6 +39,8 @@ class Broadcaster {
   }
 
   void broadcastData(Game game, data) {
-    _gameRepository.activeConnections[game].forEach((s) => s.add(data));
+    logger.info("Broadcasting to game #${game.id} : $data");
+    var encodedData = JSON.encode(data);
+    _gameRepository.activeConnections[game].forEach((s) => s.add(encodedData));
   }
 }

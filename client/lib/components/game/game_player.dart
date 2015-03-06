@@ -3,6 +3,7 @@ library card_component;
 import 'dart:html' show Event, Node, CustomEvent;
 import 'dart:html';
 import 'package:angular/angular.dart';
+import 'package:poker_planning_client/tuple.dart';
 
 @Component(
     selector: 'game-player',
@@ -69,8 +70,8 @@ class TableCard implements ShadowRootAware, ScopeAware {
   }
 
   void updateCard(ScopeEvent event) {
-    Map game = event.data[0];
-    value = game[playerName];
+    List<Tuple<String, String>> players = event.data[0];
+    value = players.firstWhere((t) => t.first == playerName).second;
     revealed = event.data[1];
     applyStyles();
   }

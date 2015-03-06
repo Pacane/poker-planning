@@ -8,6 +8,7 @@ import 'package:poker_planning_server/broadcaster.dart';
 import 'package:poker_planning_server/messages/handlers/login_handler.dart';
 import 'package:poker_planning_server/messages/handlers/disconnect_handler.dart';
 import 'package:poker_planning_server/messages/handlers/kick_handler.dart';
+import 'package:poker_planning_server/messages/handlers/reveal_request_handler.dart';
 import 'package:poker_planning_server/messages/handlers/card_selection_handler.dart';
 import 'package:poker_planning_server/resources/games.dart';
 import 'package:poker_planning_server/repository/game_repository.dart';
@@ -55,20 +56,9 @@ void handleMessage(socket, message) {
   messageHandlers.handleMessage(decodedMessage);
   connectionMessageHandlers.handleMessage(decodedMessage, socket);
 
-  var reveal = decodedMessage["revealAll"];
   var reset = decodedMessage["resetRequest"];
-  var kicked = decodedMessage["kicked"];
 
-  if (reveal != null) {
-    Game game = gameRepository.games[reveal];
-
-    if (game == null) {
-      logger.info("Game doesn't exist"); // TODO: Do something
-      return;
-    }
-
-    broadcaster.broadcastGame(game, true);
-  } else if (reset != null) {
+ if (reset != null) {
     Game game = gameRepository.games[reset];
 
     if (game == null) {
@@ -126,7 +116,8 @@ startGamesServer() {
   messageHandlers = new MessageHandlers(messageFactory,
   [
       new KickHandler(gameRepository, broadcaster),
-      new CardSelectionHandler(gameRepository, broadcaster)
+      new CardSelectionHandler(gameRepository, broadcaster),
+      new RevealRequestHandler(gameRepository, broadcaster)
   ]);
 
   connectionMessageHandlers = new ConnectionMessageHandlers(messageFactory,
