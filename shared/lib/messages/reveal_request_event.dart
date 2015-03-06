@@ -11,8 +11,4 @@ class RevealRequestEvent extends GameEvent {
   factory RevealRequestEvent.fromJson(Map content) {
     return new RevealRequestEvent(content['gameId']);
   }
-
-  void setContent() {
-    super.setContent();
-  }
 }

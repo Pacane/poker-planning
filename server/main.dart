@@ -10,6 +10,7 @@ import 'package:poker_planning_server/messages/handlers/disconnect_handler.dart'
 import 'package:poker_planning_server/messages/handlers/kick_handler.dart';
 import 'package:poker_planning_server/messages/handlers/reveal_request_handler.dart';
 import 'package:poker_planning_server/messages/handlers/card_selection_handler.dart';
+import 'package:poker_planning_server/messages/handlers/game_reset_handler.dart';
 import 'package:poker_planning_server/resources/games.dart';
 import 'package:poker_planning_server/repository/game_repository.dart';
 
@@ -55,21 +56,6 @@ void handleMessage(socket, message) {
 
   messageHandlers.handleMessage(decodedMessage);
   connectionMessageHandlers.handleMessage(decodedMessage, socket);
-
-  var reset = decodedMessage["resetRequest"];
-
- if (reset != null) {
-    Game game = gameRepository.games[reset];
-
-    if (game == null) {
-      logger.info("Game doesn't exist"); // TODO: Do something
-      return;
-    }
-
-    game.players.forEach((player, _) => game.players[player] = "");
-    resetGame(game);
-    broadcaster.broadcastGame(game, false);
-  }
 }
 
 void startSocket() {
@@ -117,7 +103,8 @@ startGamesServer() {
   [
       new KickHandler(gameRepository, broadcaster),
       new CardSelectionHandler(gameRepository, broadcaster),
-      new RevealRequestHandler(gameRepository, broadcaster)
+      new RevealRequestHandler(gameRepository, broadcaster),
+      new GameResetHandler(gameRepository, broadcaster)
   ]);
 
   connectionMessageHandlers = new ConnectionMessageHandlers(messageFactory,

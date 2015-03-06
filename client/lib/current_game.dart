@@ -21,4 +21,17 @@ class CurrentGame {
   void resetGameId() {
     _gameId = null;
   }
+
+  void updateCard(String player, String card) {
+    if (!players.any((x) => x.first == player)) {
+      players.add(new Tuple(player, card));
+    } else {
+      players.forEach((t) {
+        if (t.first == player) {
+          t.second = card;
+          return;
+        }
+      });
+    }
+  }
 }

@@ -1,6 +1,4 @@
-library kick_handler;
-
-import 'dart:convert';
+library game_reset_handler;
 
 import 'package:logging/logging.dart';
 
@@ -9,19 +7,16 @@ import 'package:poker_planning_server/repository/game_repository.dart';
 
 import 'package:poker_planning_shared/game.dart';
 import 'package:poker_planning_shared/messages/handlers/message_handler.dart';
-import 'package:poker_planning_shared/messages/kick_event.dart';
+import 'package:poker_planning_shared/messages/game_reset_event.dart';
 
-
-class KickHandler extends MessageHandler<KickEvent> {
+class GameResetHandler extends MessageHandler<GameResetEvent> {
   Broadcaster broadcaster;
   GameRepository gameRepository;
   Logger logger = Logger.root;
 
-  KickHandler(this.gameRepository, this.broadcaster) : super();
+  GameResetHandler(this.gameRepository, this.broadcaster) : super();
 
-  void handleMessage(KickEvent message) {
-    String kickedPlayer = message.kicked;
-    String kickedBy = message.kickedBy;
+  void handleMessage(GameResetEvent message) {
     int gameId = message.gameId;
 
     Game game = gameRepository.games[gameId];
@@ -31,7 +26,7 @@ class KickHandler extends MessageHandler<KickEvent> {
       return;
     }
 
-    game.players.remove(kickedPlayer);
-    broadcaster.broadcastData(game, message);
+    game.players.forEach((player, _) => game.players[player] = "");
+    broadcaster.broadcastData(game, new GameResetEvent(gameId));
   }
 }
