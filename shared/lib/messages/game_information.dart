@@ -29,16 +29,20 @@ class GameInformation extends GameEvent {
 
     if (!revealed) {
       Game gameCopy = new Game.fromMap(JSON.decode(JSON.encode(game)));
-      gameCopy.players.forEach((player, card) {
-        if (card != "") {
-          gameCopy.players[player] = "Y";
-        }
-      });
+      obfuscateSelectedCards(gameCopy);
       content['game'] = gameCopy;
     } else {
       content['game'] = game;
     }
 
     content['revealed'] = revealed;
+  }
+
+  void obfuscateSelectedCards(Game game) {
+    game.players.forEach((player, card) {
+      if (card != "") {
+        game.players[player] = "Y";
+      }
+    });
   }
 }
