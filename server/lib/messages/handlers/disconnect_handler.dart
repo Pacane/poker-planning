@@ -1,6 +1,7 @@
 library disconnect_handler;
 
 import 'dart:io';
+import 'dart:async';
 
 import 'package:logging/logging.dart';
 
@@ -34,5 +35,12 @@ class DisconnectHandler extends ConnectionMessageHandler<DisconnectEvent> {
     game.players.remove(username);
 
     broadcaster.broadcastData(game, new GameInformation(gameId, false, game));
+
+    new Future.delayed(new Duration(seconds:1), () {
+      if (game.players.isEmpty) {
+        // TODO : Maybe plug this to the Websocket so the list is refreshed live on clients
+        gameRepository.games.remove(game.id);
+      }
+    });
   }
 }
