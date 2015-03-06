@@ -10,7 +10,6 @@ import 'package:poker_planning_shared/game.dart';
 
 import 'package:poker_planning_client/current_game.dart';
 import 'package:poker_planning_client/current_user.dart';
-import 'package:poker_planning_client/tuple.dart';
 
 @Injectable()
 class GameInformationHandler extends MessageHandler<GameInformation> {
@@ -31,23 +30,10 @@ class GameInformationHandler extends MessageHandler<GameInformation> {
     currentGame.players.removeWhere((t) => !message.game.players.containsKey(t.first));
 
     newGame.players.forEach((String player, String card) {
-      updateCard(player, card);
+      currentGame.updateCard(player, card);
     });
 
     scope.rootScope.broadcast('game-update', revealed);
     scope.broadcast("card-update", [currentGame.players, revealed]);
-  }
-
-  void updateCard(String player, String card) {
-    if (!currentGame.players.any((x) => x.first == player)) {
-      currentGame.players.add(new Tuple(player, card));
-    } else {
-      currentGame.players.forEach((t) {
-        if (t.first == player) {
-          t.second = card;
-          return;
-        }
-      });
-    }
   }
 }

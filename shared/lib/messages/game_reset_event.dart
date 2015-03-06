@@ -10,8 +10,4 @@ class GameResetEvent extends GameEvent {
   factory GameResetEvent.fromJson(Map content) {
     return new GameResetEvent(content['gameId']);
   }
-
-  void setContent() {
-    super.setContent();
-  }
 }
