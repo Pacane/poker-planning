@@ -18,8 +18,8 @@ class Interceptors {
   }
 
   _createCorsHeader() => {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods' : 'PUT, GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers' : 'Origin, X-Requested-With, Content-Type, Accept'
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'PUT, GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
   };
 }

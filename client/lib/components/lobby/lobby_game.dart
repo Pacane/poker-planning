@@ -31,8 +31,7 @@ class CreateGameComponent implements ScopeAware, ShadowRootAware {
 
   CreateGameComponent(this.currentUser, this.router, this.socketCommunication, this.config);
 
-  void handleMessage(data) {
-  }
+  void handleMessage(data) {}
 
   void set scope(Scope scope) {
     this._scope = scope;
@@ -46,12 +45,16 @@ class CreateGameComponent implements ScopeAware, ShadowRootAware {
     var url = "http://${config.hostname}:${config.restPort}/games"; // TODO: Extract api's address
 
     HttpRequest
-      .request(url, method: "PUT", requestHeaders: {'Content-type': 'application/json'}, sendData: JSON.encode({"name":gameName})) // TODO: Wrap this
-      .then((HttpRequest response) {
-      if (response.status == 200) { // TODO: Find this constant
+        .request(url,
+            method: "PUT",
+            requestHeaders: {'Content-type': 'application/json'},
+            sendData: JSON.encode({"name": gameName})) // TODO: Wrap this
+        .then((HttpRequest response) {
+      if (response.status == 200) {
+        // TODO: Find this constant
         var createdGame = JSON.decode(response.response);
         var gameId = createdGame["id"];
-        router.go(Routes.GAMES, {"id" : gameId});
+        router.go(Routes.GAMES, {"id": gameId});
       }
     });
   }

@@ -48,7 +48,7 @@ class TableCard implements ShadowRootAware, ScopeAware {
 
   void setClass(String classname) {
     _cardDiv.classes.clear();
-    if(classname != "") {
+    if (classname != "") {
       _cardDiv.classes.add(classname);
     }
   }

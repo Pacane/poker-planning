@@ -28,7 +28,7 @@ class GamesComponent implements AttachAware {
 
   void attach() {
     var url = "http://${config.hostname}:${config.restPort}/games"; // TODO: Extract route
-    var request = HttpRequest.getString(url).then((value){
+    var request = HttpRequest.getString(url).then((value) {
       games = JSON.decode(value).map((map) => new Game.fromMap(map)).toList();
     });
   }

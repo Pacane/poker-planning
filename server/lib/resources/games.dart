@@ -21,8 +21,7 @@ class Games {
 
   @app.DefaultRoute(methods: const [app.PUT], responseType: 'application/json')
   Map addGame(@app.Body(app.JSON) Map json) {
-    Game newGame = new Game.fromMap(json)
-      ..id = Game.getNewId;
+    Game newGame = new Game.fromMap(json)..id = Game.getNewId;
 
     gameRepository.games.putIfAbsent(newGame.id, () => newGame);
 

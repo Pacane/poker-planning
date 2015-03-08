@@ -55,6 +55,6 @@ class MyCard implements ShadowRootAware, ScopeAware {
   }
 
   void deselectCard(_) {
-   setSelected(false);
+    setSelected(false);
   }
 }

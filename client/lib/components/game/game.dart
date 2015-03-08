@@ -42,13 +42,8 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   @NgTwoWay("gameRevealed")
   bool gameRevealed;
 
-  GameComponent(this.currentUser,
-                this.router,
-                this.socketCommunication,
-                this.currentGame,
-                this.routeProvider,
-                this.config,
-                this.messageHandlers) {
+  GameComponent(this.currentUser, this.router, this.socketCommunication, this.currentGame, this.routeProvider,
+      this.config, this.messageHandlers) {
     players = currentGame.players;
   }
 
@@ -75,14 +70,13 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   }
 
   void kickPlayer(String player) {
-    socketCommunication.sendSocketMsg(
-        new KickEvent(currentGame.getGameId(), player, currentUser.userName));
+    socketCommunication.sendSocketMsg(new KickEvent(currentGame.getGameId(), player, currentUser.userName));
   }
 
   void set scope(Scope scope) {
     this._scope = scope;
     scope.on("kick-player").listen((event) => kickPlayer(event.data));
-    scope.on("game-update").listen((event){
+    scope.on("game-update").listen((event) {
       gameRevealed = event.data;
     });
   }
@@ -98,7 +92,8 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
         if (status == 404) {
           router.go(Routes.GAMES, {});
         }
-      })..send();
+      })
+      ..send();
   }
 
   void attach() {
@@ -108,10 +103,10 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
 
     socketCommunication.sendSocketMsg(new LoginEvent(currentGame.getGameId(), currentUser.userName));
     socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
-    window.onBeforeUnload.listen((event){
+    window.onBeforeUnload.listen((event) {
       socketCommunication.sendSocketMsg(new DisconnectEvent(currentGame.getGameId(), currentUser.userName));
     });
-}
+  }
 
   void detach() {
     players = [];
