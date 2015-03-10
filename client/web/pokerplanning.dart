@@ -33,17 +33,19 @@ import 'package:logging/logging.dart';
 
 class PokerPlanningModule extends Module {
   PokerPlanningModule(String hostname, int port) {
-    Logger.root..onRecord.listen((LogRecord r) { print(r.message); });
+    Logger.root
+      ..onRecord.listen((LogRecord r) {
+        print(r.message);
+      });
 
     SocketCommunication socket = new SocketCommunication(hostname, port);
     socket.initWebSocket();
 
     bind(MessageFactory, toValue: new MessageFactory());
     bind(MessageHandlers,
-      toFactory: (MessageFactory messageFactory, kickHandler, resetHandler, gameInformationHandler) {
-        return new MessageHandlers(messageFactory, [kickHandler, resetHandler, gameInformationHandler]);
-      },
-      inject: [MessageFactory, KickHandler, GameResetHandler, GameInformationHandler]);
+        toFactory: (MessageFactory messageFactory, kickHandler, resetHandler, gameInformationHandler) {
+      return new MessageHandlers(messageFactory, [kickHandler, resetHandler, gameInformationHandler]);
+    }, inject: [MessageFactory, KickHandler, GameResetHandler, GameInformationHandler]);
     bind(SocketCommunication, toValue: socket);
     bind(HomeComponent);
     bind(LoginComponent);
@@ -68,14 +70,13 @@ main() async {
   var hostname = config.config["hostname"];
   var port = config.config["port"];
   var restPort = config.config["restPort"];
-  if (hostname == null) throw("hostname wasn't set in config.yaml");
-  if (port == null) throw("port wasn't set in config.yaml");
-  if (restPort == null) throw("restPort wasn't set in config.yaml");
+  if (hostname == null) throw ("hostname wasn't set in config.yaml");
+  if (port == null) throw ("port wasn't set in config.yaml");
+  if (restPort == null) throw ("restPort wasn't set in config.yaml");
   config.initConfig();
 
   applicationFactory()
-    .addModule(new PokerPlanningModule(hostname, port)
-      ..bind(PPConfig.Config, toValue: config))
-    .addModule(new NodeBindModule())
-    .run();
+      .addModule(new PokerPlanningModule(hostname, port)..bind(PPConfig.Config, toValue: config))
+      .addModule(new NodeBindModule())
+      .run();
 }

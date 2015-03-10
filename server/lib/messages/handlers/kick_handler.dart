@@ -11,7 +11,6 @@ import 'package:poker_planning_shared/game.dart';
 import 'package:poker_planning_shared/messages/handlers/message_handler.dart';
 import 'package:poker_planning_shared/messages/kick_event.dart';
 
-
 class KickHandler extends MessageHandler<KickEvent> {
   Broadcaster broadcaster;
   GameRepository gameRepository;
