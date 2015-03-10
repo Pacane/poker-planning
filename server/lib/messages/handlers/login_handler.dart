@@ -31,7 +31,7 @@ class LoginHandler extends ConnectionMessageHandler<LoginEvent> {
       return;
     }
 
-    game.players.putIfAbsent(username, () => '');
+    game.addPlayer(username);
     gameRepository.addConnection(game, socket);
 
     broadcaster.broadcastData(game, new GameInformation(gameId, false, game));
