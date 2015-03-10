@@ -44,9 +44,7 @@ Logger logger = Logger.root;
 
 void resetGame(Game game) {
   logger.info("sending reset signal");
-  broadcaster.broadcastData(game, JSON.encode({
-      "gameHasReset": game.id
-  }));
+  broadcaster.broadcastData(game, JSON.encode({"gameHasReset": game.id}));
 }
 
 void handleMessage(socket, message) {
@@ -63,54 +61,47 @@ void startSocket() {
   HttpServer.bind(hostname, port).then((server) {
     server.listen((HttpRequest req) {
       if (req.uri.path == '/ws') {
-        WebSocketTransformer.upgrade(req)
-          ..then((socket) => socket.listen((msg) => handleMessage(socket, msg)));
+        WebSocketTransformer.upgrade(req)..then((socket) => socket.listen((msg) => handleMessage(socket, msg)));
       }
-    })
-      ..onError((e) => logger.warning("An error occurred."));
+    })..onError((e) => logger.warning("An error occurred."));
   });
 }
 
 void main() {
-  loadConfig()
-  .then((Map config) {
+  loadConfig().then((Map config) {
     hostname = config["hostname"];
     port = config["port"];
     restPort = config["restPort"];
-    if (hostname == null) throw("hostname wasn't set in config.yaml");
-    if (port == null) throw("port wasn't set in config.yaml");
-    if (restPort == null) throw("restPort wasn't set in config.yaml");
+    if (hostname == null) throw ("hostname wasn't set in config.yaml");
+    if (port == null) throw ("port wasn't set in config.yaml");
+    if (restPort == null) throw ("restPort wasn't set in config.yaml");
     logger.level = LogLevelParser.logLevel(config["logLevel"]);
-  }).catchError(showError)
-  .then((_) => startGamesServer())
-  .then((_) => startSocket()
-  );
+  }).catchError(showError).then((_) => startGamesServer()).then((_) => startSocket());
 }
 
 void showError(error) => logger.severe(error);
 
 startGamesServer() {
-  Injector injector = new ModuleInjector([new Module()
-    ..bind(GameRepository)
-    ..bind(MessageFactory)
+  Injector injector = new ModuleInjector([
+    new Module()
+      ..bind(GameRepository)
+      ..bind(MessageFactory)
   ]);
 
   gameRepository = injector.get(GameRepository);
   messageFactory = injector.get(MessageFactory);
   broadcaster = new Broadcaster(gameRepository);
 
-  messageHandlers = new MessageHandlers(messageFactory,
-  [
-      new KickHandler(gameRepository, broadcaster),
-      new CardSelectionHandler(gameRepository, broadcaster),
-      new RevealRequestHandler(gameRepository, broadcaster),
-      new GameResetHandler(gameRepository, broadcaster)
+  messageHandlers = new MessageHandlers(messageFactory, [
+    new KickHandler(gameRepository, broadcaster),
+    new CardSelectionHandler(gameRepository, broadcaster),
+    new RevealRequestHandler(gameRepository, broadcaster),
+    new GameResetHandler(gameRepository, broadcaster)
   ]);
 
-  connectionMessageHandlers = new ConnectionMessageHandlers(messageFactory,
-  [
-      new LoginHandler(gameRepository, broadcaster),
-      new DisconnectHandler(gameRepository, broadcaster)
+  connectionMessageHandlers = new ConnectionMessageHandlers(messageFactory, [
+    new LoginHandler(gameRepository, broadcaster),
+    new DisconnectHandler(gameRepository, broadcaster)
   ]);
 
   setupLogging();
@@ -120,10 +111,9 @@ startGamesServer() {
     ..bind(Games)
     ..bind(GameRepository, toValue: gameRepository)
     ..bind(MessageFactory, toValue: messageFactory)
-    ..bind(Broadcaster, toValue: broadcaster)
-  );
+    ..bind(Broadcaster, toValue: broadcaster));
 
-  app.start(port:restPort);
+  app.start(port: restPort);
 }
 
 void setupLogging() {
@@ -135,5 +125,6 @@ void setupLogging() {
       } else {
         print('${rec.level.name}: ${rec.time}: ${rec.message}');
       }
-  })..listen(new SyncFileLoggingHandler("logging.txt"));
+    })
+    ..listen(new SyncFileLoggingHandler("logging.txt"));
 }

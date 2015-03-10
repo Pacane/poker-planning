@@ -31,7 +31,7 @@ class CardSelectionHandler extends MessageHandler<CardSelectionEvent> {
       return;
     }
 
-    game.players[playerName] = selectedCard;
+    game.setCard(playerName, selectedCard);
 
     broadcaster.broadcastData(game, new GameInformation(gameId, false, game));
   }

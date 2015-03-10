@@ -27,11 +27,9 @@ class GameInformationHandler extends MessageHandler<GameInformation> {
 
     logger.info("display cards with revealed : $revealed");
 
-    currentGame.players.removeWhere((t) => !newGame.players.containsKey(t.first));
+    currentGame.removeDisconnectedPlayers(newGame);
 
-    newGame.players.forEach((String player, String card) {
-      currentGame.updateCard(player, card);
-    });
+    currentGame.updateCards(newGame);
 
     scope.rootScope.broadcast('game-update', revealed);
     scope.rootScope.broadcast("card-update", [currentGame.players, revealed]);
