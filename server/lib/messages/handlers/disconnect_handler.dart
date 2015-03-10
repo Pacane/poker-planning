@@ -32,12 +32,12 @@ class DisconnectHandler extends ConnectionMessageHandler<DisconnectEvent> {
     }
 
     gameRepository.activeConnections[game].remove(socket);
-    game.players.remove(username);
+    game.removePlayer(username);
 
     broadcaster.broadcastData(game, new GameInformation(gameId, false, game));
 
     new Future.delayed(new Duration(seconds:1), () {
-      if (game.players.isEmpty) {
+      if (game.hasPlayers()) {
         // TODO : Maybe plug this to the Websocket so the list is refreshed live on clients
         gameRepository.games.remove(game.id);
       }
