@@ -30,7 +30,7 @@ class KickHandler extends MessageHandler<KickEvent> {
       return;
     }
 
-    game.players.remove(kickedPlayer);
+    game.removePlayer(kickedPlayer);
     broadcaster.broadcastData(game, message);
   }
 }

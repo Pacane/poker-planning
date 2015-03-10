@@ -104,13 +104,19 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
     socketCommunication.sendSocketMsg(new LoginEvent(currentGame.getGameId(), currentUser.userName));
     socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
     window.onBeforeUnload.listen((event) {
-      socketCommunication.sendSocketMsg(new DisconnectEvent(currentGame.getGameId(), currentUser.userName));
+      _sendDisconnectEvent();
     });
   }
 
   void detach() {
     players = [];
 
+    _sendDisconnectEvent();
+
     currentGame.resetGameId();
+  }
+
+  _sendDisconnectEvent() {
+    socketCommunication.sendSocketMsg(new DisconnectEvent(currentGame.getGameId(), currentUser.userName));
   }
 }

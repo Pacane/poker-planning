@@ -26,7 +26,7 @@ class GameResetHandler extends MessageHandler<GameResetEvent> {
       return;
     }
 
-    game.players.forEach((player, _) => game.players[player] = "");
+    game.resetCards();
     broadcaster.broadcastData(game, new GameResetEvent(gameId));
   }
 }
