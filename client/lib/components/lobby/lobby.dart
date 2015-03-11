@@ -17,14 +17,14 @@ import 'package:poker_planning_shared/game.dart';
     selector: 'lobby',
     cssUrl: 'packages/poker_planning_client/components/lobby/lobby.css',
     templateUrl: 'packages/poker_planning_client/components/lobby/lobby.html')
-class GamesComponent implements AttachAware {
+class Lobby implements AttachAware {
   CurrentUser currentUser;
   SocketCommunication socketCommunication;
   Config config;
   @NgTwoWay("games")
   List<Game> games;
 
-  GamesComponent(this.currentUser, this.socketCommunication, this.config);
+  Lobby(this.currentUser, this.socketCommunication, this.config);
 
   void attach() {
     var url = "http://${config.hostname}:${config.restPort}/games"; // TODO: Extract route

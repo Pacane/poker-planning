@@ -14,7 +14,7 @@ import 'package:poker_planning_shared/messages/card_selection_event.dart';
     selector: 'game-card',
     cssUrl: 'packages/poker_planning_client/components/game/game_card.css',
     templateUrl: 'packages/poker_planning_client/components/game/game_card.html')
-class MyCard implements ShadowRootAware, ScopeAware {
+class GameCard implements ShadowRootAware, ScopeAware {
   @NgAttr("value")
   String value;
   var clickHandler;
@@ -24,7 +24,7 @@ class MyCard implements ShadowRootAware, ScopeAware {
   Scope _scope;
   CurrentGame currentGame;
 
-  MyCard(this.socketCommunication, this.currentUser, this.currentGame);
+  GameCard(this.socketCommunication, this.currentUser, this.currentGame);
 
   void onShadowRoot(ShadowRoot shadowRoot) {
     this.shadowRoot = shadowRoot;

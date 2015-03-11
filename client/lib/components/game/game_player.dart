@@ -10,7 +10,7 @@ import 'package:poker_planning_client/tuple.dart';
     selector: 'game-player',
     cssUrl: 'packages/poker_planning_client/components/game/game_player.css',
     templateUrl: 'packages/poker_planning_client/components/game/game_player.html')
-class TableCard implements ShadowRootAware, ScopeAware {
+class GamePlayer implements ShadowRootAware, ScopeAware {
   @NgTwoWay("playerName")
   String playerName;
   @NgTwoWay("valueToDisplay")

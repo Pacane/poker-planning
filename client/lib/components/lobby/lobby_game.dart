@@ -16,7 +16,7 @@ import 'package:poker_planning_shared/game.dart';
     selector: 'lobby-gameCreate',
     cssUrl: 'packages/poker_planning_client/css/layout.css',
     templateUrl: 'packages/poker_planning_client/components/lobby/lobby_game.html')
-class CreateGameComponent implements ScopeAware, ShadowRootAware {
+class LobbyGame implements ScopeAware, ShadowRootAware {
   CurrentUser currentUser;
   Router router;
   SocketCommunication socketCommunication;
@@ -29,7 +29,7 @@ class CreateGameComponent implements ScopeAware, ShadowRootAware {
   @NgTwoWay("password")
   String password;
 
-  CreateGameComponent(this.currentUser, this.router, this.socketCommunication, this.config);
+  LobbyGame(this.currentUser, this.router, this.socketCommunication, this.config);
 
   void handleMessage(data) {}
 

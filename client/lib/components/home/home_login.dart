@@ -14,7 +14,7 @@ import "package:logging/logging.dart";
     selector: 'home-login',
     cssUrl: 'packages/poker_planning_client/css/layout.css',
     templateUrl: 'packages/poker_planning_client/components/home/home_login.html')
-class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
+class HomeLogin implements ScopeAware, ShadowRootAware, AttachAware {
   ShadowRoot shadowRoot;
   Router router;
   CurrentUser _session;
@@ -39,7 +39,7 @@ class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
     }
   }
 
-  LoginComponent(this._session, this._socketCommunication, this.router, this.routeProvider);
+  HomeLogin(this._session, this._socketCommunication, this.router, this.routeProvider);
 
   start([String route = Routes.GAMES, Map parameters]) {
     if (parameters == null) {
