@@ -10,6 +10,7 @@ class CurrentGame {
   List<Tuple<String, String>> players = [];
 
   int _gameId;
+  DateTime lastReset;
 
   void setGameId(String newGameId) {
     _gameId = int.parse(newGameId, onError: (_) => null);
@@ -17,6 +18,10 @@ class CurrentGame {
 
   int getGameId() {
     return _gameId;
+  }
+
+  DateTime getLastReset() {
+    return lastReset;
   }
 
   void resetGameId() {

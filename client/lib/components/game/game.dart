@@ -2,6 +2,7 @@ library game_component;
 
 import 'dart:html';
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:angular/angular.dart';
 
@@ -16,7 +17,7 @@ import 'package:poker_planning_shared/messages/kick_event.dart';
 import 'package:poker_planning_shared/messages/login_event.dart';
 import 'package:poker_planning_shared/messages/disconnect_event.dart';
 import 'package:poker_planning_shared/messages/reveal_request_event.dart';
-import 'package:poker_planning_shared/messages/game_reset_event.dart';
+import 'package:poker_planning_shared/messages/reset_game_event.dart';
 import 'package:poker_planning_shared/messages/handlers/message_handlers.dart';
 
 import "package:logging/logging.dart";
@@ -25,7 +26,7 @@ import "package:logging/logging.dart";
     selector: 'game',
     cssUrl: 'packages/poker_planning_client/components/game/game.css',
     templateUrl: 'packages/poker_planning_client/components/game/game.html')
-class GameComponent implements ScopeAware, AttachAware, DetachAware {
+class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootAware {
   CurrentUser currentUser;
   Router router;
   SocketCommunication socketCommunication;
@@ -35,6 +36,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   Config config;
   Logger logger = Logger.root;
   MessageHandlers messageHandlers;
+  ShadowRoot shadowRoot;
 
   @NgOneWay("players")
   List<Tuple<String, String>> players;
@@ -50,13 +52,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   void revealOthersCards() => socketCommunication.sendSocketMsg(new RevealRequestEvent(currentGame.getGameId()));
 
   void initReset() {
-    socketCommunication.sendSocketMsg(new GameResetEvent(currentGame.getGameId()));
-  }
-
-  void gameHasReset() {
-    gameRevealed = false;
-    currentGame.players.forEach((t) => t.second = "");
-    _scope.broadcast("game-has-reset", {});
+    socketCommunication.sendSocketMsg(new ResetGameEvent(currentGame.getGameId()));
   }
 
   void handleMessage(data) {
@@ -71,6 +67,10 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
 
   void kickPlayer(String player) {
     socketCommunication.sendSocketMsg(new KickEvent(currentGame.getGameId(), player, currentUser.userName));
+  }
+
+  void onShadowRoot(ShadowRoot shadowRoot) {
+    this.shadowRoot = shadowRoot;
   }
 
   void set scope(Scope scope) {
@@ -106,6 +106,40 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
     window.onBeforeUnload.listen((event) {
       _sendDisconnectEvent();
     });
+
+    new Timer.periodic(
+        new Duration(milliseconds: 500), handleTimer
+    );
+  }
+
+  void handleTimer(Timer t) {
+    if (currentGame.lastReset == null) {
+      return;
+    }
+    shadowRoot.querySelector("#lastReset").text = calculateLastReset();
+  }
+
+  calculateLastReset() {
+    DateTime now = new DateTime.now();
+    Duration duration = now.difference(currentGame.lastReset);
+
+    var hours = duration.inHours;
+    var minutes = (duration - new Duration(hours: hours)).inMinutes;
+    var seconds = (duration - new Duration(minutes: minutes)).inSeconds;
+
+    var hoursDisplay = padInts(hours);
+    var minutesDisplay = padInts(minutes);
+    var secondsDisplay = padInts(seconds);
+
+    return "${hoursDisplay} : ${minutesDisplay} : ${secondsDisplay}";
+  }
+
+  String padInts(int value) {
+    if (value < 10) {
+      return "0${value}";
+    } else {
+      return value.toString();
+    }
   }
 
   void detach() {

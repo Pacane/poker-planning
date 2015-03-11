@@ -31,6 +31,8 @@ class GameInformationHandler extends MessageHandler<GameInformation> {
 
     currentGame.updateCards(newGame);
 
+    currentGame.lastReset = message.game.lastReset;
+
     scope.rootScope.broadcast('game-update', revealed);
     scope.rootScope.broadcast("card-update", [currentGame.players, revealed]);
   }

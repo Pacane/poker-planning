@@ -91,7 +91,7 @@ startGamesServer() {
     new KickHandler(gameRepository, broadcaster),
     new CardSelectionHandler(gameRepository, broadcaster),
     new RevealRequestHandler(gameRepository, broadcaster),
-    new GameResetHandler(gameRepository, broadcaster)
+    new ResetGameHandler(gameRepository, broadcaster)
   ]);
 
   connectionMessageHandlers = new ConnectionMessageHandlers(messageFactory, [
