@@ -108,7 +108,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
     });
 
     new Timer.periodic(
-        new Duration(milliseconds: 500), handleTimer
+        new Duration(seconds: 1), handleTimer
     );
   }
 
@@ -119,7 +119,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
     shadowRoot.querySelector("#lastReset").text = calculateLastReset();
   }
 
-  calculateLastReset() {
+  String calculateLastReset() {
     DateTime now = new DateTime.now();
     Duration duration = now.difference(currentGame.lastReset);
 
