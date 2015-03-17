@@ -26,6 +26,8 @@ class GameResetHandler extends MessageHandler<GameResetEvent> {
       return;
     }
 
+    game.revealed = false;
+
     game.resetCards();
     broadcaster.broadcastData(game, new GameResetEvent(gameId));
   }

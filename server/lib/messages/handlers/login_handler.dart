@@ -34,6 +34,6 @@ class LoginHandler extends ConnectionMessageHandler<LoginEvent> {
     game.addPlayer(username);
     gameRepository.addConnection(game, socket);
 
-    broadcaster.broadcastData(game, new GameInformation(gameId, false, game));
+    broadcaster.broadcastData(game, new GameInformation(gameId, game.revealed, game));
   }
 }

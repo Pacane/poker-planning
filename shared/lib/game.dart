@@ -7,6 +7,7 @@ class Game {
 
   String name;
   Map<String, String> _players = {};
+  bool revealed = false;
 
   Game(this.name, this._players);
 
