@@ -3,7 +3,7 @@ version: 0.0.1
 description: PokerPlanning app backend
 dependencies:
   dart_config: any
-  redstone: any
+  redstone: ">=0.5.21 <0.6.0"
   shelf: ">=0.5.7 <0.6.0"
   poker_planning_shared:
       path: ../shared
