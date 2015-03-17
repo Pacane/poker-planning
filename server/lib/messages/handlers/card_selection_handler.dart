@@ -33,6 +33,6 @@ class CardSelectionHandler extends MessageHandler<CardSelectionEvent> {
 
     game.setCard(playerName, selectedCard);
 
-    broadcaster.broadcastData(game, new GameInformation(gameId, game.revealed, game));
+    broadcaster.broadcastData(game, new GameInformation(gameId, game));
   }
 }

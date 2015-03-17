@@ -34,7 +34,7 @@ class DisconnectHandler extends ConnectionMessageHandler<DisconnectEvent> {
     gameRepository.activeConnections[game].remove(socket);
     game.removePlayer(username);
 
-    broadcaster.broadcastData(game, new GameInformation(gameId, game.revealed, game));
+    broadcaster.broadcastData(game, new GameInformation(gameId, game));
 
     new Future.delayed(new Duration(seconds:1), () {
       if (game.hasPlayers()) {

@@ -28,6 +28,6 @@ class RevealRequestHandler extends MessageHandler<RevealRequestEvent> {
 
     game.revealed = true;
 
-    broadcaster.broadcastData(game, new GameInformation(gameId, true, game));
+    broadcaster.broadcastData(game, new GameInformation(gameId, game));
   }
 }

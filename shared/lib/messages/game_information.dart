@@ -8,26 +8,22 @@ import '../game.dart';
 class GameInformation extends GameEvent {
   static const String MSG_TYPE = "gameInformation";
 
-  final bool revealed;
   final Game game;
 
-  GameInformation(gameId, this.revealed, this.game) : super(MSG_TYPE, gameId) {
-    if (revealed == null) {
-      throw new ArgumentError.notNull('revealed');
-    }
+  GameInformation(gameId, this.game) : super(MSG_TYPE, gameId) {
     if (game == null) {
       throw new ArgumentError.notNull('game');
     }
   }
 
   factory GameInformation.fromJson(Map content) {
-    return new GameInformation(content['gameId'], content['revealed'], new Game.fromMap(content['game']));
+    return new GameInformation(content['gameId'], new Game.fromMap(content['game']));
   }
 
   void setContent() {
     super.setContent();
 
-    if (!revealed) {
+    if (!game.revealed) {
       Game gameCopy = new Game.fromMap(JSON.decode(JSON.encode(game)));
       gameCopy.obfuscateSelectedCards();
       content['game'] = gameCopy;
@@ -35,6 +31,6 @@ class GameInformation extends GameEvent {
       content['game'] = game;
     }
 
-    content['revealed'] = revealed;
+    content['revealed'] = game.revealed;
   }
 }
