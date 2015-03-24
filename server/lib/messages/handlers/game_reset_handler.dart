@@ -7,16 +7,17 @@ import 'package:poker_planning_server/repository/game_repository.dart';
 
 import 'package:poker_planning_shared/game.dart';
 import 'package:poker_planning_shared/messages/handlers/message_handler.dart';
-import 'package:poker_planning_shared/messages/game_reset_event.dart';
+import 'package:poker_planning_shared/messages/reset_game_event.dart';
+import 'package:poker_planning_shared/messages/game_has_reset_event.dart';
 
-class GameResetHandler extends MessageHandler<GameResetEvent> {
+class ResetGameHandler extends MessageHandler<ResetGameEvent> {
   Broadcaster broadcaster;
   GameRepository gameRepository;
   Logger logger = Logger.root;
 
-  GameResetHandler(this.gameRepository, this.broadcaster) : super();
+  ResetGameHandler(this.gameRepository, this.broadcaster) : super();
 
-  void handleMessage(GameResetEvent message) {
+  void handleMessage(ResetGameEvent message) {
     int gameId = message.gameId;
 
     Game game = gameRepository.games[gameId];
@@ -29,6 +30,8 @@ class GameResetHandler extends MessageHandler<GameResetEvent> {
     game.revealed = false;
 
     game.resetCards();
-    broadcaster.broadcastData(game, new GameResetEvent(gameId));
+    game.lastReset = new DateTime.now().toUtc();
+
+    broadcaster.broadcastData(game, new GameHasResetEvent(game.lastReset));
   }
 }

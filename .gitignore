@@ -23,3 +23,6 @@ pubspec.lock
 
 config.yaml
 logging.txt
+
+#Mac OS X
+.DS_Store

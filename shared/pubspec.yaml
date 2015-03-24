@@ -3,3 +3,4 @@ version: 0.0.1
 description: PokerPlanning app shared
 dependencies:
   logging: any
+  quiver: any

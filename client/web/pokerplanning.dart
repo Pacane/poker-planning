@@ -1,8 +1,5 @@
 library poker_planning;
 
-import 'dart:html';
-import 'dart:async';
-
 import 'package:poker_planning_client/components/home/home.dart';
 import 'package:poker_planning_client/components/home/home_login.dart';
 import 'package:poker_planning_client/components/lobby/lobby.dart';
@@ -10,6 +7,9 @@ import 'package:poker_planning_client/components/lobby/lobby_game.dart';
 import 'package:poker_planning_client/components/game/game.dart';
 import 'package:poker_planning_client/components/game/game_card.dart';
 import 'package:poker_planning_client/components/game/game_player.dart';
+
+import 'dart:html';
+import 'dart:async';
 
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/current_user.dart';
@@ -45,7 +45,7 @@ class PokerPlanningModule extends Module {
     bind(MessageHandlers,
         toFactory: (MessageFactory messageFactory, kickHandler, resetHandler, gameInformationHandler) {
       return new MessageHandlers(messageFactory, [kickHandler, resetHandler, gameInformationHandler]);
-    }, inject: [MessageFactory, KickHandler, GameResetHandler, GameInformationHandler]);
+    }, inject: [MessageFactory, KickHandler, GameHasResetHandler, GameInformationHandler]);
     bind(SocketCommunication, toValue: socket);
     bind(Home);
     bind(HomeLogin);
@@ -58,7 +58,7 @@ class PokerPlanningModule extends Module {
     bind(CurrentGame);
     bind(KickHandler);
     bind(GameInformationHandler);
-    bind(GameResetHandler);
+    bind(GameHasResetHandler);
     bind(RouteInitializerFn, toImplementation: AppRouter);
     bind(NgRoutingUsePushState, toValue: new NgRoutingUsePushState.value(false));
   }
