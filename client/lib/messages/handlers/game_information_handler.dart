@@ -23,7 +23,7 @@ class GameInformationHandler extends MessageHandler<GameInformation> {
   void handleMessage(GameInformation message) {
     int gameId = message.gameId;
     Game newGame = message.game;
-    bool revealed = message.revealed;
+    bool revealed = message.game.revealed;
 
     logger.info("display cards with revealed : $revealed");
 

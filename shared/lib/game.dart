@@ -7,8 +7,9 @@ class Game {
 
   String name;
   Map<String, String> _players = {};
+  bool revealed = false;
 
-  Game(this.name, this._players);
+  Game(this.name, this.revealed, this._players);
 
   void addPlayer(String playerId) {
     _players.putIfAbsent(playerId, () => '');
@@ -49,15 +50,16 @@ class Game {
   Map toJson() {
     Map map = new Map();
     map["name"] = name;
+    map["revealed"] = revealed;
     map["players"] = _players;
     map["id"] = id;
     return map;
   }
 
   factory Game.fromMap(Map jsonMap) {
-    print(jsonMap["players"]);
-    return new Game(jsonMap["name"], jsonMap["players"])
+    return new Game(jsonMap["name"], jsonMap["revealed"], jsonMap["players"])
       ..id = jsonMap["id"]
+      ..revealed = jsonMap["revealed"] == null ? false : jsonMap["revealed"]
       .._players = jsonMap["players"] == null ? {} : jsonMap["players"];
   }
 

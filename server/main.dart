@@ -42,11 +42,6 @@ var port;
 var restPort;
 Logger logger = Logger.root;
 
-void resetGame(Game game) {
-  logger.info("sending reset signal");
-  broadcaster.broadcastData(game, JSON.encode({"gameHasReset": game.id}));
-}
-
 void handleMessage(socket, message) {
   logger.info("Received : " + message);
 

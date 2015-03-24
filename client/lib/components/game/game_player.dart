@@ -15,6 +15,7 @@ class GamePlayer implements ShadowRootAware, ScopeAware {
   String playerName;
   @NgTwoWay("valueToDisplay")
   String valueToDisplay;
+  @NgTwoWay("gameRevealed")
   bool revealed;
   @NgOneWay("value")
   String value;
