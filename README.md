@@ -45,7 +45,7 @@ This is what I use for developing on server-side:
 hostname: localhost
 port: 4040
 restPort: 3010
-jira.authorizationHeader: Basic fdHJgfHJXJHUIJIKOJKsfggdfsdfdsf=
+jira.authorizationHeader: Basic dXNlcm5hbWU6cGFzc3dvcmQ=
 ```
 
 Then to launch the server, cd into the server directory and type `dart main.dart`
