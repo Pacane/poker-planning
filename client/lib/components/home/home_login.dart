@@ -6,7 +6,6 @@ import 'package:angular/angular.dart';
 
 import 'package:poker_planning_client/routes.dart';
 import 'package:poker_planning_client/current_user.dart';
-import 'package:poker_planning_client/socket_communication.dart';
 
 import "package:logging/logging.dart";
 
@@ -14,12 +13,10 @@ import "package:logging/logging.dart";
     selector: 'home-login',
     cssUrl: 'packages/poker_planning_client/css/layout.css',
     templateUrl: 'packages/poker_planning_client/components/home/home_login.html')
-class HomeLogin implements ScopeAware, ShadowRootAware, AttachAware {
+class HomeLogin implements ShadowRootAware, AttachAware {
   ShadowRoot shadowRoot;
   Router router;
   CurrentUser _session;
-  SocketCommunication _socketCommunication;
-  Scope _scope;
   RouteProvider routeProvider;
   Logger logger = Logger.root;
 
@@ -39,7 +36,7 @@ class HomeLogin implements ScopeAware, ShadowRootAware, AttachAware {
     }
   }
 
-  HomeLogin(this._session, this._socketCommunication, this.router, this.routeProvider);
+  HomeLogin(this._session, this.router, this.routeProvider);
 
   start([String route = Routes.GAMES, Map parameters]) {
     if (parameters == null) {
@@ -59,10 +56,6 @@ class HomeLogin implements ScopeAware, ShadowRootAware, AttachAware {
     _session.onUserExists(previousRoute, _parameters);
 
     checkDisplayState();
-  }
-
-  void set scope(Scope scope) {
-    _scope = scope;
   }
 
   void onShadowRoot(ShadowRoot shadowRoot) {

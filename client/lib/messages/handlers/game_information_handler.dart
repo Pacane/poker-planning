@@ -21,7 +21,6 @@ class GameInformationHandler extends MessageHandler<GameInformation> {
   GameInformationHandler(this.currentGame, this.scope, this.currentUser);
 
   void handleMessage(GameInformation message) {
-    int gameId = message.gameId;
     Game newGame = message.game;
     bool revealed = message.game.revealed;
 

@@ -14,7 +14,6 @@ import 'package:poker_planning_server/messages/handlers/game_reset_handler.dart'
 import 'package:poker_planning_server/resources/games.dart';
 import 'package:poker_planning_server/repository/game_repository.dart';
 
-import 'package:poker_planning_shared/game.dart';
 import 'package:poker_planning_shared/messages/message_factory.dart';
 import 'package:poker_planning_shared/messages/handlers/message_handlers.dart';
 import 'package:poker_planning_shared/messages/handlers/connection_message_handlers.dart';

@@ -1,7 +1,5 @@
 library home_component;
 
-import 'dart:html';
-
 import 'package:angular/angular.dart';
 
 import 'package:poker_planning_client/current_user.dart';

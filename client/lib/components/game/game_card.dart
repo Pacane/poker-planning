@@ -1,7 +1,6 @@
 library poker_planning_cards;
 
 import 'package:angular/angular.dart';
-import 'dart:html' show Event, Node, CustomEvent;
 import 'dart:html';
 
 import 'package:poker_planning_client/socket_communication.dart';

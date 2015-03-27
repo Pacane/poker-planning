@@ -1,8 +1,6 @@
 library card_component;
 
-import 'dart:html' show Event, Node, CustomEvent;
 import 'dart:html';
-import 'dart:async';
 import 'package:angular/angular.dart';
 import 'package:poker_planning_client/tuple.dart';
 
@@ -22,9 +20,6 @@ class GamePlayer implements ShadowRootAware, ScopeAware {
   ShadowRoot _shadowRoot;
   Scope _scope;
 
-  String _value;
-  var _kickHandler;
-  ButtonElement _kickButton;
   DivElement _cardDiv;
 
   void applyStyles() {

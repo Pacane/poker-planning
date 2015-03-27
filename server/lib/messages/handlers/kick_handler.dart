@@ -1,7 +1,5 @@
 library kick_handler;
 
-import 'dart:convert';
-
 import 'package:logging/logging.dart';
 
 import 'package:poker_planning_server/broadcaster.dart';
@@ -20,7 +18,6 @@ class KickHandler extends MessageHandler<KickEvent> {
 
   void handleMessage(KickEvent message) {
     String kickedPlayer = message.kicked;
-    String kickedBy = message.kickedBy;
     int gameId = message.gameId;
 
     Game game = gameRepository.games[gameId];
