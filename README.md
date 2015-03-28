@@ -7,23 +7,45 @@ To launch the project you first have to create a file named `config.yaml` to set
 
 On linux systems do:
 (In both sub-projects (client/web and server)
+
 `touch config.yaml`
 
-And create the following entries for local development:
+And create the following entries for local development for client-side:
+
 ```
 hostname: localhost
 port: whateverYouWant
 restPort: somethingElse
 ```
 
+And create the following entries for local development for server-side:
+
+```
+hostname: localhost
+port: whateverYouWant
+restPort: somethingElse
+jira.authorizationHeader: authenticationHeaderString)
+```
+
+See [this](http://en.wikipedia.org/wiki/Basic_access_authentication#Client_side) for `jira.authorizationHeader`.
+
 Use whatever port you'd like (e.g.: 4040) and use it on both projects
 
-This is what I use for both client and server when developing:
+This is what I use for developing on client-side:
 
 ```
 hostname: localhost
 port: 4040
 restPort: 3010
+```
+
+This is what I use for developing on server-side:
+
+```
+hostname: localhost
+port: 4040
+restPort: 3010
+jira.authorizationHeader: Basic dXNlcm5hbWU6cGFzc3dvcmQ=
 ```
 
 Then to launch the server, cd into the server directory and type `dart main.dart`
