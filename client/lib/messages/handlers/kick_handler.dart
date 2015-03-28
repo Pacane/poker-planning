@@ -20,8 +20,6 @@ class KickHandler extends MessageHandler<KickEvent> {
   KickHandler(this.game, this.scope, this.currentUser);
 
   void handleMessage(KickEvent message) {
-    int gameId = message.gameId;
-
     String kicked = message.kicked;
     String kickedBy = message.kickedBy;
 

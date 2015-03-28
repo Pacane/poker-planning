@@ -8,7 +8,6 @@ import 'package:poker_planning_client/components/game/game.dart';
 import 'package:poker_planning_client/components/game/game_card.dart';
 import 'package:poker_planning_client/components/game/game_player.dart';
 
-import 'dart:html';
 import 'dart:async';
 
 import 'package:poker_planning_client/socket_communication.dart';

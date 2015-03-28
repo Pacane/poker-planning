@@ -8,7 +8,6 @@ import 'package:angular/angular.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 
-import 'package:poker_planning_client/routes.dart';
 import 'package:poker_planning_client/config.dart';
 
 import 'package:poker_planning_shared/game.dart';
@@ -28,7 +27,7 @@ class Lobby implements AttachAware {
 
   void attach() {
     var url = "http://${config.hostname}:${config.restPort}/games"; // TODO: Extract route
-    var request = HttpRequest.getString(url).then((value) {
+    HttpRequest.getString(url).then((value) {
       games = JSON.decode(value).map((map) => new Game.fromMap(map)).toList();
     });
   }
