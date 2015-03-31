@@ -53,6 +53,7 @@ class JiraCrawler {
     var client = new http.Client();
     return client.put(updateStoryUrl,
         headers: {"Authorization": "$authorizationHeader", "Content-Type": "application/json"},
-        body: '{"fieldId": "$storyPointsFieldId","issueIdOrKey": "$issueIdOrKey","newValue": "$points"}');
+        body: '{"fieldId": "$storyPointsFieldId","issueIdOrKey": "$issueIdOrKey","newValue": "$points"}')
+      ..whenComplete(() => client.close());
   }
 }
