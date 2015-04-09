@@ -11,6 +11,7 @@ import 'package:poker_planning_client/components/game/game.dart';
 import 'package:poker_planning_client/components/game/game_card.dart';
 import 'package:poker_planning_client/components/game/game_player.dart';
 
+import 'package:poker_planning_client/analytics.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/current_game.dart';
@@ -33,6 +34,7 @@ class PokerPlanningModule extends Module {
     SocketCommunication socket = new SocketCommunication(hostname, port);
     socket.initWebSocket();
 
+    bind(Analytics);
     bind(SocketCommunication, toValue: socket);
     bind(HomeComponent);
     bind(LoginComponent);

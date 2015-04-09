@@ -4,6 +4,7 @@ import 'dart:html';
 
 import 'package:angular/angular.dart';
 
+import 'package:poker_planning_client/analytics.dart';
 import 'package:poker_planning_client/routes.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/socket_communication.dart';
@@ -22,6 +23,7 @@ class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
   Scope _scope;
   RouteProvider routeProvider;
   Logger logger = Logger.root;
+  Analytics analytics;
 
   String get previousRoute {
     if (_parameters != null) {
@@ -39,7 +41,7 @@ class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
     }
   }
 
-  LoginComponent(this._session, this._socketCommunication, this.router, this.routeProvider);
+  LoginComponent(this._session, this._socketCommunication, this.router, this.routeProvider, this.analytics);
 
   start([String route = Routes.GAMES, Map parameters]) {
     if (parameters == null) {
@@ -52,6 +54,8 @@ class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
   void handleLoginClick() {
     InputElement nameInput = shadowRoot.querySelector("#nameInput");
     String newName = nameInput.value;
+    
+    analytics.sendEvent("Site", "Login", null);
 
     if (newName.isEmpty) return;
 
