@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:angular/angular.dart';
 
+import 'package:poker_planning_client/analytics.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/routes.dart';
@@ -23,13 +24,14 @@ class CreateGameComponent implements ScopeAware, ShadowRootAware {
   Scope _scope;
   ShadowRoot _shadowRoot;
   Config config;
+  Analytics analytics;
 
   @NgTwoWay("gameName")
   String gameName;
   @NgTwoWay("password")
   String password;
 
-  CreateGameComponent(this.currentUser, this.router, this.socketCommunication, this.config);
+  CreateGameComponent(this.currentUser, this.router, this.socketCommunication, this.config, this.analytics);
 
   void handleMessage(data) {
   }
@@ -51,6 +53,7 @@ class CreateGameComponent implements ScopeAware, ShadowRootAware {
       if (response.status == 200) { // TODO: Find this constant
         var createdGame = JSON.decode(response.response);
         var gameId = createdGame["id"];
+        analytics.sendEvent("Game", "Create", gameId.toString());
         router.go(Routes.GAMES, {"id" : gameId});
       }
     });
