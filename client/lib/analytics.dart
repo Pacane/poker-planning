@@ -10,7 +10,7 @@ class Analytics {
     new JsObject(context['ga'], ['send', 'pageview', path]);
   }
 
-  void sendEvent(String category, String action, String label) {
+  void sendEvent(String category, String action, [String label]) {
     new JsObject(context['ga'], ['send', 'event', category, action, label]);
   }
 }

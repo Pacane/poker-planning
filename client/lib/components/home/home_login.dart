@@ -55,7 +55,7 @@ class LoginComponent implements ScopeAware, ShadowRootAware, AttachAware {
     InputElement nameInput = shadowRoot.querySelector("#nameInput");
     String newName = nameInput.value;
     
-    analytics.sendEvent("Site", "Login", null);
+    analytics.sendEvent("Site", "Login");
 
     if (newName.isEmpty) return;
 

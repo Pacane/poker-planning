@@ -35,7 +35,7 @@ class AppRouter implements Function {
 
   void logout(Router router) {
     currentUser.logOffCurrentUser();
-    analytics.sendEvent("Site", "Logout", null);
+    analytics.sendEvent("Site", "Logout");
     router.go(Routes.ROOT, {});
   }
 
