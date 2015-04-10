@@ -8,6 +8,7 @@ import 'package:poker_planning_client/components/game/game.dart';
 import 'package:poker_planning_client/components/game/game_card.dart';
 import 'package:poker_planning_client/components/game/game_player.dart';
 
+import 'package:poker_planning_client/analytics.dart';
 import 'dart:async';
 
 import 'package:poker_planning_client/services/game_service.dart';
@@ -49,6 +50,7 @@ class PokerPlanningModule extends Module {
         toFactory: (MessageFactory messageFactory, kickHandler, resetHandler, gameInformationHandler) {
       return new MessageHandlers(messageFactory, [kickHandler, resetHandler, gameInformationHandler]);
     }, inject: [MessageFactory, KickHandler, GameHasResetHandler, GameInformationHandler]);
+    bind(Analytics);
     bind(SocketCommunication, toValue: socket);
     bind(Home);
     bind(HomeLogin);

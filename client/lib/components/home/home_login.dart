@@ -4,6 +4,7 @@ import 'dart:html';
 
 import 'package:angular/angular.dart';
 
+import 'package:poker_planning_client/analytics.dart';
 import 'package:poker_planning_client/routes.dart';
 import 'package:poker_planning_client/current_user.dart';
 
@@ -19,6 +20,7 @@ class HomeLogin implements ShadowRootAware, AttachAware {
   CurrentUser _session;
   RouteProvider routeProvider;
   Logger logger = Logger.root;
+  Analytics analytics;
 
   String get previousRoute {
     if (_parameters != null) {
@@ -36,7 +38,7 @@ class HomeLogin implements ShadowRootAware, AttachAware {
     }
   }
 
-  HomeLogin(this._session, this.router, this.routeProvider);
+  HomeLogin(this._session, this.router, this.routeProvider, this.analytics);
 
   start([String route = Routes.GAMES, Map parameters]) {
     if (parameters == null) {
@@ -49,6 +51,8 @@ class HomeLogin implements ShadowRootAware, AttachAware {
   void handleLoginClick() {
     InputElement nameInput = shadowRoot.querySelector("#nameInput");
     String newName = nameInput.value;
+
+    analytics.sendEvent("Site", "Login");
 
     if (newName.isEmpty) return;
 
