@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:angular/angular.dart';
 
+import 'package:poker_planning_client/analytics.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/routes.dart';
@@ -19,13 +20,14 @@ class LobbyGame {
   Router router;
   SocketCommunication socketCommunication;
   Config config;
+  Analytics analytics;
 
   @NgTwoWay("gameName")
   String gameName;
   @NgTwoWay("password")
   String password;
 
-  LobbyGame(this.currentUser, this.router, this.socketCommunication, this.config);
+  LobbyGame(this.currentUser, this.router, this.socketCommunication, this.config, this.analytics);
 
   void handleMessage(data) {}
 
@@ -43,6 +45,8 @@ class LobbyGame {
         var createdGame = JSON.decode(response.response);
         var gameId = createdGame["id"];
         router.go(Routes.GAMES, {"id": gameId});
+        analytics.sendEvent("Game", "Create", gameId.toString());
+        router.go(Routes.GAMES, {"id" : gameId});
       }
     });
   }

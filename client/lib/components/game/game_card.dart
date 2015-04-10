@@ -3,6 +3,7 @@ library poker_planning_cards;
 import 'package:angular/angular.dart';
 import 'dart:html';
 
+import 'package:poker_planning_client/analytics.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/current_game.dart';
@@ -22,8 +23,9 @@ class GameCard implements ShadowRootAware, ScopeAware {
   CurrentUser currentUser;
   Scope _scope;
   CurrentGame currentGame;
+  Analytics analytics;
 
-  GameCard(this.socketCommunication, this.currentUser, this.currentGame);
+  GameCard(this.socketCommunication, this.currentUser, this.currentGame, this.analytics);
 
   void onShadowRoot(ShadowRoot shadowRoot) {
     this.shadowRoot = shadowRoot;
@@ -37,6 +39,8 @@ class GameCard implements ShadowRootAware, ScopeAware {
     socketCommunication.sendSocketMsg(new CardSelectionEvent(currentGame.getGameId(), currentUser.userName, value));
 
     setSelected(true);
+
+    analytics.sendEvent("Game", "Card selected", value);
 
     _scope.parentScope.broadcast("cardSelected", value);
   }

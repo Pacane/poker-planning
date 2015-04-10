@@ -6,6 +6,7 @@ import 'dart:async';
 
 import 'package:angular/angular.dart';
 
+import 'package:poker_planning_client/analytics.dart';
 import 'package:poker_planning_client/tuple.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/current_game.dart';
@@ -37,6 +38,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
   Logger logger = Logger.root;
   MessageHandlers messageHandlers;
   ShadowRoot shadowRoot;
+  Analytics analytics;
 
   @NgOneWay("players")
   List<Tuple<String, String>> players;
@@ -45,11 +47,14 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
   bool gameRevealed;
 
   GameComponent(this.currentUser, this.router, this.socketCommunication, this.currentGame, this.routeProvider,
-      this.config, this.messageHandlers) {
+      this.config, this.messageHandlers, this.analytics) {
     players = currentGame.players;
   }
 
-  void revealOthersCards() => socketCommunication.sendSocketMsg(new RevealRequestEvent(currentGame.getGameId()));
+  void revealOthersCards() {
+    socketCommunication.sendSocketMsg(new RevealRequestEvent(currentGame.getGameId()));
+    analytics.sendEvent("Game", "Reveal", currentGame.getGameId().toString());
+  }
 
   void initReset() {
     socketCommunication.sendSocketMsg(new ResetGameEvent(currentGame.getGameId()));
