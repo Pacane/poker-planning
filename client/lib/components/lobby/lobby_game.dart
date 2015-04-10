@@ -9,7 +9,7 @@ import 'package:poker_planning_client/analytics.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/routes.dart';
-import 'package:poker_planning_client/config.dart';
+import 'package:poker_planning_client/app_config.dart';
 
 @Component(
     selector: 'lobby-gameCreate',

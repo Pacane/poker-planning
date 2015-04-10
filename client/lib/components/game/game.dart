@@ -9,11 +9,12 @@ import 'package:angular/angular.dart';
 
 import 'package:poker_planning_client/analytics.dart';
 import 'package:poker_planning_client/services/game_service.dart';
+import 'package:poker_planning_client/services/time_sync_service.dart';
 
 import 'package:poker_planning_client/tuple.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/current_game.dart';
-import 'package:poker_planning_client/config.dart';
+import 'package:poker_planning_client/app_config.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/routes.dart';
 
@@ -25,9 +26,6 @@ import 'package:poker_planning_shared/messages/reset_game_event.dart';
 import 'package:poker_planning_shared/messages/handlers/message_handlers.dart';
 
 import "package:logging/logging.dart";
-
-import 'package:http/http.dart' as http;
-import 'package:http/browser_client.dart';
 
 @Component(
     selector: 'game',
@@ -47,6 +45,8 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
   ShadowRoot shadowRoot;
   Analytics analytics;
   bool connected = false;
+  TimeSyncService timeService;
+  Duration timeDifference;
 
   @NgOneWay("players")
   List<Tuple<String, String>> players;
@@ -55,7 +55,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
   bool gameRevealed;
 
   GameComponent(this.currentUser, this.router, this.socketCommunication, this.currentGame, this.routeProvider,
-      this.config, this.messageHandlers, this.analytics, this.gameService) {
+      this.config, this.messageHandlers, this.analytics, this.gameService, this.timeService) {
     players = currentGame.players;
   }
 
@@ -107,12 +107,15 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
     } else {
       await askForGamePassword();
 
+      timeService.getTimeDifference().then((Duration difference) {
+        timeDifference = difference;
+        new Timer.periodic(new Duration(seconds: 1), handleTimer);
+      });
+
       socketCommunication.sendSocketMsg(new LoginEvent(currentGame.getGameId(), currentUser.userName));
       socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
 
       connected = true;
-
-      new Timer.periodic(new Duration(seconds: 1), handleTimer);
 
       window.onBeforeUnload.listen((event) {
         _sendDisconnectEvent();
@@ -142,7 +145,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
 
   String calculateLastReset() {
     DateTime now = new DateTime.now();
-    Duration duration = now.difference(currentGame.lastReset);
+    Duration duration = now.difference(currentGame.lastReset.add(timeDifference));
 
     var hours = duration.inHours;
     var minutes = (duration - new Duration(hours: hours)).inMinutes;

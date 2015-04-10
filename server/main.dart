@@ -12,6 +12,7 @@ import 'package:poker_planning_server/messages/handlers/reveal_request_handler.d
 import 'package:poker_planning_server/messages/handlers/card_selection_handler.dart';
 import 'package:poker_planning_server/messages/handlers/game_reset_handler.dart';
 import 'package:poker_planning_server/resources/games.dart';
+import 'package:poker_planning_server/resources/time.dart';
 import 'package:poker_planning_server/repository/game_repository.dart';
 
 import 'package:poker_planning_shared/messages/message_factory.dart';
@@ -103,6 +104,7 @@ startGamesServer() {
   app.addModule(new Module()
     ..bind(Interceptors)
     ..bind(Games)
+    ..bind(Time)
     ..bind(GameRepository, toValue: gameRepository)
     ..bind(MessageFactory, toValue: messageFactory)
     ..bind(Broadcaster, toValue: broadcaster));

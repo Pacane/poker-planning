@@ -1,6 +1,6 @@
 library api_paths;
 
-import 'package:poker_planning_client/config.dart';
+import 'package:poker_planning_client/app_config.dart';
 import 'package:angular/angular.dart';
 
 @Injectable()
@@ -14,4 +14,6 @@ class ApiPaths {
   String game(int id) => "$basePath/games/$id";
 
   String authenticate(int id) => "${game(id)}/auth";
+
+  String getServerTime() => "$basePath/time";
 }
