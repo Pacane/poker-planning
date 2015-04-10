@@ -19,7 +19,7 @@ import 'package:poker_planning_shared/game.dart';
 class Lobby implements AttachAware {
   CurrentUser currentUser;
   SocketCommunication socketCommunication;
-  Config config;
+  AppConfig config;
   @NgTwoWay("games")
   List<Game> games;
 

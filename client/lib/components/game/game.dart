@@ -6,6 +6,8 @@ import 'dart:async';
 
 import 'package:angular/angular.dart';
 
+import 'package:poker_planning_client/services/game_service.dart';
+
 import 'package:poker_planning_client/tuple.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/current_game.dart';
@@ -22,18 +24,22 @@ import 'package:poker_planning_shared/messages/handlers/message_handlers.dart';
 
 import "package:logging/logging.dart";
 
+import 'package:http/http.dart' as http;
+import 'package:http/browser_client.dart';
+
 @Component(
     selector: 'game',
     cssUrl: 'packages/poker_planning_client/components/game/game.css',
     templateUrl: 'packages/poker_planning_client/components/game/game.html')
 class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootAware {
+  GameService gameService;
   CurrentUser currentUser;
   Router router;
   SocketCommunication socketCommunication;
   Scope _scope;
   CurrentGame currentGame;
   RouteProvider routeProvider;
-  Config config;
+  AppConfig config;
   Logger logger = Logger.root;
   MessageHandlers messageHandlers;
   ShadowRoot shadowRoot;
@@ -45,7 +51,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
   bool gameRevealed;
 
   GameComponent(this.currentUser, this.router, this.socketCommunication, this.currentGame, this.routeProvider,
-      this.config, this.messageHandlers) {
+      this.config, this.messageHandlers, this.gameService) {
     players = currentGame.players;
   }
 
@@ -81,35 +87,21 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
     });
   }
 
-  void checkIfGameExists() {
-    var url = "http://${config.hostname}:${config.restPort}/games/${currentGame.getGameId()}"; // TODO: Extract route
-
-    HttpRequest httpRequest = new HttpRequest();
-    httpRequest
-      ..open('GET', url)
-      ..onLoadEnd.listen((_) {
-        var status = httpRequest.status;
-        if (status == 404) {
-          router.go(Routes.GAMES, {});
-        }
-      })
-      ..send();
-  }
-
-  void attach() {
+  attach() async {
     currentGame.setGameId(routeProvider.parameters['id']);
 
-    checkIfGameExists();
+    bool doesGameExist = await gameService.doesGameExist(currentGame.getGameId());
 
-    socketCommunication.sendSocketMsg(new LoginEvent(currentGame.getGameId(), currentUser.userName));
-    socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
-    window.onBeforeUnload.listen((event) {
-      _sendDisconnectEvent();
-    });
-
-    new Timer.periodic(
-        new Duration(seconds: 1), handleTimer
-    );
+    if (doesGameExist) {
+      socketCommunication.sendSocketMsg(new LoginEvent(currentGame.getGameId(), currentUser.userName));
+      socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
+      window.onBeforeUnload.listen((event) {
+        _sendDisconnectEvent();
+      });
+    }
+    else {
+      router.go(Routes.GAMES, {});
+    }
   }
 
   void handleTimer(Timer t) {

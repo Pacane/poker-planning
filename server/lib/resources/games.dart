@@ -29,16 +29,16 @@ class Games {
 
     gameRepository.games.putIfAbsent(newGame.id, () => newGame);
 
-    return new shelf.Response.ok(JSON.encode(newGame.toJson()));
+    return new shelf.Response.ok(JSON.encode(newGame));
   }
 
   @app.Route('/:id', responseType: 'application/json')
-  getGame(int id) {
+  shelf.Response getGame(int id) {
     Game game = gameRepository.games[id];
     if (gameRepository.games[id] == null) {
       return new shelf.Response.notFound("");
     } else {
-      return game;
+      return new shelf.Response.ok(JSON.encode(game));
     }
   }
 }

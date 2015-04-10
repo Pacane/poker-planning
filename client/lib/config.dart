@@ -6,7 +6,7 @@ import 'package:logging/logging.dart';
 import 'package:poker_planning_shared/loglevel_parser.dart';
 
 @Injectable()
-class Config {
+class AppConfig {
   Map config = {};
   String hostname;
   int port;

@@ -18,7 +18,7 @@ class LobbyGame {
   CurrentUser currentUser;
   Router router;
   SocketCommunication socketCommunication;
-  Config config;
+  AppConfig config;
 
   @NgTwoWay("gameName")
   String gameName;

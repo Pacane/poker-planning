@@ -10,6 +10,8 @@ import 'package:poker_planning_client/components/game/game_player.dart';
 
 import 'dart:async';
 
+import 'package:poker_planning_client/services/game_service.dart';
+import 'package:poker_planning_client/services/api_paths.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/current_game.dart';
@@ -40,6 +42,8 @@ class PokerPlanningModule extends Module {
     SocketCommunication socket = new SocketCommunication(hostname, port);
     socket.initWebSocket();
 
+    bind(GameService);
+    bind(ApiPaths);
     bind(MessageFactory, toValue: new MessageFactory());
     bind(MessageHandlers,
         toFactory: (MessageFactory messageFactory, kickHandler, resetHandler, gameInformationHandler) {
@@ -64,7 +68,7 @@ class PokerPlanningModule extends Module {
 }
 
 main() async {
-  PPConfig.Config config = new PPConfig.Config();
+  PPConfig.AppConfig config = new PPConfig.AppConfig();
   config.config = await Config.loadConfig();
   var hostname = config.config["hostname"];
   var port = config.config["port"];
@@ -75,7 +79,7 @@ main() async {
   config.initConfig();
 
   applicationFactory()
-      .addModule(new PokerPlanningModule(hostname, port)..bind(PPConfig.Config, toValue: config))
+      .addModule(new PokerPlanningModule(hostname, port)..bind(PPConfig.AppConfig, toValue: config))
       .addModule(new NodeBindModule())
       .run();
 }
