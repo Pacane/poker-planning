@@ -2,6 +2,7 @@ library game_component;
 
 import 'dart:html';
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:angular/angular.dart';
 
@@ -13,13 +14,20 @@ import 'package:poker_planning_client/config.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/routes.dart';
 
+import 'package:poker_planning_shared/messages/kick_event.dart';
+import 'package:poker_planning_shared/messages/login_event.dart';
+import 'package:poker_planning_shared/messages/disconnect_event.dart';
+import 'package:poker_planning_shared/messages/reveal_request_event.dart';
+import 'package:poker_planning_shared/messages/reset_game_event.dart';
+import 'package:poker_planning_shared/messages/handlers/message_handlers.dart';
+
 import "package:logging/logging.dart";
 
 @Component(
     selector: 'game',
     cssUrl: 'packages/poker_planning_client/components/game/game.css',
     templateUrl: 'packages/poker_planning_client/components/game/game.html')
-class GameComponent implements ScopeAware, AttachAware, DetachAware {
+class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootAware {
   CurrentUser currentUser;
   Router router;
   SocketCommunication socketCommunication;
@@ -28,32 +36,28 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
   RouteProvider routeProvider;
   Config config;
   Logger logger = Logger.root;
+  MessageHandlers messageHandlers;
+  ShadowRoot shadowRoot;
   Analytics analytics;
 
   @NgOneWay("players")
-  List<Tuple<String, String>> players = [];
+  List<Tuple<String, String>> players;
 
-  @NgOneWay("gameRevealed")
+  @NgTwoWay("gameRevealed")
   bool gameRevealed;
 
-  GameComponent(this.currentUser, this.router, this.socketCommunication, this.currentGame, this.routeProvider, this.config, this.analytics);
+  GameComponent(this.currentUser, this.router, this.socketCommunication, this.currentGame, this.routeProvider,
+      this.config, this.messageHandlers, this.analytics) {
+    players = currentGame.players;
+  }
 
   void revealOthersCards() {
-    socketCommunication.sendSocketMsg({
-        "revealAll": currentGame.getGameId()
-    });
+    socketCommunication.sendSocketMsg(new RevealRequestEvent(currentGame.getGameId()));
     analytics.sendEvent("Game", "Reveal", currentGame.getGameId().toString());
   }
 
   void initReset() {
-    socketCommunication.sendSocketMsg({
-        "resetRequest": currentGame.getGameId()
-    });
-  }
-
-  void gameHasReset() {
-    players.forEach((t) => t.second = "");
-    _scope.broadcast("game-has-reset", {});
+    socketCommunication.sendSocketMsg(new ResetGameEvent(currentGame.getGameId()));
   }
 
   void handleMessage(data) {
@@ -63,90 +67,23 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
 
     var decoded = JSON.decode(data);
 
-    Map game = decoded["game"];
-    Map revealedGame = decoded["revealedGame"];
-    var reset = decoded["gameHasReset"];
-    Map kick = decoded["kick"];
-    var gameId = decoded['gameId'];
-
-    if (game != null) {
-      if (gameId != currentGame.getGameId()) {
-        return;
-      }
-      displayCards(game, false);
-    } else if (revealedGame != null) {
-      if (gameId != currentGame.getGameId()) {
-        return;
-      }
-      displayCards(revealedGame, true);
-    } else if (reset != null) {
-      if (reset != currentGame.getGameId()) {
-        return;
-      }
-      logger.info("Game has reset!");
-      gameHasReset();
-    } else if (kick != null) {
-      handleKick(kick);
-    }
-  }
-
-  void updateCard(String player, String card) {
-    if (!players.any((x) => x.first == player)) {
-      players.add(new Tuple(player, card));
-    } else {
-      players.forEach((t) {
-        if (t.first == player) {
-          t.second = card;
-          return;
-        }
-      });
-    }
-  }
-
-  void displayCards(Map game, bool revealed) {
-    logger.info("display cards with revealed : $revealed");
-    gameRevealed = revealed;
-
-    removePlayersWhoLeft(game);
-
-    game.forEach((String player, String card) {
-      updateCard(player, card);
-    });
-
-    _scope.broadcast("card-update", [game, revealed]);
-  }
-
-  void removePlayersWhoLeft(Map game) {
-    players.removeWhere((t) => !game.containsKey(t.first));
+    messageHandlers.handleMessage(decoded);
   }
 
   void kickPlayer(String player) {
-    socketCommunication.sendSocketMsg({
-        "kicked" : [player, currentUser.userName, currentGame.getGameId()]
-    });
+    socketCommunication.sendSocketMsg(new KickEvent(currentGame.getGameId(), player, currentUser.userName));
   }
 
-  void handleKick(Map kick) {
-    String kicked = kick["kicked"];
-    String kickedBy = kick["kickedBy"];
-    int gameId = kick["gameId"];
-    if (gameId != currentGame.getGameId()) {
-      return;
-    }
-
-    players.removeWhere((p) => p.first == kicked);
-
-    if (kicked == currentUser.userName) {
-      var msg = "you have been kicked by: $kickedBy";
-      _scope.rootScope.broadcast("kicked", msg);
-    } else {
-      logger.warning("$kicked has been kicked by $kickedBy");
-    }
+  void onShadowRoot(ShadowRoot shadowRoot) {
+    this.shadowRoot = shadowRoot;
   }
 
   void set scope(Scope scope) {
     this._scope = scope;
     scope.on("kick-player").listen((event) => kickPlayer(event.data));
+    scope.on("game-update").listen((event) {
+      gameRevealed = event.data;
+    });
   }
 
   void checkIfGameExists() {
@@ -160,7 +97,8 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
         if (status == 404) {
           router.go(Routes.GAMES, {});
         }
-      })..send();
+      })
+      ..send();
   }
 
   void attach() {
@@ -168,26 +106,56 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware {
 
     checkIfGameExists();
 
-    var loginInfo = {
-        'login' :
-        {
-            'gameId': currentGame.getGameId(),
-            'username': currentUser.userName
-        }
-    };
-
-    socketCommunication.sendSocketMsg(loginInfo);
+    socketCommunication.sendSocketMsg(new LoginEvent(currentGame.getGameId(), currentUser.userName));
     socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
+    window.onBeforeUnload.listen((event) {
+      _sendDisconnectEvent();
+    });
+
+    new Timer.periodic(
+        new Duration(seconds: 1), handleTimer
+    );
+  }
+
+  void handleTimer(Timer t) {
+    if (currentGame.lastReset == null) {
+      return;
+    }
+    shadowRoot.querySelector("#lastReset").text = calculateLastReset();
+  }
+
+  String calculateLastReset() {
+    DateTime now = new DateTime.now();
+    Duration duration = now.difference(currentGame.lastReset);
+
+    var hours = duration.inHours;
+    var minutes = (duration - new Duration(hours: hours)).inMinutes;
+    var seconds = (duration - new Duration(minutes: minutes)).inSeconds;
+
+    var hoursDisplay = padInts(hours);
+    var minutesDisplay = padInts(minutes);
+    var secondsDisplay = padInts(seconds);
+
+    return "${hoursDisplay} : ${minutesDisplay} : ${secondsDisplay}";
+  }
+
+  String padInts(int value) {
+    if (value < 10) {
+      return "0${value}";
+    } else {
+      return value.toString();
+    }
   }
 
   void detach() {
     players = [];
-    socketCommunication.sendSocketMsg(
-        {
-            "disconnect": [currentUser.userName, currentGame.getGameId()]
-        }
-    );
+
+    _sendDisconnectEvent();
 
     currentGame.resetGameId();
+  }
+
+  _sendDisconnectEvent() {
+    socketCommunication.sendSocketMsg(new DisconnectEvent(currentGame.getGameId(), currentUser.userName));
   }
 }

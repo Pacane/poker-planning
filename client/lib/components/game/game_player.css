@@ -33,13 +33,6 @@
     transition: all .2s;
 }
 
-#card:hover {
-    background-color: #3f3f3f;
-    color: #fff;
-
-    cursor: pointer;
-}
-
 #card::after {
     font-family: "icomoon";
 }

@@ -1,3 +1,5 @@
+library current_user;
+
 import 'dart:html';
 import 'dart:async';
 
@@ -65,8 +67,8 @@ class CurrentUser {
 
       parameters["sourceRoute"] = sourceRoute;
 
-      new Future.delayed(new Duration(milliseconds:10),
-          () => router.go(Routes.LOGIN, parameters, replace: true, forceReload:true));
+      new Future.delayed(
+          new Duration(milliseconds: 10), () => router.go(Routes.LOGIN, parameters, replace: true, forceReload: true));
       return false;
     } else {
       showLoginSuccessful();

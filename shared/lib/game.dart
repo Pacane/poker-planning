@@ -1,28 +1,73 @@
 library game;
 
 import 'dart:convert' show JSON;
+import 'package:quiver/strings.dart';
 
 class Game {
   int id;
 
   String name;
-  Map<String, String> players = {};
+  Map<String, String> _players = {};
+  DateTime lastReset;
+  bool revealed = false;
 
-  Game(this.name, this.players);
+  Game(this.name, this.revealed, this._players);
+
+  void addPlayer(String playerId) {
+    _players.putIfAbsent(playerId, () => '');
+  }
+
+  void resetCards() {
+    _players.forEach((player, _) => _players[player] = "");
+  }
+
+  bool hasPlayers() {
+    return _players.isEmpty;
+  }
+
+  void removePlayer(String playerId) {
+    _players.remove(playerId);
+  }
+
+  void setCard(String player, String card) {
+    _players[player] = card;
+  }
+
+  void obfuscateSelectedCards() {
+    _players.forEach((player, card) {
+      if (card != "") {
+        _players[player] = "Y";
+      }
+    });
+  }
+
+  bool playerIsInGame(String playerId) {
+    return _players.containsKey(playerId);
+  }
+
+  void forEachPlayer(action) {
+    _players.forEach((String player, String card) => action(player, card));
+  }
 
   Map toJson() {
     Map map = new Map();
     map["name"] = name;
-    map["game"] = players;
+    map["revealed"] = revealed;
+    map["players"] = _players;
     map["id"] = id;
+    map["lastReset"] = lastReset == null ? "" : lastReset.toIso8601String();
+
     return map;
   }
 
   factory Game.fromMap(Map jsonMap) {
-    return new Game(jsonMap["name"], jsonMap["game"])
+    var mapLastReset = jsonMap["lastReset"];
+
+    return new Game(jsonMap["name"], jsonMap["revealed"], jsonMap["players"])
       ..id = jsonMap["id"]
-      ..players = jsonMap["game"] == null ? {} : jsonMap["game"]
-    ;
+      ..revealed = jsonMap["revealed"] == null ? false : jsonMap["revealed"]
+      ..lastReset = isEmpty(mapLastReset) ? null : DateTime.parse(mapLastReset)
+      .._players = jsonMap["players"] == null ? {} : jsonMap["players"];
   }
 
   factory Game.fromJson(String json) {

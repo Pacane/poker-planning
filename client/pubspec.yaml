@@ -5,14 +5,11 @@ dependencies:
   dart_config: any
   angular: ">=1.1.0 <2.0.0"
   angular_node_bind: any
-  async_await:
-    git: https://github.com/dart-lang/async_await.git
   poker_planning_shared:
     path: ../shared
 dev_dependencies:
   unittest: any
 transformers:
-- async_await
 - angular
 dependency_overrides:
   route_hierarchical:

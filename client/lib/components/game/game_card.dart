@@ -1,7 +1,6 @@
 library poker_planning_cards;
 
 import 'package:angular/angular.dart';
-import 'dart:html' show Event, Node, CustomEvent;
 import 'dart:html';
 
 import 'package:poker_planning_client/analytics.dart';
@@ -9,11 +8,13 @@ import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/current_game.dart';
 
+import 'package:poker_planning_shared/messages/card_selection_event.dart';
+
 @Component(
     selector: 'game-card',
     cssUrl: 'packages/poker_planning_client/components/game/game_card.css',
     templateUrl: 'packages/poker_planning_client/components/game/game_card.html')
-class MyCard implements ShadowRootAware, ScopeAware {
+class GameCard implements ShadowRootAware, ScopeAware {
   @NgAttr("value")
   String value;
   var clickHandler;
@@ -24,7 +25,7 @@ class MyCard implements ShadowRootAware, ScopeAware {
   CurrentGame currentGame;
   Analytics analytics;
 
-  MyCard(this.socketCommunication, this.currentUser, this.currentGame, this.analytics);
+  GameCard(this.socketCommunication, this.currentUser, this.currentGame, this.analytics);
 
   void onShadowRoot(ShadowRoot shadowRoot) {
     this.shadowRoot = shadowRoot;
@@ -35,12 +36,10 @@ class MyCard implements ShadowRootAware, ScopeAware {
   }
 
   void onCardSelected() {
-    socketCommunication.sendSocketMsg({
-        "cardSelection": [currentUser.userName, value, currentGame.getGameId()]
-    });
+    socketCommunication.sendSocketMsg(new CardSelectionEvent(currentGame.getGameId(), currentUser.userName, value));
 
     setSelected(true);
-    
+
     analytics.sendEvent("Game", "Card selected", value);
 
     _scope.parentScope.broadcast("cardSelected", value);
@@ -59,6 +58,6 @@ class MyCard implements ShadowRootAware, ScopeAware {
   }
 
   void deselectCard(_) {
-   setSelected(false);
+    setSelected(false);
   }
 }

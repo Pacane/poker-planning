@@ -17,13 +17,13 @@
 }
 
 .card:hover {
-    background-color: #5b5e6d;
+    background-color: #2b2d34;
     color: #fff;
 
     cursor: pointer;
 }
 
-.selected {
-    background-color: #5b5e6d;
-    color: #fff;
+.card.selected {
+    background-color: #d3e2c7;
+    color: #5b5e6d;
 }

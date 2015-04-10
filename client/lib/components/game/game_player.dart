@@ -1,28 +1,25 @@
 library card_component;
 
-import 'dart:html' show Event, Node, CustomEvent;
 import 'dart:html';
 import 'package:angular/angular.dart';
+import 'package:poker_planning_client/tuple.dart';
 
 @Component(
     selector: 'game-player',
     cssUrl: 'packages/poker_planning_client/components/game/game_player.css',
     templateUrl: 'packages/poker_planning_client/components/game/game_player.html')
-class TableCard implements ShadowRootAware, ScopeAware {
+class GamePlayer implements ShadowRootAware, ScopeAware {
   @NgTwoWay("playerName")
   String playerName;
   @NgTwoWay("valueToDisplay")
   String valueToDisplay;
-  @NgTwoWay("revealed")
+  @NgTwoWay("gameRevealed")
   bool revealed;
   @NgOneWay("value")
   String value;
   ShadowRoot _shadowRoot;
   Scope _scope;
 
-  String _value;
-  var _kickHandler;
-  ButtonElement _kickButton;
   DivElement _cardDiv;
 
   void applyStyles() {
@@ -47,7 +44,7 @@ class TableCard implements ShadowRootAware, ScopeAware {
 
   void setClass(String classname) {
     _cardDiv.classes.clear();
-    if(classname != "") {
+    if (classname != "") {
       _cardDiv.classes.add(classname);
     }
   }
@@ -63,15 +60,19 @@ class TableCard implements ShadowRootAware, ScopeAware {
   }
 
   void resetCard(_) {
+    revealed = false;
     setClass("");
     value = "";
-    valueToDisplay = "...";
+    applyStyles();
   }
 
   void updateCard(ScopeEvent event) {
-    Map game = event.data[0];
-    value = game[playerName];
-    revealed = event.data[1];
-    applyStyles();
+    List<Tuple<String, String>> players = event.data[0];
+    var stillAPlayer = players.any((t) => t.first == playerName);
+    if (stillAPlayer) {
+      value = players.firstWhere((t) => t.first == playerName).second;
+      revealed = event.data[1];
+      applyStyles();
+    }
   }
 }

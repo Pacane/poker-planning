@@ -10,5 +10,5 @@ class Routes {
   static const String LOGIN = 'login';
   static const String LOGOUT = 'logout';
 
-  static String toPath(String routeName) => '/'+ routeName.replaceAll('_', '/');
+  static String toPath(String routeName) => '/' + routeName.replaceAll('_', '/');
 }
