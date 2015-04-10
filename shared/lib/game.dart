@@ -10,6 +10,7 @@ class Game {
   Map<String, String> _players = {};
   DateTime lastReset;
   bool revealed = false;
+  bool isProtected = false;
 
   Game(this.name, this.revealed, this._players);
 
@@ -56,6 +57,7 @@ class Game {
     map["players"] = _players;
     map["id"] = id;
     map["lastReset"] = lastReset == null ? "" : lastReset.toIso8601String();
+    map["isProtected"] = isProtected;
 
     return map;
   }
@@ -67,7 +69,8 @@ class Game {
       ..id = jsonMap["id"]
       ..revealed = jsonMap["revealed"] == null ? false : jsonMap["revealed"]
       ..lastReset = isEmpty(mapLastReset) ? null : DateTime.parse(mapLastReset)
-      .._players = jsonMap["players"] == null ? {} : jsonMap["players"];
+      .._players = jsonMap["players"] == null ? {} : jsonMap["players"]
+      ..isProtected = jsonMap["isProtected"];
   }
 
   factory Game.fromJson(String json) {

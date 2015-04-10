@@ -1,6 +1,7 @@
 library game_component;
 
 import 'dart:html';
+import 'dart:js';
 import 'dart:convert';
 import 'dart:async';
 
@@ -43,6 +44,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
   Logger logger = Logger.root;
   MessageHandlers messageHandlers;
   ShadowRoot shadowRoot;
+  bool connected = false;
 
   @NgOneWay("players")
   List<Tuple<String, String>> players;
@@ -88,19 +90,41 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
   }
 
   attach() async {
+    connected = false;
+
     currentGame.setGameId(routeProvider.parameters['id']);
 
-    bool doesGameExist = await gameService.doesGameExist(currentGame.getGameId());
+    bool gameExists = await gameService.gameExists(currentGame.getGameId());
 
-    if (doesGameExist) {
+    if (!gameExists) {
+      print("Game doesn't exist");
+      router.go(Routes.GAMES, {});
+    } else {
+      await askForGamePassword();
+
       socketCommunication.sendSocketMsg(new LoginEvent(currentGame.getGameId(), currentUser.userName));
       socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
+
+      connected = true;
+
+      new Timer.periodic(new Duration(seconds: 1), handleTimer);
+
       window.onBeforeUnload.listen((event) {
         _sendDisconnectEvent();
       });
     }
-    else {
-      router.go(Routes.GAMES, {});
+  }
+
+  Future askForGamePassword() async {
+    bool isGameProtected = await gameService.isGameProtected(currentGame.getGameId());
+    print("Is game protected? : $isGameProtected");
+    if (isGameProtected) {
+      String password = context.callMethod('prompt', ['Please enter the game password', '']);
+      print("password = $password");
+      bool canEnter = await gameService.isPasswordValid(currentGame.getGameId(), password);
+      if (!canEnter) {
+        router.go(Routes.GAMES, {});
+      }
     }
   }
 
@@ -137,7 +161,9 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
   void detach() {
     players = [];
 
-    _sendDisconnectEvent();
+    if (connected) {
+      _sendDisconnectEvent();
+    }
 
     currentGame.resetGameId();
   }

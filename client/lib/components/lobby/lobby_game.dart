@@ -34,9 +34,9 @@ class LobbyGame {
 
     HttpRequest
         .request(url,
-            method: "PUT",
+            method: "POST",
             requestHeaders: {'Content-type': 'application/json'},
-            sendData: JSON.encode({"name": gameName})) // TODO: Wrap this
+            sendData: JSON.encode({"name": gameName, "password": password})) // TODO: Wrap this
         .then((HttpRequest response) {
       if (response.status == 200) {
         // TODO: Find this constant

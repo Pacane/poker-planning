@@ -12,4 +12,6 @@ class ApiPaths {
   String get basePath => "http://${config.hostname}:${config.restPort}";
 
   String game(int id) => "$basePath/games/$id";
+
+  String authenticate(int id) => "${game(id)}/auth";
 }
