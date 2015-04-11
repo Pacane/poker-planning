@@ -9,7 +9,7 @@ import 'package:angular/angular.dart';
 
 import 'package:poker_planning_client/analytics.dart';
 import 'package:poker_planning_client/services/game_service.dart';
-import 'package:poker_planning_client/services/time_sync_service.dart';
+import 'package:poker_planning_client/services/time_service.dart';
 
 import 'package:poker_planning_client/tuple.dart';
 import 'package:poker_planning_client/current_user.dart';
@@ -45,7 +45,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
   ShadowRoot shadowRoot;
   Analytics analytics;
   bool connected = false;
-  TimeSyncService timeService;
+  TimeService timeService;
   Duration timeDifference;
 
   @NgOneWay("players")
@@ -102,14 +102,13 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
     bool gameExists = await gameService.gameExists(currentGame.getGameId());
 
     if (!gameExists) {
-      print("Game doesn't exist");
       router.go(Routes.GAMES, {});
     } else {
       await askForGamePassword();
 
       timeService.getTimeDifference().then((Duration difference) {
         timeDifference = difference;
-        new Timer.periodic(new Duration(seconds: 1), handleTimer);
+        new Timer.periodic(new Duration(milliseconds: 500), handleTimer);
       });
 
       socketCommunication.sendSocketMsg(new LoginEvent(currentGame.getGameId(), currentUser.userName));
@@ -125,10 +124,8 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
 
   Future askForGamePassword() async {
     bool isGameProtected = await gameService.isGameProtected(currentGame.getGameId());
-    print("Is game protected? : $isGameProtected");
     if (isGameProtected) {
       String password = context.callMethod('prompt', ['Please enter the game password', '']);
-      print("password = $password");
       bool canEnter = await gameService.isPasswordValid(currentGame.getGameId(), password);
       if (!canEnter) {
         router.go(Routes.GAMES, {});
@@ -140,30 +137,8 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
     if (currentGame.lastReset == null) {
       return;
     }
-    shadowRoot.querySelector("#lastReset").text = calculateLastReset();
-  }
-
-  String calculateLastReset() {
-    DateTime now = new DateTime.now();
-    Duration duration = now.difference(currentGame.lastReset.add(timeDifference));
-
-    var hours = duration.inHours;
-    var minutes = (duration - new Duration(hours: hours)).inMinutes;
-    var seconds = (duration - new Duration(minutes: minutes)).inSeconds;
-
-    var hoursDisplay = padInts(hours);
-    var minutesDisplay = padInts(minutes);
-    var secondsDisplay = padInts(seconds);
-
-    return "${hoursDisplay} : ${minutesDisplay} : ${secondsDisplay}";
-  }
-
-  String padInts(int value) {
-    if (value < 10) {
-      return "0${value}";
-    } else {
-      return value.toString();
-    }
+    shadowRoot.querySelector("#lastReset").text =
+        timeService.getFormattedRemainingTime(new DateTime.now().difference(currentGame.lastReset));
   }
 
   void detach() {

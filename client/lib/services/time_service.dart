@@ -8,11 +8,11 @@ import 'package:http/http.dart' as http;
 import 'package:http/browser_client.dart';
 
 @Injectable()
-class TimeSyncService {
+class TimeService {
   ApiPaths paths;
   http.Client client = new BrowserClient();
 
-  TimeSyncService(this.paths);
+  TimeService(this.paths);
 
   Future<Duration> getTimeDifference() async {
     DateTime now = new DateTime.now();
@@ -21,5 +21,10 @@ class TimeSyncService {
     DateTime serverTime = DateTime.parse(response.body);
 
     return serverTime.difference(now);
+  }
+
+  String getFormattedRemainingTime(Duration elapsedTime) {
+    String unformattedTime = elapsedTime.toString();
+    return unformattedTime.substring(0, unformattedTime.indexOf('.'));
   }
 }

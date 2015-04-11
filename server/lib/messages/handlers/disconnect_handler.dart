@@ -35,12 +35,5 @@ class DisconnectHandler extends ConnectionMessageHandler<DisconnectEvent> {
     game.removePlayer(username);
 
     broadcaster.broadcastData(game, new GameInformation(gameId, game));
-
-    new Future.delayed(new Duration(seconds:1), () {
-      if (game.hasPlayers()) {
-        // TODO : Maybe plug this to the Websocket so the list is refreshed live on clients
-        gameRepository.games.remove(game.id);
-      }
-    });
   }
 }
