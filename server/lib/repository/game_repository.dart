@@ -26,6 +26,10 @@ class GameRepository {
   }
 
   Game createGame(Game newGame, String password) {
+    if (newGame.id != null) {
+      throw new Exception('This game already exists (game id: ${newGame.id}');
+    }
+
     newGame
       ..id = getNewId
       ..lastReset = new DateTime.now().toUtc();
