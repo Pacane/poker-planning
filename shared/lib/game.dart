@@ -77,7 +77,4 @@ class Game {
     Map data = JSON.decode(json);
     return new Game.fromMap(data);
   }
-
-  static int _idSeed = 1;
-  static int get getNewId => _idSeed++;
 }

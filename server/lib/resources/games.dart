@@ -24,7 +24,7 @@ class Games {
   @app.DefaultRoute(methods: const [app.POST], responseType: 'application/json')
   shelf.Response addGame(@app.Body(app.JSON) Map json) {
     Game newGame = new Game.fromMap(json)
-      ..id = Game.getNewId
+      ..id = gameRepository.getNewId
       ..lastReset = new DateTime.now().toUtc();
 
     gameRepository.games.putIfAbsent(newGame.id, () => newGame);
@@ -36,7 +36,7 @@ class Games {
   @app.Route('/:id', responseType: 'application/json')
   shelf.Response getGame(int id) {
     Game game = gameRepository.games[id];
-    if (gameRepository.games[id] == null) {
+    if (game == null) {
       return new shelf.Response.notFound("");
     } else {
       return new shelf.Response.ok(JSON.encode(game));

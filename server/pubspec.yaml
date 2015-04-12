@@ -8,6 +8,8 @@ dependencies:
   poker_planning_shared:
       path: ../shared
   logging_handlers: any
+dev_dependencies:
+  test: 0.12.0-beta.6
 dependency_overrides:
   route_hierarchical:
     version: any

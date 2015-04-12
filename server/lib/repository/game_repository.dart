@@ -9,6 +9,10 @@ class GameRepository {
   Map<int, Game> games = {};
   Map<Game, List<WebSocket>> activeConnections = {};
 
+  GameRepository() {
+    _idSeed = 1;
+  }
+
   void setPassword(int gameId, String password) {
     _passwords[gameId] = password;
     games[gameId].isProtected = password != null;
@@ -20,4 +24,7 @@ class GameRepository {
     activeConnections.putIfAbsent(game, () => []);
     activeConnections[game].add(connection);
   }
+
+  int _idSeed;
+  int get getNewId => _idSeed++;
 }

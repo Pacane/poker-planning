@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:dart_config/default_server.dart';
 
-import 'package:poker_planning_server/interceptors.dart';
 import 'package:poker_planning_server/broadcaster.dart';
 import 'package:poker_planning_server/messages/handlers/login_handler.dart';
 import 'package:poker_planning_server/messages/handlers/disconnect_handler.dart';
@@ -11,9 +11,8 @@ import 'package:poker_planning_server/messages/handlers/kick_handler.dart';
 import 'package:poker_planning_server/messages/handlers/reveal_request_handler.dart';
 import 'package:poker_planning_server/messages/handlers/card_selection_handler.dart';
 import 'package:poker_planning_server/messages/handlers/game_reset_handler.dart';
-import 'package:poker_planning_server/resources/games.dart';
-import 'package:poker_planning_server/resources/time.dart';
 import 'package:poker_planning_server/repository/game_repository.dart';
+import 'production_module.dart' as modules;
 
 import 'package:poker_planning_shared/messages/message_factory.dart';
 import 'package:poker_planning_shared/messages/handlers/message_handlers.dart';
@@ -28,11 +27,9 @@ import 'package:stack_trace/stack_trace.dart';
 
 import 'package:redstone/server.dart' as app;
 
-GameRepository gameRepository;
-MessageFactory messageFactory;
+Injector injector;
 MessageHandlers messageHandlers;
 ConnectionMessageHandlers connectionMessageHandlers;
-Broadcaster broadcaster;
 
 Map<String, String> game = {};
 var allConnections = [];
@@ -51,41 +48,43 @@ void handleMessage(socket, message) {
   connectionMessageHandlers.handleMessage(decodedMessage, socket);
 }
 
-void startSocket() {
+Future startSocket() async {
   logger.info("Starting websocket...!");
-  HttpServer.bind(hostname, port).then((server) {
-    server.listen((HttpRequest req) {
+  try {
+    HttpServer server = await HttpServer.bind(hostname, port);
+    server.listen((HttpRequest req) async {
       if (req.uri.path == '/ws') {
-        WebSocketTransformer.upgrade(req)..then((socket) => socket.listen((msg) => handleMessage(socket, msg)));
+        WebSocket socket = await WebSocketTransformer.upgrade(req);
+        socket.listen((msg) => handleMessage(socket, msg));
       }
-    })..onError((e) => logger.warning("An error occurred."));
-  });
+    });
+  } catch (e) {
+    logger.warning("An error occurred.");
+  }
 }
 
-void main() {
-  loadConfig().then((Map config) {
-    hostname = config["hostname"];
-    port = config["port"];
-    restPort = config["restPort"];
-    if (hostname == null) throw ("hostname wasn't set in config.yaml");
-    if (port == null) throw ("port wasn't set in config.yaml");
-    if (restPort == null) throw ("restPort wasn't set in config.yaml");
-    logger.level = LogLevelParser.logLevel(config["logLevel"]);
-  }).catchError(showError).then((_) => startGamesServer()).then((_) => startSocket());
+Future main() async {
+  Map config = await loadConfig();
+  hostname = config["hostname"];
+  port = config["port"];
+  restPort = config["restPort"];
+  if (hostname == null) throw ("hostname wasn't set in config.yaml");
+  if (port == null) throw ("port wasn't set in config.yaml");
+  if (restPort == null) throw ("restPort wasn't set in config.yaml");
+  logger.level = LogLevelParser.logLevel(config["logLevel"]);
+
+  injector = new ModuleInjector([modules.getProductionModule()]);
+
+  startGamesServer(injector, [modules.getProductionModule(), modules.getRestModule()]);
+  startSocket();
 }
 
 void showError(error) => logger.severe(error);
 
-startGamesServer() {
-  Injector injector = new ModuleInjector([
-    new Module()
-      ..bind(GameRepository)
-      ..bind(MessageFactory)
-  ]);
-
-  gameRepository = injector.get(GameRepository);
-  messageFactory = injector.get(MessageFactory);
-  broadcaster = new Broadcaster(gameRepository);
+void startGamesServer(Injector injector, List<Module> modules) {
+  GameRepository gameRepository = injector.get(GameRepository);
+  Broadcaster broadcaster = injector.get(Broadcaster);
+  MessageFactory messageFactory = injector.get(MessageFactory);
 
   messageHandlers = new MessageHandlers(messageFactory, [
     new KickHandler(gameRepository, broadcaster),
@@ -101,13 +100,7 @@ startGamesServer() {
 
   setupLogging();
 
-  app.addModule(new Module()
-    ..bind(Interceptors)
-    ..bind(Games)
-    ..bind(Time)
-    ..bind(GameRepository, toValue: gameRepository)
-    ..bind(MessageFactory, toValue: messageFactory)
-    ..bind(Broadcaster, toValue: broadcaster));
+  modules.forEach((module) => app.addModule(module));
 
   app.start(port: restPort);
 }
