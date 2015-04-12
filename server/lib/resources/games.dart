@@ -23,12 +23,10 @@ class Games {
 
   @app.DefaultRoute(methods: const [app.POST], responseType: 'application/json')
   shelf.Response addGame(@app.Body(app.JSON) Map json) {
-    Game newGame = new Game.fromMap(json)
-      ..id = gameRepository.getNewId
-      ..lastReset = new DateTime.now().toUtc();
+    Game newGame = new Game.fromMap(json);
+    String password = json['password'];
 
-    gameRepository.games.putIfAbsent(newGame.id, () => newGame);
-    gameRepository.setPassword(newGame.id, json['password']);
+    newGame = gameRepository.createGame(newGame, password);
 
     return new shelf.Response.ok(JSON.encode(newGame));
   }

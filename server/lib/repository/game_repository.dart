@@ -25,6 +25,17 @@ class GameRepository {
     activeConnections[game].add(connection);
   }
 
+  Game createGame(Game newGame, String password) {
+    newGame
+      ..id = getNewId
+      ..lastReset = new DateTime.now().toUtc();
+
+    games.putIfAbsent(newGame.id, () => newGame);
+    setPassword(newGame.id, password);
+
+    return newGame;
+  }
+
   int _idSeed;
   int get getNewId => _idSeed++;
 }
