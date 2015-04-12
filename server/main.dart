@@ -73,9 +73,10 @@ Future main() async {
   if (restPort == null) throw ("restPort wasn't set in config.yaml");
   logger.level = LogLevelParser.logLevel(config["logLevel"]);
 
-  injector = new ModuleInjector([modules.getProductionModule()]);
+  injector = new ModuleInjector([modules.getSocketModule()]);
 
-  startGamesServer(injector, [modules.getProductionModule(), modules.getRestModule()]);
+  startGamesServer(
+      injector, [modules.getRestModule(), modules.getSharedModule(injector)]);
   startSocket();
 }
 

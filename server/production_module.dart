@@ -12,7 +12,8 @@ import 'package:poker_planning_server/broadcaster.dart';
 import 'package:poker_planning_shared/messages/message_factory.dart';
 
 Module _restModule;
-Module _productionModule;
+Module _socketModule;
+Module _sharedModule;
 
 Module getRestModule() {
   if (_restModule == null) {
@@ -24,12 +25,19 @@ Module getRestModule() {
   return _restModule;
 }
 
-Module getProductionModule() {
-  if (_productionModule == null) {
-    _productionModule = new Module()
-      ..bind(GameRepository, toValue: new GameRepository())
+Module getSocketModule() {
+  if (_socketModule == null) {
+    _socketModule = new Module()
+      ..bind(GameRepository)
       ..bind(MessageFactory)
       ..bind(Broadcaster);
   }
-  return _productionModule;
+  return _socketModule;
+}
+
+Module getSharedModule(Injector injector) {
+  if (_sharedModule == null) {
+    _sharedModule = new Module()..bind(GameRepository, toValue: injector.get(GameRepository));
+  }
+  return _sharedModule;
 }
