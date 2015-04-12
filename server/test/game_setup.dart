@@ -1,5 +1,6 @@
 import 'package:poker_planning_server/repository/game_repository.dart';
 import 'package:poker_planning_server/resources/games.dart';
+import 'test_module.dart';
 
 import 'package:di/di.dart';
 
@@ -7,13 +8,14 @@ import 'package:redstone/server.dart' as app;
 
 GameRepository gameRepository;
 Games gameResource;
+ModuleInjector injector;
 
 setupGameResource() async {
-  gameRepository = new GameRepository();
+  injector = new ModuleInjector([new Module()..bind(GameRepository)]);
+  gameRepository = injector.get(GameRepository);
 
-  app.addModule(new Module()
-    ..bind(Games)
-    ..bind(GameRepository, toValue: gameRepository));
+  app.addModule(getRestModule());
+  app.addModule(getSharedModule(injector));
 
   app.setUp([#games_resource]);
 }
