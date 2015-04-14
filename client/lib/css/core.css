@@ -9,7 +9,7 @@ html {
 }
 
 body {
-    background: #fff url('/background.jpg') no-repeat center top;
+    background: #fff url('background.jpg') no-repeat center top;
     color: #3f3f3f;
     font-family: 'Open Sans', sans-serif;
     font-size: 1.4em;
@@ -46,7 +46,7 @@ h2 {
 
 h3 {
     margin-bottom: .6em;
-    
+
 }
 
 p {
@@ -57,7 +57,7 @@ p {
 
 hr {
     background-color: #de6e7c;
-    
+
     display: block;
     width: 100%;
     height: 1px;
@@ -81,7 +81,7 @@ input[type="submit"] {
 button:hover,
 input[type="submit"]:hover {
     background-color: #2b2d34;
-    
+
     border-color: #2b2d34;
 
     cursor: pointer;
@@ -105,7 +105,7 @@ button:focus {
     min-height: 1px;
     width: 16.66%;
     padding: 12px;
-    
+
     float: left;
 }
 
