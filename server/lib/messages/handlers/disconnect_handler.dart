@@ -24,12 +24,12 @@ class DisconnectHandler extends ConnectionMessageHandler<DisconnectEvent> {
     int gameId = message.gameId;
     String username = message.username;
 
-    Game game = gameRepository.games[gameId];
-
-    if (game == null) {
+    if (!gameRepository.gameExists(gameId)) {
       logger.info("Game doesn't exist"); // TODO: Do something
       return;
     }
+
+    Game game = gameRepository.games[gameId];
 
     gameRepository.activeConnections[game].remove(socket);
     game.removePlayer(username);

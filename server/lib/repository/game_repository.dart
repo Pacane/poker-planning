@@ -40,6 +40,8 @@ class GameRepository {
     return newGame;
   }
 
+  bool gameExists(int gameId) => games[gameId] != null;
+
   int _idSeed;
   int get getNewId => _idSeed++;
 }
