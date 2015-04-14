@@ -23,23 +23,21 @@ class Games {
 
   @app.DefaultRoute(methods: const [app.POST], responseType: 'application/json')
   shelf.Response addGame(@app.Body(app.JSON) Map json) {
-    Game newGame = new Game.fromMap(json)
-      ..id = Game.getNewId
-      ..lastReset = new DateTime.now().toUtc();
+    Game newGame = new Game.fromMap(json);
+    String password = json['password'];
 
-    gameRepository.games.putIfAbsent(newGame.id, () => newGame);
-    gameRepository.setPassword(newGame.id, json['password']);
+    newGame = gameRepository.createGame(newGame, password);
 
     return new shelf.Response.ok(JSON.encode(newGame));
   }
 
   @app.Route('/:id', responseType: 'application/json')
   shelf.Response getGame(int id) {
-    Game game = gameRepository.games[id];
-    if (gameRepository.games[id] == null) {
-      return new shelf.Response.notFound("");
-    } else {
+    if (gameRepository.gameExists(id)) {
+      Game game = gameRepository.games[id];
       return new shelf.Response.ok(JSON.encode(game));
+    } else {
+      return new shelf.Response.notFound("");
     }
   }
 

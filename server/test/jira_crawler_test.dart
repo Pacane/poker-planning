@@ -1,8 +1,8 @@
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:dart_config/default_server.dart';
 
-import 'jira_crawler.dart';
-import 'story.dart';
+import 'package:poker_planning_server/jira/jira_crawler.dart';
+import 'package:poker_planning_server/jira/story.dart';
 
 void main() {
   JiraCrawler crawler;

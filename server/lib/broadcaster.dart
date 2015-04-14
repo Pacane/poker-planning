@@ -1,3 +1,5 @@
+library game_broadcaster;
+
 import 'dart:convert';
 
 import 'package:poker_planning_server/repository/game_repository.dart';
