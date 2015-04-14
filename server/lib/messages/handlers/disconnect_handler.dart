@@ -24,23 +24,16 @@ class DisconnectHandler extends ConnectionMessageHandler<DisconnectEvent> {
     int gameId = message.gameId;
     String username = message.username;
 
-    Game game = gameRepository.games[gameId];
-
-    if (game == null) {
+    if (!gameRepository.gameExists(gameId)) {
       logger.info("Game doesn't exist"); // TODO: Do something
       return;
     }
+
+    Game game = gameRepository.games[gameId];
 
     gameRepository.activeConnections[game].remove(socket);
     game.removePlayer(username);
 
     broadcaster.broadcastData(game, new GameInformation(gameId, game));
-
-    new Future.delayed(new Duration(seconds:1), () {
-      if (game.hasPlayers()) {
-        // TODO : Maybe plug this to the Websocket so the list is refreshed live on clients
-        gameRepository.games.remove(game.id);
-      }
-    });
   }
 }

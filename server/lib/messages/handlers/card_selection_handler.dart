@@ -24,12 +24,12 @@ class CardSelectionHandler extends MessageHandler<CardSelectionEvent> {
 
     logger.info("Adding $playerName card selection: $selectedCard in game $gameId");
 
-    Game game = gameRepository.games[gameId];
-
-    if (game == null) {
+    if (!gameRepository.gameExists(gameId)) {
       logger.info("Game doesn't exist"); // TODO: Do something
       return;
     }
+
+    Game game = gameRepository.games[gameId];
 
     game.setCard(playerName, selectedCard);
 
