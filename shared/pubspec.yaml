@@ -4,3 +4,5 @@ description: PokerPlanning app shared
 dependencies:
   logging: any
   quiver: any
+dev_dependencies:
+  test: 0.12.0-beta.6
