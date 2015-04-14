@@ -1,19 +1,20 @@
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:poker_planning_shared/game.dart';
+
 import 'dart:convert' show JSON;
 
 void main() {
   test('Game Serialization, null lastReset', () {
     Game game = new Game("Bob", true, new Map<String, String>());
     String json = JSON.encode(game);
-    expect(json, equals('{"name":"Bob","revealed":true,"players":{},"id":null,"lastReset":""}'));
+    expect(json, equals('{"name":"Bob","revealed":true,"players":{},"id":null,"lastReset":"","isProtected":false}'));
   });
 
   test('Game Serialization, non-null lastReset', () {
     Game game = new Game("Bob", true, new Map<String, String>())
       ..lastReset = new DateTime(2014, DateTime.APRIL, 29, 6, 4);
     String json = JSON.encode(game);
-    expect(json, equals('{"name":"Bob","revealed":true,"players":{},"id":null,"lastReset":"2014-04-29T06:04:00.000"}'));
+    expect(json, equals('{"name":"Bob","revealed":true,"players":{},"id":null,"lastReset":"2014-04-29T06:04:00.000","isProtected":false}'));
   });
 
   test('Game Copy, non-null lastReset', () {

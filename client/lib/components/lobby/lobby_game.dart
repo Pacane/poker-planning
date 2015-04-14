@@ -4,12 +4,13 @@ import 'dart:html';
 import 'dart:convert';
 
 import 'package:angular/angular.dart';
+import 'package:quiver/strings.dart' as quiver;
 
 import 'package:poker_planning_client/analytics.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/routes.dart';
-import 'package:poker_planning_client/config.dart';
+import 'package:poker_planning_client/app_config.dart';
 
 @Component(
     selector: 'lobby-gameCreate',
@@ -19,8 +20,8 @@ class LobbyGame {
   CurrentUser currentUser;
   Router router;
   SocketCommunication socketCommunication;
-  Config config;
   Analytics analytics;
+  AppConfig config;
 
   @NgTwoWay("gameName")
   String gameName;
@@ -36,9 +37,9 @@ class LobbyGame {
 
     HttpRequest
         .request(url,
-            method: "PUT",
+            method: "POST",
             requestHeaders: {'Content-type': 'application/json'},
-            sendData: JSON.encode({"name": gameName})) // TODO: Wrap this
+            sendData: JSON.encode({"name": gameName, "password": quiver.emptyToNull(password)})) // TODO: Wrap this
         .then((HttpRequest response) {
       if (response.status == 200) {
         // TODO: Find this constant

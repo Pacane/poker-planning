@@ -21,24 +21,32 @@ class Games {
   @app.DefaultRoute()
   List<Game> getGames() => gameRepository.games.values.toList();
 
-  @app.DefaultRoute(methods: const [app.PUT], responseType: 'application/json')
+  @app.DefaultRoute(methods: const [app.POST], responseType: 'application/json')
   shelf.Response addGame(@app.Body(app.JSON) Map json) {
-    Game newGame = new Game.fromMap(json)
-      ..id = Game.getNewId
-      ..lastReset = new DateTime.now().toUtc();
+    Game newGame = new Game.fromMap(json);
+    String password = json['password'];
 
-    gameRepository.games.putIfAbsent(newGame.id, () => newGame);
+    newGame = gameRepository.createGame(newGame, password);
 
-    return new shelf.Response.ok(JSON.encode(newGame.toJson()));
+    return new shelf.Response.ok(JSON.encode(newGame));
   }
 
   @app.Route('/:id', responseType: 'application/json')
-  getGame(int id) {
-    Game game = gameRepository.games[id];
-    if (gameRepository.games[id] == null) {
-      return new shelf.Response.notFound("");
+  shelf.Response getGame(int id) {
+    if (gameRepository.gameExists(id)) {
+      Game game = gameRepository.games[id];
+      return new shelf.Response.ok(JSON.encode(game));
     } else {
-      return game;
+      return new shelf.Response.notFound("");
+    }
+  }
+
+  @app.Route('/:id/auth', methods: const [app.POST])
+  shelf.Response authenticate(int id, @app.Body(app.JSON) Map body) {
+    if (gameRepository.isPasswordValid(id, body['password'])) {
+      return new shelf.Response.ok("");
+    } else {
+      return new shelf.Response.notFound("");
     }
   }
 }

@@ -1,16 +1,20 @@
 library game_component;
 
 import 'dart:html';
+import 'dart:js';
 import 'dart:convert';
 import 'dart:async';
 
 import 'package:angular/angular.dart';
 
 import 'package:poker_planning_client/analytics.dart';
+import 'package:poker_planning_client/services/game_service.dart';
+import 'package:poker_planning_client/services/time_service.dart';
+
 import 'package:poker_planning_client/tuple.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/current_game.dart';
-import 'package:poker_planning_client/config.dart';
+import 'package:poker_planning_client/app_config.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/routes.dart';
 
@@ -28,17 +32,21 @@ import "package:logging/logging.dart";
     cssUrl: 'packages/poker_planning_client/components/game/game.css',
     templateUrl: 'packages/poker_planning_client/components/game/game.html')
 class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootAware {
+  GameService gameService;
   CurrentUser currentUser;
   Router router;
   SocketCommunication socketCommunication;
   Scope _scope;
   CurrentGame currentGame;
   RouteProvider routeProvider;
-  Config config;
+  AppConfig config;
   Logger logger = Logger.root;
   MessageHandlers messageHandlers;
   ShadowRoot shadowRoot;
   Analytics analytics;
+  bool connected = false;
+  TimeService timeService;
+  Duration timeDifference;
 
   @NgOneWay("players")
   List<Tuple<String, String>> players;
@@ -47,7 +55,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
   bool gameRevealed;
 
   GameComponent(this.currentUser, this.router, this.socketCommunication, this.currentGame, this.routeProvider,
-      this.config, this.messageHandlers, this.analytics) {
+      this.config, this.messageHandlers, this.analytics, this.gameService, this.timeService) {
     players = currentGame.players;
   }
 
@@ -86,71 +94,59 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
     });
   }
 
-  void checkIfGameExists() {
-    var url = "http://${config.hostname}:${config.restPort}/games/${currentGame.getGameId()}"; // TODO: Extract route
+  attach() async {
+    connected = false;
 
-    HttpRequest httpRequest = new HttpRequest();
-    httpRequest
-      ..open('GET', url)
-      ..onLoadEnd.listen((_) {
-        var status = httpRequest.status;
-        if (status == 404) {
-          router.go(Routes.GAMES, {});
-        }
-      })
-      ..send();
-  }
-
-  void attach() {
     currentGame.setGameId(routeProvider.parameters['id']);
 
-    checkIfGameExists();
+    bool gameExists = await gameService.gameExists(currentGame.getGameId());
 
-    socketCommunication.sendSocketMsg(new LoginEvent(currentGame.getGameId(), currentUser.userName));
-    socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
-    window.onBeforeUnload.listen((event) {
-      _sendDisconnectEvent();
-    });
+    if (!gameExists) {
+      router.go(Routes.GAMES, {});
+    } else {
+      await askForGamePassword();
 
-    new Timer.periodic(
-        new Duration(seconds: 1), handleTimer
-    );
+      timeService.getTimeDifference().then((Duration difference) {
+        timeDifference = difference;
+        new Timer.periodic(new Duration(milliseconds: 500), handleTimer);
+      });
+
+      socketCommunication.sendSocketMsg(new LoginEvent(currentGame.getGameId(), currentUser.userName));
+      socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
+
+      connected = true;
+
+      window.onBeforeUnload.listen((event) {
+        _sendDisconnectEvent();
+      });
+    }
+  }
+
+  Future askForGamePassword() async {
+    bool isGameProtected = await gameService.isGameProtected(currentGame.getGameId());
+    if (isGameProtected) {
+      String password = context.callMethod('prompt', ['Please enter the game password', '']);
+      bool canEnter = await gameService.isPasswordValid(currentGame.getGameId(), password);
+      if (!canEnter) {
+        router.go(Routes.GAMES, {});
+      }
+    }
   }
 
   void handleTimer(Timer t) {
     if (currentGame.lastReset == null) {
       return;
     }
-    shadowRoot.querySelector("#lastReset").text = calculateLastReset();
-  }
-
-  String calculateLastReset() {
-    DateTime now = new DateTime.now();
-    Duration duration = now.difference(currentGame.lastReset);
-
-    var hours = duration.inHours;
-    var minutes = (duration - new Duration(hours: hours)).inMinutes;
-    var seconds = (duration - new Duration(minutes: minutes)).inSeconds;
-
-    var hoursDisplay = padInts(hours);
-    var minutesDisplay = padInts(minutes);
-    var secondsDisplay = padInts(seconds);
-
-    return "${hoursDisplay} : ${minutesDisplay} : ${secondsDisplay}";
-  }
-
-  String padInts(int value) {
-    if (value < 10) {
-      return "0${value}";
-    } else {
-      return value.toString();
-    }
+    shadowRoot.querySelector("#lastReset").text =
+        timeService.getFormattedRemainingTime(new DateTime.now().difference(currentGame.lastReset));
   }
 
   void detach() {
     players = [];
 
-    _sendDisconnectEvent();
+    if (connected) {
+      _sendDisconnectEvent();
+    }
 
     currentGame.resetGameId();
   }

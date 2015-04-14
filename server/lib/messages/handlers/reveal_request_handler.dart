@@ -19,12 +19,13 @@ class RevealRequestHandler extends MessageHandler<RevealRequestEvent> {
 
   void handleMessage(RevealRequestEvent message) {
     var gameId = message.gameId;
-    Game game = gameRepository.games[gameId];
 
-    if (game == null) {
+    if (!gameRepository.gameExists(gameId)) {
       logger.info("Game doesn't exist"); // TODO: Do something
       return;
     }
+
+    Game game = gameRepository.games[gameId];
 
     game.revealed = true;
 

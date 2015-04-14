@@ -8,7 +8,7 @@ import 'package:angular/angular.dart';
 import 'package:poker_planning_client/current_user.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 
-import 'package:poker_planning_client/config.dart';
+import 'package:poker_planning_client/app_config.dart';
 
 import 'package:poker_planning_shared/game.dart';
 
@@ -19,7 +19,7 @@ import 'package:poker_planning_shared/game.dart';
 class Lobby implements AttachAware {
   CurrentUser currentUser;
   SocketCommunication socketCommunication;
-  Config config;
+  AppConfig config;
   @NgTwoWay("games")
   List<Game> games;
 

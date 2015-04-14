@@ -24,12 +24,13 @@ class LoginHandler extends ConnectionMessageHandler<LoginEvent> {
     String username = message.username;
 
     logger.info("Adding $username to the logged in users of the game # $gameId");
-    Game game = gameRepository.games[gameId];
 
-    if (game == null) {
+    if (!gameRepository.gameExists(gameId)) {
       logger.info("Game doesn't exist"); // TODO: Do something
       return;
     }
+
+    Game game = gameRepository.games[gameId];
 
     game.addPlayer(username);
     gameRepository.addConnection(game, socket);

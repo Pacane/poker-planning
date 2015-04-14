@@ -20,12 +20,12 @@ class KickHandler extends MessageHandler<KickEvent> {
     String kickedPlayer = message.kicked;
     int gameId = message.gameId;
 
-    Game game = gameRepository.games[gameId];
-
-    if (game == null) {
+    if (!gameRepository.gameExists(gameId)) {
       logger.info("Game doesn't exist"); // TODO: Do something
       return;
     }
+
+    Game game = gameRepository.games[gameId];
 
     game.removePlayer(kickedPlayer);
     broadcaster.broadcastData(game, message);

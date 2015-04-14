@@ -3,14 +3,16 @@ description: PokerPlanning app frontend
 dependencies:
   browser: any
   dart_config: any
-  angular: ">=1.1.0 <2.0.0"
+  angular: "1.1.1"
   angular_node_bind: any
+  http: any
+  quiver: '>=0.21.0<0.22.0'
   poker_planning_shared:
     path: ../shared
-dev_dependencies:
-  unittest: any
 transformers:
 - angular
+dev_dependencies:
+  test: 0.12.0-beta.5
 dependency_overrides:
   route_hierarchical:
     version: any
