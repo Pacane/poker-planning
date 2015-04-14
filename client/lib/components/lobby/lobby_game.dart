@@ -4,6 +4,7 @@ import 'dart:html';
 import 'dart:convert';
 
 import 'package:angular/angular.dart';
+import 'package:quiver/strings.dart' as quiver;
 
 import 'package:poker_planning_client/analytics.dart';
 import 'package:poker_planning_client/current_user.dart';
@@ -38,7 +39,7 @@ class LobbyGame {
         .request(url,
             method: "POST",
             requestHeaders: {'Content-type': 'application/json'},
-            sendData: JSON.encode({"name": gameName, "password": password})) // TODO: Wrap this
+            sendData: JSON.encode({"name": gameName, "password": quiver.emptyToNull(password)})) // TODO: Wrap this
         .then((HttpRequest response) {
       if (response.status == 200) {
         // TODO: Find this constant
