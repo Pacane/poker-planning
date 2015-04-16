@@ -30,7 +30,7 @@ class CurrentGame {
   }
 
   void removeDisconnectedPlayers(Game game) {
-    players.removeWhere((Tuple t) => !game.playerIsInGame(t.first.id));
+    players.removeWhere((Tuple t) => !game.isPlayerInTheGame(t.first.id));
   }
 
   void updateCards(Game game, List<Player> players) {
@@ -50,11 +50,6 @@ class CurrentGame {
   bool isPlayerInTheGame(Player player) => players.any((Tuple t) => t.first == player);
 
   void updateCardValue(Player player, String card) {
-    players.forEach((Tuple<Player, String> t) {
-      if (t.first == player) {
-        t.second = card;
-        return;
-      }
-    });
+    players.firstWhere((Tuple<Player, String> t) => t.first == player).second = card;
   }
 }

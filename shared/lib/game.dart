@@ -42,7 +42,7 @@ class Game {
     });
   }
 
-  bool playerIsInGame(int playerId) {
+  bool isPlayerInTheGame(int playerId) {
     return _players.containsKey(playerId);
   }
 
