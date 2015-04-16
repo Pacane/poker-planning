@@ -1,6 +1,7 @@
 library game_information_handler;
 
 import 'package:angular/angular.dart';
+import 'dart:async';
 
 import "package:logging/logging.dart";
 

@@ -70,14 +70,14 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
     socketCommunication.sendSocketMsg(new ResetGameEvent(currentGame.getGameId()));
   }
 
-  void handleMessage(data) {
+  Future handleMessage(data) async {
     if (_scope.isDestroyed) {
       return;
     }
 
     var decoded = JSON.decode(data);
 
-    messageHandlers.handleMessage(decoded);
+    await messageHandlers.handleMessage(decoded);
   }
 
   void kickPlayer(int playerId) {
@@ -116,7 +116,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
       await currentUser.createPlayer();
 
       socketCommunication.sendSocketMsg(new LoginEvent(currentGame.getGameId(), currentUser.userId));
-      socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
+      socketCommunication.ws.onMessage.listen((MessageEvent e) async => await handleMessage(e.data));
 
       connected = true;
 

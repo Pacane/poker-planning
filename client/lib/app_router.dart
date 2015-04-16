@@ -23,7 +23,7 @@ class AppRouter implements Function {
 
   AppRouter(this.socketCommunication, this.currentUser, this.scope, this.currentGame, this.analytics);
 
-  Future<bool> checkLogin(String sourceRoute, [List<Route> activePath, Map parameters]) async {
+  Future<bool> checkLogin(String sourceRoute, [List<Route> activePath, Map parameters]) {
     if (parameters == null && activePath != null && !activePath.isEmpty) {
       parameters = activePath.last.parameters;
     } else if (parameters == null) {

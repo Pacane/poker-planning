@@ -94,7 +94,6 @@ class CurrentUser {
 
   Future createPlayer() async {
     Player newPlayer = await playerService.createPlayer(userName);
-    print("creating new user ${newPlayer.id} & ${newPlayer.displayName}");
 
     userId = newPlayer.id;
     userName = newPlayer.displayName;

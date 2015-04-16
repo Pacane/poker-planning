@@ -1,7 +1,6 @@
 library login_component;
 
 import 'dart:html';
-import 'dart:async';
 
 import 'package:angular/angular.dart';
 

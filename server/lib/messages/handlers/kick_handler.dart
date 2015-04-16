@@ -1,5 +1,7 @@
 library kick_handler;
 
+import 'dart:async';
+
 import 'package:logging/logging.dart';
 
 import 'package:poker_planning_server/broadcaster.dart';
@@ -16,7 +18,7 @@ class KickHandler extends MessageHandler<KickEvent> {
 
   KickHandler(this.gameRepository, this.broadcaster) : super();
 
-  void handleMessage(KickEvent message) {
+  Future handleMessage(KickEvent message) async {
     int kickedPlayerId = message.kickedPlayerId;
     int gameId = message.gameId;
 

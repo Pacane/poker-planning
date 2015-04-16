@@ -40,12 +40,12 @@ var port;
 var restPort;
 Logger logger = Logger.root;
 
-void handleMessage(socket, message) {
+Future handleMessage(socket, message) async {
   logger.info("Received : " + message);
 
   Map decodedMessage = JSON.decode(message);
 
-  messageHandlers.handleMessage(decodedMessage);
+  await messageHandlers.handleMessage(decodedMessage);
   connectionMessageHandlers.handleMessage(decodedMessage, socket);
 }
 
@@ -56,7 +56,7 @@ Future startSocket() async {
     server.listen((HttpRequest req) async {
       if (req.uri.path == '/ws') {
         WebSocket socket = await WebSocketTransformer.upgrade(req);
-        socket.listen((msg) => handleMessage(socket, msg));
+        socket.listen((msg) async => await handleMessage(socket, msg));
       }
     });
   } catch (e) {

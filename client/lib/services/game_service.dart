@@ -29,7 +29,7 @@ class GameService {
 
     try {
       return new Game.fromJson(response.body);
-    } on FormatException catch (e) {
+    } on FormatException {
       throw new Exception("Cannot parse game");
     }
   }
@@ -71,7 +71,7 @@ class GameService {
     try {
       List decoded = JSON.decode(response.body);
       return decoded.map((item) => new Player.fromMap(item)).toList();
-    } on FormatException catch (e) {
+    } on FormatException {
       throw new Exception("Cannot parse players");
     }
   }

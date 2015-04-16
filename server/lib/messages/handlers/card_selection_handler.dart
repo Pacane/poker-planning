@@ -1,5 +1,7 @@
 library card_selection_handler;
 
+import 'dart:async';
+
 import 'package:logging/logging.dart';
 
 import 'package:poker_planning_server/broadcaster.dart';
@@ -17,7 +19,7 @@ class CardSelectionHandler extends MessageHandler<CardSelectionEvent> {
 
   CardSelectionHandler(this.gameRepository, this.broadcaster) : super();
 
-  void handleMessage(CardSelectionEvent message) {
+  Future handleMessage(CardSelectionEvent message) async {
     int playerId = message.playerId;
     var selectedCard = message.selectedCard;
     int gameId = message.gameId;

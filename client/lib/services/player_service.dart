@@ -24,7 +24,7 @@ class PlayerService {
 
     try {
       return new Player.fromJson(response.body);
-    } on FormatException catch (e) {
+    } on FormatException {
       throw new Exception("Cannot parse player");
     }
   }
@@ -34,7 +34,7 @@ class PlayerService {
 
     try {
       return new Player.fromJson(response.body);
-    } on FormatException catch (e) {
+    } on FormatException {
       throw new Exception("Cannot parse player");
     }
   }
