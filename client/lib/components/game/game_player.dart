@@ -29,7 +29,7 @@ class GamePlayer implements ShadowRootAware, ScopeAware {
     if (value == "Y") {
       setClass("selected");
       valueToDisplay = "";
-    } else if (revealed) {
+    } else if (revealed == true) {
       setClass("");
       valueToDisplay = value;
     } else if (value == "") {
