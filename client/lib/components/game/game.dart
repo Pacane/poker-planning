@@ -25,6 +25,8 @@ import 'package:poker_planning_shared/messages/reveal_request_event.dart';
 import 'package:poker_planning_shared/messages/reset_game_event.dart';
 import 'package:poker_planning_shared/messages/handlers/message_handlers.dart';
 
+import 'package:poker_planning_shared/player.dart';
+
 import "package:logging/logging.dart";
 
 @Component(
@@ -49,7 +51,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
   Duration timeDifference;
 
   @NgOneWay("players")
-  List<Tuple<String, String>> players;
+  List<Tuple<Player, String>> players;
 
   @NgTwoWay("gameRevealed")
   bool gameRevealed;
@@ -78,8 +80,8 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
     messageHandlers.handleMessage(decoded);
   }
 
-  void kickPlayer(String player) {
-    socketCommunication.sendSocketMsg(new KickEvent(currentGame.getGameId(), player, currentUser.userName));
+  void kickPlayer(int playerId) {
+    socketCommunication.sendSocketMsg(new KickEvent(currentGame.getGameId(), playerId, currentUser.userId));
   }
 
   void onShadowRoot(ShadowRoot shadowRoot) {
@@ -94,7 +96,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
     });
   }
 
-  attach() async {
+  Future attach() async {
     connected = false;
 
     currentGame.setGameId(routeProvider.parameters['id']);
@@ -111,7 +113,9 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
         new Timer.periodic(new Duration(milliseconds: 500), handleTimer);
       });
 
-      socketCommunication.sendSocketMsg(new LoginEvent(currentGame.getGameId(), currentUser.userName));
+      await currentUser.createPlayer();
+
+      socketCommunication.sendSocketMsg(new LoginEvent(currentGame.getGameId(), currentUser.userId));
       socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
 
       connected = true;
@@ -152,6 +156,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
   }
 
   _sendDisconnectEvent() {
-    socketCommunication.sendSocketMsg(new DisconnectEvent(currentGame.getGameId(), currentUser.userName));
+    socketCommunication.sendSocketMsg(new DisconnectEvent(currentGame.getGameId(), currentUser.userId));
+    currentUser.leftGame();
   }
 }

@@ -12,6 +12,7 @@ import 'package:poker_planning_server/messages/handlers/reveal_request_handler.d
 import 'package:poker_planning_server/messages/handlers/card_selection_handler.dart';
 import 'package:poker_planning_server/messages/handlers/game_reset_handler.dart';
 import 'package:poker_planning_server/repository/game_repository.dart';
+import 'package:poker_planning_server/repository/player_repository.dart';
 import 'production_module.dart' as modules;
 
 import 'package:poker_planning_shared/messages/message_factory.dart';
@@ -75,8 +76,7 @@ Future main() async {
 
   injector = new ModuleInjector([modules.getSocketModule()]);
 
-  startGamesServer(
-      injector, [modules.getRestModule(), modules.getSharedModule(injector)]);
+  startGamesServer(injector, [modules.getRestModule(), modules.getSharedModule(injector)]);
   startSocket();
 }
 
@@ -84,6 +84,7 @@ void showError(error) => logger.severe(error);
 
 void startGamesServer(Injector injector, List<Module> modules) {
   GameRepository gameRepository = injector.get(GameRepository);
+  PlayerRepository playerRepository = injector.get(PlayerRepository);
   Broadcaster broadcaster = injector.get(Broadcaster);
   MessageFactory messageFactory = injector.get(MessageFactory);
 
@@ -96,7 +97,7 @@ void startGamesServer(Injector injector, List<Module> modules) {
 
   connectionMessageHandlers = new ConnectionMessageHandlers(messageFactory, [
     new LoginHandler(gameRepository, broadcaster),
-    new DisconnectHandler(gameRepository, broadcaster)
+    new DisconnectHandler(gameRepository, broadcaster, playerRepository)
   ]);
 
   setupLogging();

@@ -7,9 +7,11 @@ import "package:logging/logging.dart";
 import 'package:poker_planning_shared/messages/game_information.dart';
 import 'package:poker_planning_shared/messages/handlers/message_handler.dart';
 import 'package:poker_planning_shared/game.dart';
+import 'package:poker_planning_shared/player.dart';
 
 import 'package:poker_planning_client/current_game.dart';
 import 'package:poker_planning_client/current_user.dart';
+import 'package:poker_planning_client/services/game_service.dart';
 
 @Injectable()
 class GameInformationHandler extends MessageHandler<GameInformation> {
@@ -17,19 +19,20 @@ class GameInformationHandler extends MessageHandler<GameInformation> {
   CurrentUser currentUser;
   Scope scope;
   Logger logger = Logger.root;
+  GameService gameService;
 
-  GameInformationHandler(this.currentGame, this.scope, this.currentUser);
+  GameInformationHandler(this.currentGame, this.scope, this.currentUser, this.gameService);
 
-  void handleMessage(GameInformation message) {
+  handleMessage(GameInformation message) async {
     Game newGame = message.game;
     bool revealed = message.game.revealed;
+
+    List<Player> players = await gameService.getPlayers(currentGame.getGameId());
 
     logger.info("display cards with revealed : $revealed");
 
     currentGame.removeDisconnectedPlayers(newGame);
-
-    currentGame.updateCards(newGame);
-
+    currentGame.updateCards(newGame, players);
     currentGame.lastReset = message.game.lastReset;
 
     scope.rootScope.broadcast('game-update', revealed);

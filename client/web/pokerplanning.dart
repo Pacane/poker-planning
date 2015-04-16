@@ -18,9 +18,13 @@ import 'package:poker_planning_client/components/game/game.dart';
 import 'package:poker_planning_client/components/game/game_card.dart';
 import 'package:poker_planning_client/components/game/game_player.dart';
 
+import 'package:poker_planning_client/services/api_paths.dart';
+import 'package:poker_planning_client/services/player_api_paths.dart';
+import 'package:poker_planning_client/services/game_api_paths.dart';
+import 'package:poker_planning_client/services/time_api_paths.dart';
 import 'package:poker_planning_client/services/game_service.dart';
 import 'package:poker_planning_client/services/time_service.dart';
-import 'package:poker_planning_client/services/api_paths.dart';
+import 'package:poker_planning_client/services/player_service.dart';
 
 import 'package:poker_planning_client/analytics.dart';
 import 'package:poker_planning_client/socket_communication.dart';
@@ -45,9 +49,13 @@ class PokerPlanningModule extends Module {
     SocketCommunication socket = new SocketCommunication(hostname, port);
     socket.initWebSocket();
 
+    bind(ApiPaths);
+    bind(GameApiPaths);
+    bind(PlayerApiPaths);
+    bind(TimeApiPaths);
+    bind(PlayerService);
     bind(TimeService);
     bind(GameService);
-    bind(ApiPaths);
     bind(MessageFactory, toValue: new MessageFactory());
     bind(MessageHandlers,
         toFactory: (MessageFactory messageFactory, kickHandler, resetHandler, gameInformationHandler) {

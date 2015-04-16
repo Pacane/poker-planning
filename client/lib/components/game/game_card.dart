@@ -36,7 +36,7 @@ class GameCard implements ShadowRootAware, ScopeAware {
   }
 
   void onCardSelected() {
-    socketCommunication.sendSocketMsg(new CardSelectionEvent(currentGame.getGameId(), currentUser.userName, value));
+    socketCommunication.sendSocketMsg(new CardSelectionEvent(currentGame.getGameId(), currentUser.userId, value));
 
     setSelected(true);
 

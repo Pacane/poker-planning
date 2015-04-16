@@ -1,6 +1,7 @@
 library login_component;
 
 import 'dart:html';
+import 'dart:async';
 
 import 'package:angular/angular.dart';
 
@@ -48,7 +49,7 @@ class HomeLogin implements ShadowRootAware, AttachAware {
     router.go(route, parameters);
   }
 
-  void handleLoginClick() {
+  Future handleLoginClick() async {
     InputElement nameInput = shadowRoot.querySelector("#nameInput");
     String newName = nameInput.value;
 

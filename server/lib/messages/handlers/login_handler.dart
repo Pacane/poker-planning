@@ -21,9 +21,9 @@ class LoginHandler extends ConnectionMessageHandler<LoginEvent> {
 
   void handleMessage(LoginEvent message, WebSocket socket) {
     int gameId = message.gameId;
-    String username = message.username;
+    int userId = message.userId;
 
-    logger.info("Adding $username to the logged in users of the game # $gameId");
+    logger.info("Adding user with user id: $userId to the logged in users of the game # $gameId");
 
     if (!gameRepository.gameExists(gameId)) {
       logger.info("Game doesn't exist"); // TODO: Do something
@@ -32,7 +32,7 @@ class LoginHandler extends ConnectionMessageHandler<LoginEvent> {
 
     Game game = gameRepository.games[gameId];
 
-    game.addPlayer(username);
+    game.addPlayer(userId);
     gameRepository.addConnection(game, socket);
 
     broadcaster.broadcastData(game, new GameInformation(gameId, game));

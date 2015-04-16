@@ -6,7 +6,8 @@
 
     <div id="players">
         <game-player ng-repeat="tuple in players"
-                    playerName="tuple.first"
+                    playerId="tuple.first.id"
+                    displayName="tuple.first.displayName"
                     gameRevealed="gameRevealed"
                     value="tuple.second">
         </game-player>

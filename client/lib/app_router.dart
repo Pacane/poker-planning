@@ -23,14 +23,14 @@ class AppRouter implements Function {
 
   AppRouter(this.socketCommunication, this.currentUser, this.scope, this.currentGame, this.analytics);
 
-  Future<bool> checkLogin(String sourceRoute, [List<Route> activePath, Map parameters]) {
+  Future<bool> checkLogin(String sourceRoute, [List<Route> activePath, Map parameters]) async {
     if (parameters == null && activePath != null && !activePath.isEmpty) {
       parameters = activePath.last.parameters;
     } else if (parameters == null) {
       parameters = {};
     }
 
-    return new Future.value(currentUser.checkLogin(sourceRoute, parameters));
+    return currentUser.checkLogin(sourceRoute, parameters);
   }
 
   void logout(Router router) {
@@ -59,14 +59,10 @@ class AppRouter implements Function {
           router.go('login_without_id', e.parameters, replace: true, forceReload: true);
         }
       }),
-      Routes.GAMES: ngRoute(
-          path: Routes.toPath('${Routes.GAMES}/:id'),
-          view: 'view/game.html',
-          enter: (e) {
-            analytics.sendPageView('/game');
-            analytics.sendEvent('Game', 'Enter', e.parameters['id']);
-          },
-          preEnter: (RoutePreEnterEvent e) {
+      Routes.GAMES: ngRoute(path: Routes.toPath('${Routes.GAMES}/:id'), view: 'view/game.html', enter: (e) {
+        analytics.sendPageView('/game');
+        analytics.sendEvent('Game', 'Enter', e.parameters['id']);
+      }, preEnter: (RoutePreEnterEvent e) async {
         if (e.parameters['id'] == 'null') {
           router.go('lobby', e.parameters, replace: true);
         } else {

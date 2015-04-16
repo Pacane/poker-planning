@@ -9,7 +9,7 @@ dependencies:
       path: ../shared
   logging_handlers: any
 dev_dependencies:
-  test: 0.12.0-beta.6
+  test: 0.12.0-beta.7
 dependency_overrides:
   route_hierarchical:
     version: any

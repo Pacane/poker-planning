@@ -5,11 +5,11 @@ import 'game_event.dart';
 class KickEvent extends GameEvent {
   static const String MSG_TYPE = "kickEvent";
 
-  final String kicked;
-  final String kickedBy;
+  final int kickedPlayerId;
+  final int kickedBy;
 
-  KickEvent(gameId, this.kicked, this.kickedBy) : super(MSG_TYPE, gameId) {
-    if (kicked == null) {
+  KickEvent(gameId, this.kickedPlayerId, this.kickedBy) : super(MSG_TYPE, gameId) {
+    if (kickedPlayerId == null) {
       throw new ArgumentError.notNull('kicked');
     }
     if (kickedBy == null) {
@@ -24,7 +24,7 @@ class KickEvent extends GameEvent {
   void setContent() {
     super.setContent();
 
-    content['kicked'] = kicked;
+    content['kicked'] = kickedPlayerId;
     content['kickedBy'] = kickedBy;
   }
 }

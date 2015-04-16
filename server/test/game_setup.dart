@@ -1,4 +1,5 @@
 import 'package:poker_planning_server/repository/game_repository.dart';
+import 'package:poker_planning_server/repository/player_repository.dart';
 import 'package:poker_planning_server/resources/games.dart';
 import 'test_module.dart';
 
@@ -11,7 +12,11 @@ Games gameResource;
 ModuleInjector injector;
 
 setupGameResource() async {
-  injector = new ModuleInjector([new Module()..bind(GameRepository)]);
+  injector = new ModuleInjector([
+    new Module()
+      ..bind(GameRepository)
+      ..bind(PlayerRepository)
+  ]);
   gameRepository = injector.get(GameRepository);
 
   app.addModule(getRestModule());

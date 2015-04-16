@@ -17,7 +17,7 @@ class KickHandler extends MessageHandler<KickEvent> {
   KickHandler(this.gameRepository, this.broadcaster) : super();
 
   void handleMessage(KickEvent message) {
-    String kickedPlayer = message.kicked;
+    int kickedPlayerId = message.kickedPlayerId;
     int gameId = message.gameId;
 
     if (!gameRepository.gameExists(gameId)) {
@@ -27,7 +27,7 @@ class KickHandler extends MessageHandler<KickEvent> {
 
     Game game = gameRepository.games[gameId];
 
-    game.removePlayer(kickedPlayer);
+    game.removePlayer(kickedPlayerId);
     broadcaster.broadcastData(game, message);
   }
 }
