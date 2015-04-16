@@ -76,7 +76,7 @@ class CurrentUser {
     router.go(Routes.GAMES, {}, replace: true, forceReload: true);
   }
 
-  Future<bool> checkLogin(String sourceRoute, Map parameters) async {
+  bool checkLogin(String sourceRoute, Map parameters) {
     if (userName == null) {
       hideLoginStatus();
       logger.info("Cannot access $sourceRoute, sending back to login.");
@@ -86,10 +86,10 @@ class CurrentUser {
       new Future.delayed(
           new Duration(milliseconds: 10), () => router.go(Routes.LOGIN, parameters, replace: true, forceReload: true));
       return false;
+    } else {
+      showLoginSuccessful();
+      return true;
     }
-
-    showLoginSuccessful();
-    return true;
   }
 
   Future createPlayer() async {

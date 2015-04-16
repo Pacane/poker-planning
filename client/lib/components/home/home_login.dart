@@ -49,7 +49,7 @@ class HomeLogin implements ShadowRootAware, AttachAware {
     router.go(route, parameters);
   }
 
-  Future handleLoginClick() async {
+  void handleLoginClick() {
     InputElement nameInput = shadowRoot.querySelector("#nameInput");
     String newName = nameInput.value;
 

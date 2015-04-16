@@ -29,18 +29,6 @@ class PlayerService {
     }
   }
 
-  Future<bool> userStillExists(Player player) async {
-    http.Response response = await client.post(paths.checkUser(), body: JSON.encode(player));
-
-    if (response.statusCode == 404) {
-      return false;
-    } else if (response.statusCode == 200) {
-      return true;
-    } else {
-      throw new Exception("Cannot check is user still exists");
-    }
-  }
-
   Future<Player> getPlayer(int kickedBy) async {
     http.Response response = await client.get(paths.getPlayer(kickedBy));
 

@@ -30,17 +30,6 @@ class Players {
     return new shelf.Response.ok(JSON.encode(createdPlayer));
   }
 
-  @app.Route('/check', methods: const [app.POST])
-  shelf.Response checkUserExists(@app.Body(app.JSON) Map json) {
-    Player player = new Player.fromMap(json);
-
-    if (playerRepository.playerExists(player)) {
-      return new shelf.Response.ok("");
-    } else {
-      return new shelf.Response.notFound("");
-    }
-  }
-
   @app.Route('/:id', responseType: 'application/json')
   shelf.Response getPlayer(int id) {
     Player player = playerRepository.getPlayer(id);

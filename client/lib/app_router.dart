@@ -30,7 +30,7 @@ class AppRouter implements Function {
       parameters = {};
     }
 
-    return currentUser.checkLogin(sourceRoute, parameters);
+    return new Future.value(currentUser.checkLogin(sourceRoute, parameters));
   }
 
   void logout(Router router) {

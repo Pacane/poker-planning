@@ -23,7 +23,7 @@ class GameInformationHandler extends MessageHandler<GameInformation> {
 
   GameInformationHandler(this.currentGame, this.scope, this.currentUser, this.gameService);
 
-  handleMessage(GameInformation message) async {
+  Future handleMessage(GameInformation message) async {
     Game newGame = message.game;
     bool revealed = message.game.revealed;
 
