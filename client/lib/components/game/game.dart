@@ -54,7 +54,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
   List<Tuple<Player, String>> players;
 
   @NgTwoWay("gameRevealed")
-  bool gameRevealed;
+  bool gameRevealed = false;
 
   GameComponent(this.currentUser, this.router, this.socketCommunication, this.currentGame, this.routeProvider,
       this.config, this.messageHandlers, this.analytics, this.gameService, this.timeService) {
