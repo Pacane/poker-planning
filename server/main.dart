@@ -7,7 +7,7 @@ import 'package:dart_config/default_server.dart';
 import 'package:poker_planning_server/broadcaster.dart';
 import 'package:poker_planning_server/messages/handlers/login_handler.dart';
 import 'package:poker_planning_server/messages/handlers/disconnect_handler.dart';
-import 'package:poker_planning_server/messages/handlers/kick_handler.dart';
+import 'package:poker_planning_server/messages/handlers/initiate_kick_handler.dart';
 import 'package:poker_planning_server/messages/handlers/reveal_request_handler.dart';
 import 'package:poker_planning_server/messages/handlers/card_selection_handler.dart';
 import 'package:poker_planning_server/messages/handlers/game_reset_handler.dart';
@@ -89,7 +89,7 @@ void startGamesServer(Injector injector, List<Module> modules) {
   MessageFactory messageFactory = injector.get(MessageFactory);
 
   messageHandlers = new MessageHandlers(messageFactory, [
-    new KickHandler(gameRepository, broadcaster),
+    new InitiateKickHandler(gameRepository, playerRepository, broadcaster),
     new CardSelectionHandler(gameRepository, broadcaster),
     new RevealRequestHandler(gameRepository, broadcaster),
     new ResetGameHandler(gameRepository, broadcaster)

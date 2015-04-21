@@ -1,7 +1,8 @@
 library message_factory;
 
 import 'message.dart';
-import 'kick_event.dart';
+import 'player_kicked_event.dart';
+import 'initiate_kick_event.dart';
 import 'login_event.dart';
 import 'disconnect_event.dart';
 import 'error.dart';
@@ -25,8 +26,10 @@ class MessageFactory {
 
   Message _create(String type, Map content) {
     switch (type) {
-      case KickEvent.MSG_TYPE:
-        return new KickEvent.fromJson(content);
+      case PlayerKickedEvent.MSG_TYPE:
+        return new PlayerKickedEvent.fromJson(content);
+      case InitiateKickEvent.MSG_TYPE:
+        return new InitiateKickEvent.fromJson(content);
       case ErrorEvent.MSG_TYPE:
         return new ErrorEvent.fromJson(content);
       case CardSelectionEvent.MSG_TYPE:

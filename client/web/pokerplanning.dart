@@ -33,7 +33,7 @@ import 'package:poker_planning_client/current_game.dart';
 import 'package:poker_planning_client/app_router.dart';
 import 'package:poker_planning_client/app_config.dart';
 
-import 'package:poker_planning_client/messages/handlers/kick_handler.dart';
+import 'package:poker_planning_client/messages/handlers/player_kicked_handler.dart';
 import 'package:poker_planning_client/messages/handlers/game_information_handler.dart';
 import 'package:poker_planning_client/messages/handlers/game_reset_handler.dart';
 import 'package:poker_planning_shared/messages/message_factory.dart';
@@ -58,9 +58,10 @@ class PokerPlanningModule extends Module {
     bind(GameService);
     bind(MessageFactory, toValue: new MessageFactory());
     bind(MessageHandlers,
-        toFactory: (MessageFactory messageFactory, kickHandler, resetHandler, gameInformationHandler) {
-      return new MessageHandlers(messageFactory, [kickHandler, resetHandler, gameInformationHandler]);
-    }, inject: [MessageFactory, KickHandler, GameHasResetHandler, GameInformationHandler]);
+        toFactory: (MessageFactory messageFactory, PlayerKickedHandler playerKickedHandler,
+            GameHasResetHandler resetHandler, GameInformationHandler gameInformationHandler) {
+      return new MessageHandlers(messageFactory, [playerKickedHandler, resetHandler, gameInformationHandler]);
+    }, inject: [MessageFactory, PlayerKickedHandler, GameHasResetHandler, GameInformationHandler]);
     bind(Analytics);
     bind(SocketCommunication, toValue: socket);
     bind(Home);
@@ -72,7 +73,7 @@ class PokerPlanningModule extends Module {
     bind(LobbyGame);
     bind(CurrentUser);
     bind(CurrentGame);
-    bind(KickHandler);
+    bind(PlayerKickedHandler);
     bind(GameInformationHandler);
     bind(GameHasResetHandler);
     bind(RouteInitializerFn, toImplementation: AppRouter);

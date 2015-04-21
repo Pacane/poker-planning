@@ -18,8 +18,8 @@ import 'package:poker_planning_client/app_config.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/routes.dart';
 
-import 'package:poker_planning_shared/messages/kick_event.dart';
 import 'package:poker_planning_shared/messages/login_event.dart';
+import 'package:poker_planning_shared/messages/initiate_kick_event.dart';
 import 'package:poker_planning_shared/messages/disconnect_event.dart';
 import 'package:poker_planning_shared/messages/reveal_request_event.dart';
 import 'package:poker_planning_shared/messages/reset_game_event.dart';
@@ -81,7 +81,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
   }
 
   void kickPlayer(int playerId) {
-    socketCommunication.sendSocketMsg(new KickEvent(currentGame.getGameId(), playerId, currentUser.userId));
+    socketCommunication.sendSocketMsg(new InitiateKickEvent(currentGame.getGameId(), playerId, currentUser.userId));
   }
 
   void onShadowRoot(ShadowRoot shadowRoot) {
