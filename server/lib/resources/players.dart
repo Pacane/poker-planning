@@ -29,15 +29,4 @@ class Players {
 
     return new shelf.Response.ok(JSON.encode(createdPlayer));
   }
-
-  @app.Route('/:id', responseType: 'application/json')
-  shelf.Response getPlayer(int id) {
-    Player player = playerRepository.getPlayer(id);
-
-    if (player != null) {
-      return new shelf.Response.ok(JSON.encode(player));
-    } else {
-      return new shelf.Response.notFound("");
-    }
-  }
 }
