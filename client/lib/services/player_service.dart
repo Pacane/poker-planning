@@ -28,14 +28,4 @@ class PlayerService {
       throw new Exception("Cannot parse player");
     }
   }
-
-  Future<Player> getPlayer(int kickedBy) async {
-    http.Response response = await client.get(paths.getPlayer(kickedBy));
-
-    try {
-      return new Player.fromJson(response.body);
-    } on FormatException {
-      throw new Exception("Cannot parse player");
-    }
-  }
 }

@@ -1,14 +1,14 @@
-library kick_event;
+library initiate_kick_event;
 
 import 'game_event.dart';
 
-class KickEvent extends GameEvent {
-  static const String MSG_TYPE = "kickEvent";
+class InitiateKickEvent extends GameEvent {
+  static const String MSG_TYPE = "initiateKickEvent";
 
   final int kickedPlayerId;
   final int kickedBy;
 
-  KickEvent(gameId, this.kickedPlayerId, this.kickedBy) : super(MSG_TYPE, gameId) {
+  InitiateKickEvent(gameId, this.kickedPlayerId, this.kickedBy) : super(MSG_TYPE, gameId) {
     if (kickedPlayerId == null) {
       throw new ArgumentError.notNull('kicked');
     }
@@ -17,8 +17,8 @@ class KickEvent extends GameEvent {
     }
   }
 
-  factory KickEvent.fromJson(Map content) {
-    return new KickEvent(content['gameId'], content['kicked'], content['kickedBy']);
+  factory InitiateKickEvent.fromJson(Map content) {
+    return new InitiateKickEvent(content['gameId'], content['kicked'], content['kickedBy']);
   }
 
   void setContent() {
