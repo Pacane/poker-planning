@@ -1,5 +1,7 @@
 library card_selection_handler;
 
+import 'dart:async';
+
 import 'package:logging/logging.dart';
 
 import 'package:poker_planning_server/broadcaster.dart';
@@ -17,12 +19,12 @@ class CardSelectionHandler extends MessageHandler<CardSelectionEvent> {
 
   CardSelectionHandler(this.gameRepository, this.broadcaster) : super();
 
-  void handleMessage(CardSelectionEvent message) {
-    var playerName = message.playerName;
+  Future handleMessage(CardSelectionEvent message) async {
+    int playerId = message.playerId;
     var selectedCard = message.selectedCard;
     int gameId = message.gameId;
 
-    logger.info("Adding $playerName card selection: $selectedCard in game $gameId");
+    logger.info("Adding $playerId card selection: $selectedCard in game $gameId");
 
     if (!gameRepository.gameExists(gameId)) {
       logger.info("Game doesn't exist"); // TODO: Do something
@@ -31,7 +33,7 @@ class CardSelectionHandler extends MessageHandler<CardSelectionEvent> {
 
     Game game = gameRepository.games[gameId];
 
-    game.setCard(playerName, selectedCard);
+    game.setCard(playerId, selectedCard);
 
     broadcaster.broadcastData(game, new GameInformation(gameId, game));
   }

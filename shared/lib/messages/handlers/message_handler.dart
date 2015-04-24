@@ -1,13 +1,14 @@
 library message_handler;
 
+import 'dart:async';
 import '../message.dart';
 
 abstract class MessageHandler<T extends Message> {
-  void tryHandlingMessage(Message message) {
+  Future tryHandlingMessage(Message message) async {
     if (message is T) {
-      handleMessage(message);
+      await handleMessage(message);
     }
   }
 
-  void handleMessage(T message);
+  Future handleMessage(T message);
 }

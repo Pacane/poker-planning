@@ -7,14 +7,14 @@ class Game {
   int id;
 
   String name;
-  Map<String, String> _players = {};
+  Map<int, String> _players = {};
   DateTime lastReset;
   bool revealed = false;
   bool isProtected = false;
 
   Game(this.name, this.revealed, this._players);
 
-  void addPlayer(String playerId) {
+  void addPlayer(int playerId) {
     _players.putIfAbsent(playerId, () => '');
   }
 
@@ -26,12 +26,12 @@ class Game {
     return _players.isEmpty;
   }
 
-  void removePlayer(String playerId) {
+  void removePlayer(int playerId) {
     _players.remove(playerId);
   }
 
-  void setCard(String player, String card) {
-    _players[player] = card;
+  void setCard(int playerId, String card) {
+    _players[playerId] = card;
   }
 
   void obfuscateSelectedCards() {
@@ -42,19 +42,24 @@ class Game {
     });
   }
 
-  bool playerIsInGame(String playerId) {
+  bool isPlayerInTheGame(int playerId) {
     return _players.containsKey(playerId);
   }
 
+  Iterable<int> getPlayerIds() => _players.keys;
+
   void forEachPlayer(action) {
-    _players.forEach((String player, String card) => action(player, card));
+    _players.forEach((int playerId, String card) => action(playerId, card));
   }
 
   Map toJson() {
+    Map<String, String> encodablePlayers = {};
+    _players.forEach((key, value) => encodablePlayers[key.toString()] = value);
+
     Map map = new Map();
     map["name"] = name;
     map["revealed"] = revealed;
-    map["players"] = _players;
+    map["players"] = encodablePlayers;
     map["id"] = id;
     map["lastReset"] = lastReset == null ? "" : lastReset.toIso8601String();
     map["isProtected"] = isProtected;
@@ -64,12 +69,20 @@ class Game {
 
   factory Game.fromMap(Map jsonMap) {
     var mapLastReset = jsonMap["lastReset"];
+    Map<String, String> encodedPlayers = jsonMap["players"];
+    Map<int, String> decodedPlayers = {};
+
+    if (encodedPlayers == null) {
+      decodedPlayers = {};
+    } else {
+      encodedPlayers.forEach((String key, String value) => decodedPlayers[int.parse(key)] = value);
+    }
 
     return new Game(jsonMap["name"], jsonMap["revealed"], jsonMap["players"])
       ..id = jsonMap["id"]
       ..revealed = jsonMap["revealed"] == null ? false : jsonMap["revealed"]
       ..lastReset = isEmpty(mapLastReset) ? null : DateTime.parse(mapLastReset)
-      .._players = jsonMap["players"] == null ? {} : jsonMap["players"]
+      .._players = decodedPlayers
       ..isProtected = jsonMap["isProtected"];
   }
 

@@ -59,14 +59,10 @@ class AppRouter implements Function {
           router.go('login_without_id', e.parameters, replace: true, forceReload: true);
         }
       }),
-      Routes.GAMES: ngRoute(
-          path: Routes.toPath('${Routes.GAMES}/:id'),
-          view: 'view/game.html',
-          enter: (e) {
-            analytics.sendPageView('/game');
-            analytics.sendEvent('Game', 'Enter', e.parameters['id']);
-          },
-          preEnter: (RoutePreEnterEvent e) {
+      Routes.GAMES: ngRoute(path: Routes.toPath('${Routes.GAMES}/:id'), view: 'view/game.html', enter: (e) {
+        analytics.sendPageView('/game');
+        analytics.sendEvent('Game', 'Enter', e.parameters['id']);
+      }, preEnter: (RoutePreEnterEvent e) {
         if (e.parameters['id'] == 'null') {
           router.go('lobby', e.parameters, replace: true);
         } else {

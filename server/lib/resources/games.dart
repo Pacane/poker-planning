@@ -1,6 +1,7 @@
 library games_resource;
 
 import 'package:poker_planning_shared/game.dart';
+import 'package:poker_planning_shared/player.dart';
 import 'package:poker_planning_server/repository/game_repository.dart';
 
 import 'package:redstone/server.dart' as app;
@@ -36,6 +37,20 @@ class Games {
     if (gameRepository.gameExists(id)) {
       Game game = gameRepository.games[id];
       return new shelf.Response.ok(JSON.encode(game));
+    } else {
+      return new shelf.Response.notFound("");
+    }
+  }
+
+  @app.Route('/:id/players', responseType: 'application/json')
+  shelf.Response getPlayers(int id) {
+    if (gameRepository.gameExists(id)) {
+      List<Player> displayNames = gameRepository.getDisplayNames(id).toList();
+      if (displayNames.isEmpty) {
+        return new shelf.Response.ok(JSON.encode([]));
+      } else {
+        return new shelf.Response.ok(JSON.encode(displayNames));
+      }
     } else {
       return new shelf.Response.notFound("");
     }

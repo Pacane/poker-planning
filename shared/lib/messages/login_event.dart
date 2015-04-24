@@ -5,21 +5,21 @@ import 'game_event.dart';
 class LoginEvent extends GameEvent {
   static const String MSG_TYPE = "loginEvent";
 
-  final String username;
+  final int userId;
 
-  LoginEvent(gameId, this.username) : super(MSG_TYPE, gameId) {
-    if (username == null) {
-      throw new ArgumentError.notNull('username');
+  LoginEvent(gameId, this.userId) : super(MSG_TYPE, gameId) {
+    if (userId == null) {
+      throw new ArgumentError.notNull('userId');
     }
   }
 
   factory LoginEvent.fromJson(Map content) {
-    return new LoginEvent(content['gameId'], content['username']);
+    return new LoginEvent(content['gameId'], content['userId']);
   }
 
   void setContent() {
     super.setContent();
 
-    content['username'] = username;
+    content['userId'] = userId;
   }
 }

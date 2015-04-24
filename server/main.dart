@@ -7,11 +7,12 @@ import 'package:dart_config/default_server.dart';
 import 'package:poker_planning_server/broadcaster.dart';
 import 'package:poker_planning_server/messages/handlers/login_handler.dart';
 import 'package:poker_planning_server/messages/handlers/disconnect_handler.dart';
-import 'package:poker_planning_server/messages/handlers/kick_handler.dart';
+import 'package:poker_planning_server/messages/handlers/initiate_kick_handler.dart';
 import 'package:poker_planning_server/messages/handlers/reveal_request_handler.dart';
 import 'package:poker_planning_server/messages/handlers/card_selection_handler.dart';
 import 'package:poker_planning_server/messages/handlers/game_reset_handler.dart';
 import 'package:poker_planning_server/repository/game_repository.dart';
+import 'package:poker_planning_server/repository/player_repository.dart';
 import 'production_module.dart' as modules;
 
 import 'package:poker_planning_shared/messages/message_factory.dart';
@@ -39,12 +40,12 @@ var port;
 var restPort;
 Logger logger = Logger.root;
 
-void handleMessage(socket, message) {
+Future handleMessage(socket, message) async {
   logger.info("Received : " + message);
 
   Map decodedMessage = JSON.decode(message);
 
-  messageHandlers.handleMessage(decodedMessage);
+  await messageHandlers.handleMessage(decodedMessage);
   connectionMessageHandlers.handleMessage(decodedMessage, socket);
 }
 
@@ -55,7 +56,7 @@ Future startSocket() async {
     server.listen((HttpRequest req) async {
       if (req.uri.path == '/ws') {
         WebSocket socket = await WebSocketTransformer.upgrade(req);
-        socket.listen((msg) => handleMessage(socket, msg));
+        socket.listen((msg) async => await handleMessage(socket, msg));
       }
     });
   } catch (e) {
@@ -75,8 +76,7 @@ Future main() async {
 
   injector = new ModuleInjector([modules.getSocketModule()]);
 
-  startGamesServer(
-      injector, [modules.getRestModule(), modules.getSharedModule(injector)]);
+  startGamesServer(injector, [modules.getRestModule(), modules.getSharedModule(injector)]);
   startSocket();
 }
 
@@ -84,11 +84,12 @@ void showError(error) => logger.severe(error);
 
 void startGamesServer(Injector injector, List<Module> modules) {
   GameRepository gameRepository = injector.get(GameRepository);
+  PlayerRepository playerRepository = injector.get(PlayerRepository);
   Broadcaster broadcaster = injector.get(Broadcaster);
   MessageFactory messageFactory = injector.get(MessageFactory);
 
   messageHandlers = new MessageHandlers(messageFactory, [
-    new KickHandler(gameRepository, broadcaster),
+    new InitiateKickHandler(gameRepository, playerRepository, broadcaster),
     new CardSelectionHandler(gameRepository, broadcaster),
     new RevealRequestHandler(gameRepository, broadcaster),
     new ResetGameHandler(gameRepository, broadcaster)
@@ -96,7 +97,7 @@ void startGamesServer(Injector injector, List<Module> modules) {
 
   connectionMessageHandlers = new ConnectionMessageHandlers(messageFactory, [
     new LoginHandler(gameRepository, broadcaster),
-    new DisconnectHandler(gameRepository, broadcaster)
+    new DisconnectHandler(gameRepository, broadcaster, playerRepository)
   ]);
 
   setupLogging();

@@ -4,10 +4,11 @@ import 'package:angular/angular.dart';
 
 import 'package:poker_planning_client/tuple.dart';
 import 'package:poker_planning_shared/game.dart';
+import 'package:poker_planning_shared/player.dart';
 
 @Injectable()
 class CurrentGame {
-  List<Tuple<String, String>> players = [];
+  List<Tuple<Player, String>> players = [];
 
   int _gameId;
   DateTime lastReset;
@@ -29,25 +30,26 @@ class CurrentGame {
   }
 
   void removeDisconnectedPlayers(Game game) {
-    players.removeWhere((t) => !game.playerIsInGame(t.first));
+    players.removeWhere((Tuple t) => !game.isPlayerInTheGame(t.first.id));
   }
 
-  void updateCards(Game game) {
-    game.forEachPlayer((String player, String card) {
-      updateCard(player, card);
+  void updateCards(Game game, List<Player> players) {
+    game.forEachPlayer((int playerId, String card) {
+      updateCard(players.singleWhere((player) => player.id == playerId), card);
     });
   }
 
-  void updateCard(String player, String card) {
-    if (!players.any((x) => x.first == player)) {
+  void updateCard(Player player, String card) {
+    if (!isPlayerInTheGame(player)) {
       players.add(new Tuple(player, card));
     } else {
-      players.forEach((t) {
-        if (t.first == player) {
-          t.second = card;
-          return;
-        }
-      });
+      updateCardValue(player, card);
     }
+  }
+
+  bool isPlayerInTheGame(Player player) => players.any((Tuple t) => t.first == player);
+
+  void updateCardValue(Player player, String card) {
+    players.firstWhere((Tuple<Player, String> t) => t.first == player).second = card;
   }
 }

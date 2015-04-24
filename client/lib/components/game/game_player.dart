@@ -3,14 +3,17 @@ library card_component;
 import 'dart:html';
 import 'package:angular/angular.dart';
 import 'package:poker_planning_client/tuple.dart';
+import 'package:poker_planning_shared/player.dart';
 
 @Component(
     selector: 'game-player',
     cssUrl: 'packages/poker_planning_client/components/game/game_player.css',
     templateUrl: 'packages/poker_planning_client/components/game/game_player.html')
 class GamePlayer implements ShadowRootAware, ScopeAware {
-  @NgTwoWay("playerName")
-  String playerName;
+  @NgTwoWay("displayName")
+  String displayName;
+  @NgTwoWay("playerId")
+  int playerId;
   @NgTwoWay("valueToDisplay")
   String valueToDisplay;
   @NgTwoWay("gameRevealed")
@@ -50,7 +53,7 @@ class GamePlayer implements ShadowRootAware, ScopeAware {
   }
 
   void kickPlayer() {
-    _scope.emit("kick-player", playerName);
+    _scope.emit("kick-player", playerId);
   }
 
   void set scope(Scope scope) {
@@ -67,10 +70,10 @@ class GamePlayer implements ShadowRootAware, ScopeAware {
   }
 
   void updateCard(ScopeEvent event) {
-    List<Tuple<String, String>> players = event.data[0];
-    var stillAPlayer = players.any((t) => t.first == playerName);
+    List<Tuple<Player, String>> players = event.data[0];
+    bool stillAPlayer = players.any((t) => t.first.id == playerId);
     if (stillAPlayer) {
-      value = players.firstWhere((t) => t.first == playerName).second;
+      value = players.firstWhere((t) => t.first.id == playerId).second;
       revealed = event.data[1];
       applyStyles();
     }

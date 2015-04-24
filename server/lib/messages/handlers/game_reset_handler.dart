@@ -1,5 +1,7 @@
 library game_reset_handler;
 
+import 'dart:async';
+
 import 'package:logging/logging.dart';
 
 import 'package:poker_planning_server/broadcaster.dart';
@@ -17,7 +19,7 @@ class ResetGameHandler extends MessageHandler<ResetGameEvent> {
 
   ResetGameHandler(this.gameRepository, this.broadcaster) : super();
 
-  void handleMessage(ResetGameEvent message) {
+  Future handleMessage(ResetGameEvent message) async {
     int gameId = message.gameId;
 
     if (!gameRepository.gameExists(gameId)) {

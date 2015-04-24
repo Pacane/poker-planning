@@ -1,0 +1,4 @@
+hostname: localhost
+port: 4040
+restPort: 3010
+jira.authorizationHeader: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==

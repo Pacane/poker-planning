@@ -1,5 +1,6 @@
 library message_handlers;
 
+import 'dart:async';
 import 'message_handler.dart';
 import '../message.dart';
 import '../message_factory.dart';
@@ -11,10 +12,10 @@ class MessageHandlers {
 
   MessageHandlers(this.messageFactory, this._handlers);
 
-  void handleMessage(Map json) {
+  Future handleMessage(Map json) async {
     Message message = messageFactory.create(json);
     if (message != null) {
-      _handlers.forEach((MessageHandler handler) => handler.tryHandlingMessage(message));
+      _handlers.forEach((MessageHandler handler) async => await handler.tryHandlingMessage(message));
     }
   }
 }
