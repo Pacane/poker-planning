@@ -1,6 +1,7 @@
 library reveal_handler;
 
 import 'package:logging/logging.dart';
+import 'dart:async';
 
 import 'package:poker_planning_server/broadcaster.dart';
 import 'package:poker_planning_server/repository/game_repository.dart';
@@ -17,7 +18,7 @@ class RevealRequestHandler extends MessageHandler<RevealRequestEvent> {
 
   RevealRequestHandler(this.gameRepository, this.broadcaster) : super();
 
-  void handleMessage(RevealRequestEvent message) {
+  Future handleMessage(RevealRequestEvent message) async {
     var gameId = message.gameId;
 
     if (!gameRepository.gameExists(gameId)) {

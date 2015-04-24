@@ -18,12 +18,14 @@ import 'package:poker_planning_client/app_config.dart';
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/routes.dart';
 
-import 'package:poker_planning_shared/messages/kick_event.dart';
 import 'package:poker_planning_shared/messages/login_event.dart';
+import 'package:poker_planning_shared/messages/initiate_kick_event.dart';
 import 'package:poker_planning_shared/messages/disconnect_event.dart';
 import 'package:poker_planning_shared/messages/reveal_request_event.dart';
 import 'package:poker_planning_shared/messages/reset_game_event.dart';
 import 'package:poker_planning_shared/messages/handlers/message_handlers.dart';
+
+import 'package:poker_planning_shared/player.dart';
 
 import "package:logging/logging.dart";
 
@@ -49,10 +51,10 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
   Duration timeDifference;
 
   @NgOneWay("players")
-  List<Tuple<String, String>> players;
+  List<Tuple<Player, String>> players;
 
   @NgTwoWay("gameRevealed")
-  bool gameRevealed;
+  bool gameRevealed = false;
 
   GameComponent(this.currentUser, this.router, this.socketCommunication, this.currentGame, this.routeProvider,
       this.config, this.messageHandlers, this.analytics, this.gameService, this.timeService) {
@@ -68,18 +70,18 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
     socketCommunication.sendSocketMsg(new ResetGameEvent(currentGame.getGameId()));
   }
 
-  void handleMessage(data) {
+  Future handleMessage(data) async {
     if (_scope.isDestroyed) {
       return;
     }
 
     var decoded = JSON.decode(data);
 
-    messageHandlers.handleMessage(decoded);
+    await messageHandlers.handleMessage(decoded);
   }
 
-  void kickPlayer(String player) {
-    socketCommunication.sendSocketMsg(new KickEvent(currentGame.getGameId(), player, currentUser.userName));
+  void kickPlayer(int playerId) {
+    socketCommunication.sendSocketMsg(new InitiateKickEvent(currentGame.getGameId(), playerId, currentUser.userId));
   }
 
   void onShadowRoot(ShadowRoot shadowRoot) {
@@ -94,7 +96,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
     });
   }
 
-  attach() async {
+  Future attach() async {
     connected = false;
 
     currentGame.setGameId(routeProvider.parameters['id']);
@@ -111,8 +113,10 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
         new Timer.periodic(new Duration(milliseconds: 500), handleTimer);
       });
 
-      socketCommunication.sendSocketMsg(new LoginEvent(currentGame.getGameId(), currentUser.userName));
-      socketCommunication.ws.onMessage.listen((MessageEvent e) => handleMessage(e.data));
+      await currentUser.createPlayer();
+
+      socketCommunication.sendSocketMsg(new LoginEvent(currentGame.getGameId(), currentUser.userId));
+      socketCommunication.ws.onMessage.listen((MessageEvent e) async => await handleMessage(e.data));
 
       connected = true;
 
@@ -152,6 +156,7 @@ class GameComponent implements ScopeAware, AttachAware, DetachAware, ShadowRootA
   }
 
   _sendDisconnectEvent() {
-    socketCommunication.sendSocketMsg(new DisconnectEvent(currentGame.getGameId(), currentUser.userName));
+    socketCommunication.sendSocketMsg(new DisconnectEvent(currentGame.getGameId(), currentUser.userId));
+    currentUser.leftGame();
   }
 }

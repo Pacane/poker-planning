@@ -14,6 +14,4 @@ class ApiPaths {
   String game(int id) => "$basePath/games/$id";
 
   String authenticate(int id) => "${game(id)}/auth";
-
-  String getServerTime() => "$basePath/time";
 }

@@ -3,13 +3,16 @@ library game_repository;
 import 'dart:io';
 
 import 'package:poker_planning_shared/game.dart';
+import 'package:poker_planning_shared/player.dart';
+import 'package:poker_planning_server/repository/player_repository.dart';
 
 class GameRepository {
   Map<int, String> _passwords = {};
   Map<int, Game> games = {};
   Map<Game, List<WebSocket>> activeConnections = {};
+  PlayerRepository playerRepository;
 
-  GameRepository() {
+  GameRepository(this.playerRepository) {
     _idSeed = 1;
   }
 
@@ -38,6 +41,11 @@ class GameRepository {
     setPassword(newGame.id, password);
 
     return newGame;
+  }
+
+  Iterable<Player> getDisplayNames(int gameId) {
+    Game game = games[gameId];
+    return playerRepository.getPlayers(game.getPlayerIds());
   }
 
   bool gameExists(int gameId) => games[gameId] != null;

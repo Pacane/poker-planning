@@ -1,6 +1,7 @@
 library game_reset_handler;
 
 import 'package:angular/angular.dart';
+import 'dart:async';
 
 import "package:logging/logging.dart";
 
@@ -19,7 +20,7 @@ class GameHasResetHandler extends MessageHandler<GameHasResetEvent> {
 
   GameHasResetHandler(this.game, this.scope, this.currentUser);
 
-  void handleMessage(GameHasResetEvent message) {
+  Future handleMessage(GameHasResetEvent message) async {
     game.players.forEach((t) => t.second = "");
     game.lastReset = message.lastReset;
     scope.rootScope.broadcast("game-has-reset", {});

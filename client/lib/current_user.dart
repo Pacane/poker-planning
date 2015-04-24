@@ -4,9 +4,12 @@ import 'dart:html';
 import 'dart:async';
 
 import 'package:angular/angular.dart';
+import 'package:http/browser_client.dart';
 
 import 'package:poker_planning_client/socket_communication.dart';
 import 'package:poker_planning_client/routes.dart';
+import 'package:poker_planning_client/services/player_service.dart';
+import 'package:poker_planning_shared/player.dart';
 
 import "package:logging/logging.dart";
 
@@ -17,17 +20,30 @@ class CurrentUser {
   Storage localStorage = window.localStorage;
   Scope scope;
   Logger logger = Logger.root;
+  PlayerService playerService;
+  BrowserClient client = new BrowserClient();
 
-  CurrentUser(this.router, this.socketCommunication, this.scope) {
+  CurrentUser(this.router, this.socketCommunication, this.scope, this.playerService) {
     scope.on("kicked").listen((event) => sendBackToGames(event.data));
   }
 
   String get userName => localStorage['username'];
+  int get userId {
+    if (localStorage['userId'] == null) {
+      return null;
+    } else {
+      return int.parse(localStorage['userId'], onError: (_) => null);
+    }
+  }
 
-  bool get userExists => userName != null;
+  bool get userExists => userId != null;
 
   void set userName(String userName) {
     localStorage['username'] = userName;
+  }
+
+  void set userId(int userId) {
+    localStorage['userId'] = userId.toString();
   }
 
   void logOffCurrentUser() {
@@ -74,5 +90,16 @@ class CurrentUser {
       showLoginSuccessful();
       return true;
     }
+  }
+
+  Future createPlayer() async {
+    Player newPlayer = await playerService.createPlayer(userName);
+
+    userId = newPlayer.id;
+    userName = newPlayer.displayName;
+  }
+
+  void leftGame() {
+    userId = null;
   }
 }

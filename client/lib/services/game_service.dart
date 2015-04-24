@@ -1,21 +1,21 @@
 library game_service;
 
 import 'dart:convert' show JSON;
-import 'dart:html';
 import 'dart:async';
 
 import 'package:angular/angular.dart';
 
-import 'api_paths.dart';
+import 'package:poker_planning_client/services/game_api_paths.dart';
 
 import 'package:poker_planning_shared/game.dart';
+import 'package:poker_planning_shared/player.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:http/browser_client.dart';
 
 @Injectable()
 class GameService {
-  ApiPaths paths;
+  GameApiPaths paths;
   http.Client client = new BrowserClient();
 
   GameService(this.paths);
@@ -29,7 +29,7 @@ class GameService {
 
     try {
       return new Game.fromJson(response.body);
-    } on FormatException catch (e) {
+    } on FormatException {
       throw new Exception("Cannot parse game");
     }
   }
@@ -58,6 +58,21 @@ class GameService {
       return true;
     } else {
       return false;
+    }
+  }
+
+  Future<List<Player>> getPlayers(int gameId) async {
+    http.Response response = await client.get(paths.getPlayers(gameId));
+
+    if (response.statusCode == 404) {
+      return null;
+    }
+
+    try {
+      List decoded = JSON.decode(response.body);
+      return decoded.map((item) => new Player.fromMap(item)).toList();
+    } on FormatException {
+      throw new Exception("Cannot parse players");
     }
   }
 }
