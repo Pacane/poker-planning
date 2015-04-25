@@ -24,6 +24,7 @@ class InitiateKickHandler extends MessageHandler<InitiateKickEvent> {
 
   Future handleMessage(InitiateKickEvent message) async {
     int kickedPlayerId = message.kickedPlayerId;
+    int kickedByPlayerId = message.kickedBy;
     int gameId = message.gameId;
 
     if (!gameRepository.gameExists(gameId)) {
@@ -34,7 +35,7 @@ class InitiateKickHandler extends MessageHandler<InitiateKickEvent> {
     Game game = gameRepository.games[gameId];
 
     Player kickedPlayer = playerRepository.getPlayer(kickedPlayerId);
-    Player kickedBy = playerRepository.getPlayer(kickedPlayerId);
+    Player kickedBy = playerRepository.getPlayer(kickedByPlayerId);
 
     game.removePlayer(kickedPlayerId);
 
