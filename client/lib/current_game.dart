@@ -52,4 +52,8 @@ class CurrentGame {
   void updateCardValue(Player player, String card) {
     players.firstWhere((Tuple<Player, String> t) => t.first == player).second = card;
   }
+
+  void removePlayer(Player player) {
+    players.removeWhere((Tuple<Player, String> t) => t.first == player);
+  }
 }

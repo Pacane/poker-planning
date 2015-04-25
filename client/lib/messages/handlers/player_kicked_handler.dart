@@ -27,10 +27,10 @@ class PlayerKickedHandler extends MessageHandler<PlayerKickedEvent> {
     Player kickedPlayer = message.kickedPlayer;
     Player kickedBy = message.kickedBy;
 
-    game.players.removeWhere((Tuple<Player, String> t) => t.first.id == kickedPlayer.id);
+    game.removePlayer(kickedPlayer);
 
     if (kickedPlayer.id == currentUser.userId) {
-      String msg = "you have been kicked by: ${kickedBy.displayName}";
+      String msg = "You have been kicked by: ${kickedBy.displayName}";
       scope.rootScope.broadcast("kicked", msg);
     } else {
       logger.warning("${kickedPlayer.displayName} has been kicked by ${kickedBy.displayName}");
